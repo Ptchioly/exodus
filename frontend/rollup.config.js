@@ -44,7 +44,8 @@ export default {
 			preprocess: sveltePreprocess({
 				postcss: {
 					plugins: [
-					   tailwind('tailwind.config.js')
+					   tailwind('tailwind.config.js'),
+					   require('postcss-nesting')
 					],
 				  },
 			}),

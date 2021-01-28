@@ -2,6 +2,11 @@
 const production = !process.env.ROLLUP_WATCH;
 
 module.exports = {
+  theme: {
+    fontFamily: {
+      'main': ['Roboto', 'sans-serif']
+    }
+  },
   plugins: [
     require('@tailwindcss/ui'),
   ],
