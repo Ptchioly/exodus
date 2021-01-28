@@ -3,8 +3,8 @@
 	import SignIn from './signInPage/SignIn.svelte'
 </script>
 <TailwindCss/>
-<main>
-	<h1 class="text-gray-500 font-extralight text-5xl">Hello!</h1>
+<main class="font-main">
+	<h1 class="text-gray-500 text-coolGreen-default font-extralight text-5xl py-14">Hello!</h1>
 	<SignIn/>
 </main>
 
@@ -15,10 +15,6 @@
 		max-width: 576px;
 		margin: 0 auto;
 	}
-
-	.big-text {
-		    color: #2F9E9E;
-        }
 
 	@media (min-width: 640px) {
 		main {
