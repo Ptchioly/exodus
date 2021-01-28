@@ -1,3 +1,6 @@
+#express
+backend/out/
+
 # Logs
 logs
 *.log
