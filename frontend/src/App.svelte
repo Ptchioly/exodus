@@ -1,19 +1,17 @@
 <script lang="ts">
-  import MyBar from "./MyBar.svelte";
-  import Pank from "./Pank.svelte";
-
-  // import Chart from "./Chart.svelte";
-  // import MyChart from "./MyChart.svelte";
+  import TailwindCss from "./TailwindCss.svelte";
 </script>
 
+<TailwindCss />
 <main>
-  <h1>Hello!</h1>
-  <!-- <Chart /> -->
-  <MyBar />
-  <Pank />
+  <h1 class="text-gray-500 font-extralight text-5xl">Hello,</h1>
+  <h1 class="font-black italic tracking-wide text-indigo-600 text-5xl">
+    SOBAKA
+  </h1>
+  <h1 class="font-black italic tracking-wide text-5xl">SMOTRI:</h1>
 </main>
 
-<style>
+<style global lang="postcss">
   main {
     text-align: center;
     padding: 1em;
