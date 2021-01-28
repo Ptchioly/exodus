@@ -1,17 +1,11 @@
 <script lang="ts">
 	import TailwindCss from './TailwindCss.svelte'
+	import SignIn from './signInPage/SignIn.svelte'
 </script>
 <TailwindCss/>
 <main>
 	<h1 class="text-gray-500 font-extralight text-5xl">Hello!</h1>
-	<h1 class="containter text-5xl font-bold font-main big-text">Sign in to</h1>
-	<form>
-		<input class="nice" placeholder="Phone number">
-		<input class="nice" placeholder="Password">
-		<p>Forgot your password?</p>
-		<button>Sign in</button>
-		<p>New to?</p><button>Join Now</button>
-	</form>
+	<SignIn/>
 </main>
 
 <style global lang="postcss">
