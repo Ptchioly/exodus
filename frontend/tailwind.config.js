@@ -1,5 +1,6 @@
 
 const production = !process.env.ROLLUP_WATCH;
+const colors = require('tailwindcss/colors')
 
 module.exports = {
   theme: {

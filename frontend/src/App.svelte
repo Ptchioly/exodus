@@ -1,11 +1,11 @@
 <script lang="ts">
-	import TailwindCss from './TailwindCss.svelte'
-	import SignIn from './signInPage/SignIn.svelte'
+	import TailwindCss from "./TailwindCss.svelte";
+	import SignIn from "./signInPage/SignIn.svelte";
 </script>
-<TailwindCss/>
+
+<TailwindCss />
 <main class="font-main">
-	<h1 class="text-gray-500 text-coolGreen-default font-extralight text-5xl py-14">Hello!</h1>
-	<SignIn/>
+	<SignIn />
 </main>
 
 <style global lang="postcss">
