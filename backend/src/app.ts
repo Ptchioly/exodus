@@ -14,7 +14,7 @@ const logging = (
 };
 
 export const app = express();
-const PORT = 8000;
+const PORT = 80;
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
