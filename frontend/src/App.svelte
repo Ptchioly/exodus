@@ -1,10 +1,16 @@
 <script lang="ts">
-  import Chart from "./Chart.svelte";
+  import MyBar from "./MyBar.svelte";
+  import Pank from "./Pank.svelte";
+
+  // import Chart from "./Chart.svelte";
+  // import MyChart from "./MyChart.svelte";
 </script>
 
 <main>
   <h1>Hello!</h1>
-  <Chart />
+  <!-- <Chart /> -->
+  <MyBar />
+  <Pank />
 </main>
 
 <style>
