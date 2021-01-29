@@ -10,7 +10,7 @@ const users = [
 export const auth = Router();
 
 auth.post('/login', (req, res) => {
-  const { phone, pwd } = req.body;
+  const { phone, pwd } = JSON.parse(req.body);
   console.log(
     'INFO ~ file: mobileAuth.ts ~ line 14 ~ auth.post ~ req.body',
     req.body

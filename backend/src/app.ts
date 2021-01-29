@@ -8,8 +8,8 @@ const logging = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
-  console.log(req.url);
+): void => {
+  console.log(req.url, req.method);
   next();
 };
 
