@@ -12,7 +12,7 @@
   <h1
     class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-7 leading-9"
   >
-    Sign in to Exodus
+    Sign UP
   </h1>
   <form class="m-auto">
     <input
@@ -41,9 +41,9 @@
     >
   </form>
   <div class="grid grid-cols-2 col-auto mt-9 pb-32 lg:pb-14">
-    <p>New to Exodus?</p>
-    <Link to="signUp">
-      <a href="/signUp">Join Now</a>
+    <p>Have an account?</p>
+    <Link to="signIn">
+      <button>Sign In</button>
     </Link>
   </div>
 </div>
