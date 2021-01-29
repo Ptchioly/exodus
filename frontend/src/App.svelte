@@ -1,11 +1,10 @@
 <script lang="ts">
-	import TailwindCss from "./TailwindCss.svelte";
-	import SignIn from "./signInPage/SignIn.svelte";
+	import TailwindCss from './TailwindCss.svelte'
+	import SignIn from './signInPage/SignIn.svelte'
 </script>
-
-<TailwindCss />
+<TailwindCss/>
 <main class="font-main">
-	<SignIn />
+	<SignIn/>
 </main>
 
 <style global lang="postcss">
