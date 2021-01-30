@@ -1,75 +1,102 @@
 <script lang="ts">
   import data from "../data";
 
-  const barElements = [25, 40, 90];
+  const barStacks = [6, 9, 7];
+  const barLines = [25, 40, 90];
 </script>
 
+<h1>CSS IS <span style="font-style: italic">HELL</span></h1>
+
 {#each data as { name, currMonth, prevMonth, limit, id } (id)}
-  <div class="category">
-    <span class="cat-name" title={name}>{name}</span>
-    <div class="cat-bar">
-      <!-- <div class="bar-elements"> -->
-      {#each barElements as barEl}
-        <div class="bar" style="left: {barEl}%" />
+  <article class="category">
+    <div class="box-limit">
+      <span class="limit">{limit}</span>
+    </div>
+    <div class="box-name">
+      <span class="name" title={name}>{name}</span>
+    </div>
+    <div class="box-bar">
+      <div class="bar-stacks" style="background-color: gray">
+        {#each barStacks as stackWidth}
+          <div class="stack" style="flex-basis: {stackWidth}%" />
+        {/each}
+      </div>
+      {#each barLines as linePosition}
+        <div class="bar-line" style="left: {linePosition}%" />
       {/each}
-      <!-- </div> -->
     </div>
-    <div class="cat-limit">
-      <span class="limit-value">{limit}</span>
-    </div>
-  </div>
+  </article>
 {/each}
 
 <style>
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+
   .category {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-around;
     width: 100%;
-    margin: 0.5rem;
+    margin: 1.1rem;
   }
 
-  .cat-name {
+  .box-limit {
+    flex: 0 0 10%;
+    margin-right: 2%;
+  }
+
+  .limit {
+    border: 0.1rem solid aqua;
+    padding: 0.2rem 0.8rem;
+  }
+
+  .box-name {
     flex: 1 1 10%;
-    font-size: 1.6rem;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     text-align: left;
   }
 
-  .cat-limit {
-    flex: 0 0 10%;
-    margin-left: 1rem;
+  .name {
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
-  .limit-value {
-    padding: 5px 15px 5px 15px;
-    border-color: mediumaquamarine;
-    border-width: 1.2px;
-  }
-
-  .cat-bar {
-    flex: 1 1 75%;
-    padding: 0.5rem;
-    height: 2.7rem;
+  .box-bar {
+    flex: 1 1 80%;
+    padding: 0.4rem;
+    height: 2.4rem;
     background-color: lightgrey;
     opacity: 0.6;
     position: relative;
   }
 
-  /* .bar-elements {
-    overflow: hidden;
-  } */
+  .bar-stacks {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
 
-  .bar {
-    height: 1.9rem;
-    display: inline-block;
-    position: absolute;
+  .stack {
     /* temp */
-    width: 25%;
-    background-color: lightsalmon;
-    border: 2px solid maroon;
+    height: 100%;
+    flex-grow: 0;
+    flex-shrink: 1;
+    background-color: lightskyblue;
+    border: 1px solid blue;
+  }
+
+  .bar-line {
+    background-color: red;
+    height: 80%;
+    top: 10%;
+    position: absolute;
+    width: 0.25%;
   }
 </style>
