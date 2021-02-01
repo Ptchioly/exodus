@@ -1,13 +1,18 @@
 /// <reference types="cypress" />
 
-context('Login', () => {
-    beforeEach(() => {
-      cy.visit('/exodus/')
-    })
-  
-    it('cy.window() - get the global window object', () => {
-      cy.window().should('have.property', 'tosp')
-    })
-
+describe('Login', () => {
+  //TO DO
+  // before(() => cy.registerUserIfNeeded())
+  beforeEach(() => {
+    cy.visit('/exodus/')
   })
-  
+
+  it('does not work with wrong credentials', () => {
+    cy.window().should('have.property', 'top')
+  })
+
+  it('logs in', () => { })
+
+  it("should redirect unauthenticated user to signin page", () => { })
+
+})
