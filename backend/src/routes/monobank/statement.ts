@@ -9,7 +9,7 @@ import { authenticateToken } from '../auth/validate';
 export const statement = Router();
 
 statement.get(
-  '/statement/:userId/:account/:from/:to',
+  '/statement/:account/:from/:to',
   authenticateToken,
   async (req: any, res) => {
     const { account, from, to } = req.params; // check exist
