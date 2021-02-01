@@ -32,7 +32,6 @@ login.post('/login', async (req, res) => {
   if (password !== decrypted)
     return respond.FailureResponse('Incorrect password.');
 
-  // logIn(req, user.id!);
-  const token = generateAccessToken(userResponse.Item.id);
+  const token = generateAccessToken(userResponse.Item.username);
   return respond.SuccessResponse({ user_id: userResponse.Item.id, token });
 });

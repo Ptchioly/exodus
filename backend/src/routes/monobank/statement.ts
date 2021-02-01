@@ -11,11 +11,10 @@ export const statement = Router();
 statement.get(
   '/statement/:userId/:account/:from/:to',
   authenticateToken,
-  async (req, res) => {
-    const { userId, account, from, to } = req.params; // check exist
-    console.log('here?');
+  async (req: any, res) => {
+    const { account, from, to } = req.params; // check exist
     const userFromDB = await getItem(configs.USER_TABLE, {
-      id: userId,
+      username: req.user.data,
     });
     if (!isFailure(userFromDB)) {
       const data = await fetch(
@@ -27,6 +26,6 @@ statement.get(
         }
       );
       res.send(await data.json());
-    }
+    } else res.status(400).json('param pam pam').end();
   }
 );

@@ -41,8 +41,7 @@ signup.post('/signup', async (req, res) => {
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
 
-  // logIn(req, id);
-  const token = generateAccessToken(id);
+  const token = generateAccessToken(username);
 
   return respond.SuccessResponse({ user_id: id, token });
 });
