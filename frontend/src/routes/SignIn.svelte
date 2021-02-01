@@ -4,6 +4,7 @@
 
   let phoneNumber: string;
   let pwd: string;
+  let monoToken: string;
 
   const signInButton = {
     label: 'Sign In',
@@ -44,7 +45,7 @@
     type="password"
     placeholder="Monobank token"
     required
-    bind:value={pwd}
+    bind:value={monoToken}
   />
   <!-- <img src="images/show-password.svg" alt="show"/> -->
   <!-- <p class="my-6 text-gray-700 font-medium text-lg">Forgot your password?</p> -->
