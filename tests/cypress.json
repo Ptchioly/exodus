@@ -1,1 +1,7 @@
-{}
+{
+    "baseUrl": "https://ptchioly.github.io",
+    "retries": {
+        "runMode": 1,
+        "openMode": 0
+    }
+}
