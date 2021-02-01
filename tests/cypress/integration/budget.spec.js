@@ -19,7 +19,7 @@ describe('budget actions', () => {
     it('deletes a budget for category', () => {
     })
 
-    it('shows a budget from previous month', () => {
+    it('shows a budget info from previous month', () => {
     })
 
 })

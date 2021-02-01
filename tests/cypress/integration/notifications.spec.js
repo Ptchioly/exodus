@@ -8,8 +8,8 @@ describe('notifications', () => {
     // cy.login()
     // })
 
-    it('turns on motifications', () => { })
-    
-    it('turns off motifications', () => { })
+    it('turns on notifications', () => { })
+
+    it('turns off notifications', () => { })
 
 })
