@@ -29,18 +29,23 @@
   }
   @media only screen and (min-width: 768px) {
     html {
-      font-size: 18px;
+      font-size: 16px;
     }
   }
   @media only screen and (min-width: 992px) {
     html {
-      font-size: 22px;
+      font-size: 18px;
     }
   }
 
   @media only screen and (min-width: 1200px) {
     html {
-      font-size: 24px;
+      font-size: 20px;
     }
   }
+  /* @media only screen and (min-width: 1600px) {
+    html {
+      font-size: 24px;
+    }
+  } */
 </style>
