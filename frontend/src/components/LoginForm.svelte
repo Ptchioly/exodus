@@ -29,12 +29,12 @@
     <button
       type="button"
       on:click|preventDefault={actionButton.onclick}
-      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-2xl uppercase font-medium mt-10"
+      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl"
       >{actionButton.label}</button
     >
   </form>
 
-  <div class="grid grid-cols-2 col-auto mt-9 pb-32 lg:pb-14">
+  <div class="grid grid-cols-2 col-auto mt-9 pb-5 lg:pb-10">
     <p>{linkButton.prefix}</p>
     <Link to={linkButton.href}>
       {linkButton.label}
