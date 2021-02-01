@@ -36,11 +36,11 @@ app.use(
     },
   })
 );
-app.use(authentication);
 app.use(logging);
 app.use(login);
 app.use(signup);
 app.use(statement);
+app.use(authentication);
 app.get('/', (req, res) => {
   res.send('CHOKAVO');
 });

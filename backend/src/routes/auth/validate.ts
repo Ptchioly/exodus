@@ -30,4 +30,6 @@ export const generateAccessToken = (username: string): string => {
 
 export const authentication = Router();
 
-authentication.get('/auth', authenticateToken);
+authentication.get('/auth', authenticateToken, (req, res) => {
+  return endpointRespond(res).SuccessResponse({});
+});
