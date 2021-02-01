@@ -52,4 +52,7 @@
 </LoginForm>
 
 <style global lang="postcss">
+  .sobaka-input {
+    @apply w-3/4 text-sm text-black placeholder-gray-500 border border-gray-200 py-4 pl-5;
+  }
 </style>
