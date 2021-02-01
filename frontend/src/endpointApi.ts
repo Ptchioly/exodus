@@ -7,7 +7,7 @@ export const signIn = async (
   phoneNumber: string,
   pwd: string
 ): Promise<any> => {
-  return await fetch(loginEndpoint, {
+  const token = await fetch(loginEndpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -16,5 +16,7 @@ export const signIn = async (
       username: phoneNumber,
       password: pwd,
     }),
-  });
+  }).then((el) => el.json());
+
+  localStorage.setItem('token', token.token);
 };

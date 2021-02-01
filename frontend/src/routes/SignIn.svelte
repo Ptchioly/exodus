@@ -1,9 +1,46 @@
 <script lang="ts">
-  import { signIn } from '../endpointApi';
   import { Link } from 'svelte-routing';
 
   let phoneNumber: string;
   let pwd: string;
+
+  const baseUrl =
+    'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com';
+  const loginEndpoint = baseUrl.concat('/login');
+
+  export const signIn = async (
+    phoneNumber: string,
+    pwd: string
+  ): Promise<any> => {
+    const token = await fetch(loginEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: phoneNumber,
+        password: pwd,
+      }),
+    }).then((el) => el.json());
+    localStorage.setItem('token', token.token);
+
+    const statementEndpoint = baseUrl.concat('/auth');
+
+    const code = await fetch(statementEndpoint, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    }).then((res) => res.status);
+    if (code === 200)
+      window.location.href = window.location.href
+        .slice(0, window.location.href.lastIndexOf('/'))
+        .concat('/home');
+    else {
+      alert('Ti ne Ptchiola');
+      location.reload();
+    }
+  };
 </script>
 
 <!-- TODO: Make template more responsive.
@@ -11,7 +48,7 @@
      Also I think that bg-color should fill the whole space on small screens
 -->
 <div
-  class="max-w-none max-h-none md:max-w-sm bg-gray-signIn m-auto bg-opacity-50 lg:mt-20 lg:h-4/6"
+  class="max-w-none h-screen md:max-w-sm  bg-gray-signIn m-auto bg-opacity-50 lg:mt-20 lg:h-4/6"
 >
   <h1
     class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-7 leading-9"
@@ -44,7 +81,7 @@
       >Sign In</button
     >
   </form>
-  <div class="grid grid-cols-2 col-auto mt-9 pb-32 lg:pb-14">
+  <div class="grid grid-cols-2 col-auto mt-9 lg:pb-14">
     <p>New to Exodus?</p>
     <Link to="signUp">
       <a href="/signUp">Join Now</a>

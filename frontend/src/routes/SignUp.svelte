@@ -37,10 +37,18 @@
       bind:value={pwd}
     />
     <!-- <img src="images/show-password.svg" alt="show"/> -->
+    <div class="flex items-center m-auto justify-center mt-4">
+      <div
+        class="bg-white mr-2 w-5 h-5 rounded-sm border-2 border-black border-solid"
+      >
+        <img src="images/tick.png" class="p-1" alt="confirm" />
+      </div>
+      <p>Allow us to monitor your data</p>
+    </div>
     <button
       type="button"
       on:click={() => signIn(phoneNumber, pwd)}
-      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-2xl uppercase font-medium mt-12"
+      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-2xl uppercase font-medium mt-6"
       >Sign Up</button
     >
   </form>
