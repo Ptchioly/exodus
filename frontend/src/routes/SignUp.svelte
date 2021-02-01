@@ -22,22 +22,26 @@
       required
       bind:value={phoneNumber}
     />
-    <div>
-      <input
-        class="sobaka-input mt-12"
-        type="password"
-        placeholder="Password"
-        required
-        bind:value={pwd}
-      />
-      <!-- <img src="images/show-password.svg" alt="show"/> -->
-    </div>
-    <p class="my-6 text-gray-700 font-medium text-lg">Forgot your password?</p>
+    <input
+      class="sobaka-input mt-5"
+      type="password"
+      placeholder="Password"
+      required
+      bind:value={pwd}
+    />
+    <input
+      class="sobaka-input mt-5"
+      type="password"
+      placeholder="Confirm Password"
+      required
+      bind:value={pwd}
+    />
+    <!-- <img src="images/show-password.svg" alt="show"/> -->
     <button
       type="button"
       on:click={() => signIn(phoneNumber, pwd)}
-      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-2xl uppercase font-medium"
-      >Sign In</button
+      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-2xl uppercase font-medium mt-12"
+      >Sign Up</button
     >
   </form>
   <div class="grid grid-cols-2 col-auto mt-9 pb-32 lg:pb-14">
