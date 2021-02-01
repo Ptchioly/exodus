@@ -13,8 +13,8 @@ export const signIn = async (
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      phone: phoneNumber,
-      pwd,
+      username: phoneNumber,
+      password: pwd,
     }),
   });
 };
