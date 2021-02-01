@@ -3,8 +3,9 @@ import { configs } from '../../config';
 import { endpointRespond } from '../../utils';
 import { getItem, putItem } from '../dynamo/api';
 import { exist, isFailure } from '../types/guards';
-import { encrypt, logIn } from './utils';
+import { encrypt } from './utils';
 import { nanoid } from 'nanoid';
+import { generateAccessToken } from './validate';
 
 export const signup = Router();
 
@@ -40,6 +41,8 @@ signup.post('/signup', async (req, res) => {
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
 
-  logIn(req, id);
-  return respond.SuccessResponse({ user_id: id });
+  // logIn(req, id);
+  const token = generateAccessToken(id);
+
+  return respond.SuccessResponse({ user_id: id, token });
 });

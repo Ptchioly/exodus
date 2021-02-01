@@ -3,6 +3,7 @@ export const secrets = {
   ACCESS_KEY: process.env.AWS_ACCESS_KEY,
   SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
   REGION: process.env.AWS_REGION,
+  SESSION_TOKEN: process.env.SESSION_TOKEN,
 };
 
 export const configs = {

@@ -4,13 +4,13 @@ import { endpoint } from './apis';
 import { getItem } from '../dynamo/api';
 import { configs } from '../../config';
 import { isFailure } from '../types/guards';
-import { auth } from '../auth/validate';
+import { authenticateToken } from '../auth/validate';
 
 export const statement = Router();
 
 statement.get(
   '/statement/:userId/:account/:from/:to',
-  auth,
+  authenticateToken,
   async (req, res) => {
     const { userId, account, from, to } = req.params; // check exist
     console.log('here?');

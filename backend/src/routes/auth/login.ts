@@ -4,7 +4,8 @@ import { endpointRespond } from '../../utils';
 import { getItem } from '../dynamo/api';
 import { Users } from '../types/types';
 import { exist, isFailure } from '../types/guards';
-import { decrypt, logIn } from './utils';
+import { decrypt } from './utils';
+import { generateAccessToken } from './validate';
 
 export const login = Router();
 
@@ -31,6 +32,7 @@ login.post('/login', async (req, res) => {
   if (password !== decrypted)
     return respond.FailureResponse('Incorrect password.');
 
-  logIn(req, user.id!);
-  return respond.SuccessResponse({ user_id: userResponse.Item.id });
+  // logIn(req, user.id!);
+  const token = generateAccessToken(userResponse.Item.id);
+  return respond.SuccessResponse({ user_id: userResponse.Item.id, token });
 });
