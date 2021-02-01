@@ -1,20 +1,32 @@
 import fetch from 'node-fetch';
 import { Router } from 'express';
 import { endpoint } from './apis';
+import { getItem } from '../dynamo/api';
+import { configs } from '../../config';
+import { isFailure } from '../types/guards';
+import { auth } from '../auth/validate';
 
 export const statement = Router();
 
-statement.get('/statement/:account/:from/:to', async (req, res) => {
-  const { account, from, to } = req.params;
-  const token: string = req.headers['X-token'] as string;
-  const data = await fetch(
-    endpoint(`personal/statement/${account}/${from}/${to}`),
-    {
-      method: 'GET',
-      headers: {
-        'X-Token': token ?? '',
-      },
+statement.get(
+  '/statement/:userId/:account/:from/:to',
+  auth,
+  async (req, res) => {
+    const { userId, account, from, to } = req.params; // check exist
+    console.log('here?');
+    const userFromDB = await getItem(configs.USER_TABLE, {
+      id: userId,
+    });
+    if (!isFailure(userFromDB)) {
+      const data = await fetch(
+        endpoint(`personal/statement/${account}/${from}/${to}`),
+        {
+          headers: {
+            'X-Token': userFromDB.Item.xtoken,
+          },
+        }
+      );
+      res.send(await data.json());
     }
-  );
-  res.send(await data.json());
-});
+  }
+);
