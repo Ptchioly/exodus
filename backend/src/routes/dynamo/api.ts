@@ -3,7 +3,11 @@ import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from '../../config';
 import { GetOutput, Users } from '../types/types';
 
-const documentClient = new DocumentClient({ region: secrets.REGION });
+const documentClient = new DocumentClient({
+  accessKeyId: secrets.ACCESS_KEY,
+  secretAccessKey: secrets.SECRET_ACCESS_KEY,
+  region: secrets.REGION,
+});
 
 export const getItem = async (
   table: string,
