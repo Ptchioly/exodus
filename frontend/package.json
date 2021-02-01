@@ -12,9 +12,7 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@amcharts/amcharts4": "^4.10.13"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.1.0",

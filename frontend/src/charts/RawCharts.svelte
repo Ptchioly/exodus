@@ -1,7 +1,29 @@
 <script lang="ts">
-  import data from "../data";
+  const data = [
+    {
+      name: "Taxi",
+      currMonth: 560,
+      prevMonth: 815,
+      limit: 760,
+      id: 1,
+    },
+    {
+      name: "Groceries",
+      currMonth: 910,
+      prevMonth: 1300,
+      limit: 1500,
+      id: 2,
+    },
+    {
+      name: "KRASOTA & MEDICINA",
+      currMonth: 910,
+      prevMonth: 1300,
+      limit: 1500,
+      id: 3,
+    },
+  ];
 
-  const barStacks = [6, 9, 7];
+  const barStacks = [6, 9, 45];
   const barLines = [25, 40, 90];
 </script>
 
