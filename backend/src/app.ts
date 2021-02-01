@@ -9,8 +9,14 @@ import session from 'express-session';
 import { signup } from './routes/auth/signup';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import { config } from 'aws-sdk';
+import aws from 'aws-sdk';
 const DynamoDBStore = require('connect-dynamodb')(session);
+
+aws.config.update({
+  region: secrets.REGION,
+  accessKeyId: secrets.ACCESS_KEY,
+  secretAccessKey: secrets.SECRET_ACCESS_KEY,
+});
 
 const logging = (req: Request, res: Response, next: NextFunction): void => {
   console.log(req.url, req.method);
