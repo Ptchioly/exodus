@@ -1,6 +1,9 @@
 # svelte
 build/
 
+#express
+backend/out/
+
 # Logs
 logs
 *.log
