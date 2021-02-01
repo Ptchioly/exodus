@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage": "https://ptchioly.github.io/exodus/",
   "scripts": {
     "deploy": "gh-pages -d public",
     "build": "rollup -c",

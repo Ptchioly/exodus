@@ -1,6 +1,5 @@
 # svelte
-
-frontend/public/build
+build/
 
 # Logs
 logs
