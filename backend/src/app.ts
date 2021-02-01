@@ -9,6 +9,7 @@ import session from 'express-session';
 import { signup } from './routes/auth/signup';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { authentication } from './routes/auth/validate';
 const DynamoDBStore = require('connect-dynamodb')(session);
 
 const logging = (req: Request, res: Response, next: NextFunction): void => {
@@ -35,7 +36,7 @@ app.use(
     },
   })
 );
-
+app.use(authentication);
 app.use(logging);
 app.use(login);
 app.use(signup);

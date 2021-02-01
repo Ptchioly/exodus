@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
@@ -27,3 +27,7 @@ export const generateAccessToken = (username: string): string => {
     expiresIn: '1h',
   });
 };
+
+export const authentication = Router();
+
+authentication.get('/auth', authenticateToken);
