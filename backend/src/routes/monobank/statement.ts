@@ -1,10 +1,10 @@
-import fetch from 'node-fetch';
 import { Router } from 'express';
-import { endpoint } from './apis';
-import { getItem } from '../dynamo/api';
+import fetch from 'node-fetch';
 import { configs } from '../../config';
-import { isFailure } from '../types/guards';
+import { getItem } from '../../dynamoAPI';
 import { authenticateToken } from '../auth/validate';
+import { isFailure } from '../types/guards';
+import { endpoint } from './endpoints';
 
 export const statement = Router();
 

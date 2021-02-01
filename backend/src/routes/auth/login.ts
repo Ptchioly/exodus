@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { configs } from '../../config';
+import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { getItem } from '../dynamo/api';
-import { Users } from '../types/types';
 import { exist, isFailure } from '../types/guards';
+import { Users } from '../types/types';
 import { decrypt } from './utils';
 import { generateAccessToken } from './validate';
 
@@ -33,5 +33,6 @@ login.post('/login', async (req, res) => {
     return respond.FailureResponse('Incorrect password.');
 
   const token = generateAccessToken(userResponse.Item.username);
-  return respond.SuccessResponse({ user_id: userResponse.Item.id, token });
+  res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
+  return respond.SuccessResponse({ user_id: userResponse.Item.id });
 });

@@ -1,6 +1,6 @@
-import express from 'express';
+import { NextFunction, Request, Response } from 'express';
 
-export const endpointRespond = (res: express.Response) => ({
+export const endpointRespond = (res: Response) => ({
   SuccessResponse: (data: any, status = 200): void => {
     res.status(status).json(data).end();
   },
@@ -8,3 +8,12 @@ export const endpointRespond = (res: express.Response) => ({
     res.status(status).json({ message }).end();
   },
 });
+
+export const logging = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  console.log(req.url, req.method);
+  next();
+};

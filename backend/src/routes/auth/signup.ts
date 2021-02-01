@@ -1,10 +1,10 @@
 import { Router } from 'express';
+import { nanoid } from 'nanoid';
 import { configs } from '../../config';
+import { getItem, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { getItem, putItem } from '../dynamo/api';
 import { exist, isFailure } from '../types/guards';
 import { encrypt } from './utils';
-import { nanoid } from 'nanoid';
 import { generateAccessToken } from './validate';
 
 export const signup = Router();
@@ -42,6 +42,7 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('Unable to create user.');
 
   const token = generateAccessToken(username);
+  res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
-  return respond.SuccessResponse({ user_id: id, token });
+  return respond.SuccessResponse({ user_id: id });
 });
