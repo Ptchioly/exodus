@@ -1,4 +1,7 @@
+/// <reference types="cypress" />
+
 const sizes = ['iphone-6', 'ipad-2', [1024, 768]] // test viewports, update with relevant ones
+
 describe(`resolution tests`, () => {
     sizes.forEach((size) => {
       it(`displays page properly`, () => {
