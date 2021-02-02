@@ -4,18 +4,36 @@
   import SignUp from './routes/SignUp.svelte';
   import { Router, Route } from 'svelte-routing';
   import Homepage from './routes/Homepage.svelte';
+  import { onMount } from 'svelte';
+  import { isAuthenticated } from './endpointApi';
 
   export let url = '';
+
+  type NavigationState = 'home' | 'signIn' | 'signUp' | 'loading';
+  let navigationState: NavigationState = 'loading';
+  let authorized: boolean | undefined;
+
+  onMount(async () => {
+    authorized = await isAuthenticated();
+    console.log('onMount => authorized', authorized);
+    navigationState = authorized ? 'home' : 'signIn';
+  });
 </script>
 
 <TailwindCss />
 <main class="font-main m-auto h-full text-center">
-  <Router {url}>
-    <Route path="signIn" component={SignIn} />
-    <Route path="signUp" component={SignUp} />
-    <Route path="home" component={Homepage} />
-    <Route path="/" component={SignIn} pathName="/signIn" />
-  </Router>
+  {#if navigationState === 'home'}
+    <Homepage />
+  {:else if navigationState === 'signIn'}
+    <SignIn
+      on:login={({ detail: { success } }) =>
+        (navigationState = success ? 'home' : 'signIn')}
+    />
+  {:else if navigationState === 'signUp'}
+    <SignUp />
+  {:else}
+    Loading
+  {/if}
 </main>
 
 <svelte:head>

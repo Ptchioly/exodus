@@ -5,9 +5,9 @@ const loginEndpoint = baseUrl.concat('/login');
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<any> => {
+): Promise<boolean> => {
   console.log(baseUrl);
-  const response = await fetch(loginEndpoint, {
+  return fetch(loginEndpoint, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -17,20 +17,12 @@ export const signIn = async (
       username: phoneNumber,
       password: pwd,
     }),
-  });
+  }).then(({ ok }) => ok);
+};
 
-  console.log(response.headers);
+export const isAuthenticated = async (): Promise<boolean> => {
   const authEndpoint = baseUrl.concat('/authentication');
-
-  const code = await fetch(authEndpoint, {
+  return fetch(authEndpoint, {
     credentials: 'include',
-  }).then((el) => el.status);
-  if (code === 200)
-    window.location.href = window.location.href
-      .slice(0, window.location.href.lastIndexOf('/'))
-      .concat('/home');
-  else {
-    alert('Ti ne Ptchiola');
-    // location.reload();
-  }
+  }).then(({ ok }) => ok);
 };

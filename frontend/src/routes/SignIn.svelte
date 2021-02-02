@@ -1,14 +1,20 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+
   import LoginForm from '../components/LoginForm.svelte';
   import { signIn } from '../endpointApi';
 
   let phoneNumber: string;
   let pwd: string;
   let monoToken: string;
+  const dispatch = createEventDispatcher();
 
   const signInButton = {
     label: 'Sign In',
-    onclick: () => signIn(phoneNumber, pwd),
+    onclick: () =>
+      signIn(phoneNumber, pwd).then((success) => {
+        dispatch('login', { success });
+      }),
   };
   const signUpButton = {
     prefix: 'New to Exodus?',

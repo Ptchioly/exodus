@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Link } from 'svelte-routing';
   export let title: string;
 
   export let actionButton: {
@@ -36,8 +35,8 @@
 
   <div class="grid grid-cols-2 col-auto mt-9 pb-5 lg:pb-10">
     <p>{linkButton.prefix}</p>
-    <Link to={linkButton.href}>
-      {linkButton.label}
-    </Link>
+    <!-- <Link to={linkButton.href}> -->
+    <a href={linkButton.href}>{linkButton.label}</a>
+    <!-- </Link> -->
   </div>
 </div>
