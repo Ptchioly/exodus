@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Login', () => {
+describe.only('Login', () => {
   //TO DO
   // before(() => cy.registerUserIfNeeded())
   beforeEach(() => {
@@ -8,7 +8,7 @@ describe('Login', () => {
   })
 
   it('does not work with wrong credentials', () => {
-    cy.window().should('have.property', 'top1')
+    cy.window().should('have.property', 'top')
   })
 
   it('logs in', () => { })
