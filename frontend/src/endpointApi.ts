@@ -1,11 +1,12 @@
-// const baseUrl = 'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com';
-const devUrl = 'http://localhost';
-const loginEndpoint = devUrl.concat('/login');
+//"process is not defined" is lie
+const baseUrl: string = process.env.host;
+const loginEndpoint = baseUrl.concat('/login');
 
 export const signIn = async (
   phoneNumber: string,
   pwd: string
 ): Promise<any> => {
+  console.log(baseUrl);
   const response = await fetch(loginEndpoint, {
     method: 'POST',
     credentials: 'include',
@@ -19,7 +20,7 @@ export const signIn = async (
   });
 
   console.log(response.headers);
-  const authEndpoint = devUrl.concat('/authentication');
+  const authEndpoint = baseUrl.concat('/authentication');
 
   const code = await fetch(authEndpoint, {
     credentials: 'include',
