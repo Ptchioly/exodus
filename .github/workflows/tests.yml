@@ -14,18 +14,18 @@ jobs:
         with:
           browser: chrome
           headless: true
-          record: true
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # record: true
+        # env:
+        #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
       - name: Update server
-        run: |
-          sudo ssh -i $EC2_CERT $EC2_ENDPOINT
-          cd exodus/backend
-          git pull
-          npm i 
-          npm run build
-          sudo forever restartall
-        env:
-          EC2_CERT: ${{ secrets.EC2_CERT }}
-          EC2_ENDPOINT: ${{ secrets.EC2_ENDPOINT }}
-
+        uses: appleboy/ssh-action@master
+        with:
+          script: |
+            cd exodus/backend
+            git pull
+            npm i 
+            npm run build
+            sudo forever restartall
+          key: ${{ secrets.EC2_CERT }}
+          host: ${{ secrets.EC2_ENDPOINT }}
+       
