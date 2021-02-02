@@ -1,21 +1,20 @@
-name: tests
+name: Create Cypress report
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
   push:
-    branches: [main, test-coverage]
+    branches: 
+      - 'main'
 jobs:
-  cypress-run:
-    runs-on: ubuntu-latest
+  cypress-e2e-chrome81:
+    name: Run on Chrome 81
+    runs-on: ubuntu-18.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v1
-      # https://github.com/cypress-io/github-action
-      - name: Cypress run
-        uses: cypress-io/github-action@v1
+      - uses: actions/checkout@v2
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v2
         with:
+          browser: chrome
+          headless: true
           record: true
         env:
-          # pass the Dashboard record key as an environment variable
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-        run: cypress run --record --key $CYPRESS_RECORD_KEY 
+
