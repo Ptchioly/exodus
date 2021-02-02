@@ -13,7 +13,7 @@
 </script>
 
 <div
-  class="max-w-none max-h-none md:max-w-sm bg-gray-signIn m-auto bg-opacity-50 lg:mt-10 lg:h-4/6"
+  class="shadow-xl max-w-none max-h-none md:max-w-sm  m-auto bg-opacity-50 lg:mt-10 lg:h-4/6 rounded-3xl border-gray-200 border-2 bg-white"
 >
   <h1
     class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-7 leading-9"
