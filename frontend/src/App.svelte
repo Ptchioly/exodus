@@ -2,7 +2,6 @@
   import TailwindCss from './TailwindCss.svelte';
   import SignIn from './routes/SignIn.svelte';
   import SignUp from './routes/SignUp.svelte';
-  import { Router, Route } from 'svelte-routing';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
@@ -18,17 +17,22 @@
     console.log('onMount => authorized', authorized);
     navigationState = authorized ? 'home' : 'signIn';
   });
+
+  const handleLogin = ({ detail: { success } }) => {
+    if (success) {
+      navigationState = 'home';
+      return;
+    }
+    alert('Ti ne ptchiola');
+  };
 </script>
 
 <TailwindCss />
-<main class="font-main m-auto h-full text-center">
+<main class="font-main h-screen text-center flex content-center">
   {#if navigationState === 'home'}
     <Homepage />
   {:else if navigationState === 'signIn'}
-    <SignIn
-      on:login={({ detail: { success } }) =>
-        (navigationState = success ? 'home' : 'signIn')}
-    />
+    <SignIn on:login={handleLogin} />
   {:else if navigationState === 'signUp'}
     <SignUp />
   {:else}
@@ -42,7 +46,7 @@
 
 <!-- Probably should be placed in html tag with tailwind and using 'rem' instead of 'px' -->
 <style global lang="postcss">
-  html {
+  main {
     background-color: aliceblue;
   }
   @media only screen and (min-width: 600px) {
