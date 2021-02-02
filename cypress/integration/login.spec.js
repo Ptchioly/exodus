@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Login', () => {
+describe.only('Login', () => {
   //TO DO
   // before(() => cy.registerUserIfNeeded())
   beforeEach(() => {
