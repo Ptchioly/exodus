@@ -1,0 +1,20 @@
+name: Create Cypress report
+on:
+  push:
+    branches: 
+      - 'main'
+jobs:
+  cypress-e2e-chrome81:
+    name: Run on Chrome 81
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          browser: chrome
+          headless: true
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+

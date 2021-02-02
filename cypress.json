@@ -1,0 +1,9 @@
+{
+    "baseUrl": "https://ptchioly.github.io",
+    "retries": {
+        "runMode": 1,
+        "openMode": 0
+    },
+    "videoUploadOnPasses": false,
+    "projectId": "door68"
+}
