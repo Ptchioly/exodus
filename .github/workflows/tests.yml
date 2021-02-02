@@ -28,4 +28,6 @@ jobs:
             sudo forever restartall
           key: ${{ secrets.EC2_CERT }}
           host: ${{ secrets.EC2_ENDPOINT }}
+          username: ubuntu
+          port: 22
        
