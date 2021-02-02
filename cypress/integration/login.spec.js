@@ -8,7 +8,7 @@ describe.only('Login', () => {
   })
 
   it('does not work with wrong credentials', () => {
-    cy.window().should('have.property', 'top')
+    cy.window().should('have.property', 'tofp')
   })
 
   it('logs in', () => { })
