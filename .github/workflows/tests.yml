@@ -17,4 +17,12 @@ jobs:
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      - name: Update server
+        run: |
+          ssh -i ${{ secrets.EC2_CERT }} ${{ secrets.EC2_ENDPOINT }}
+          cd exodus/backend
+          git pull
+          npm i 
+          npm run build
+          sudo forever restartall
 
