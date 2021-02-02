@@ -1,13 +1,10 @@
 <script lang="ts">
   import LoginForm from '../components/LoginForm.svelte';
+  import { signIn } from '../endpointApi';
 
   let phoneNumber: string;
   let pwd: string;
   let monoToken: string;
-
-  const baseUrl =
-    'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com';
-  const loginEndpoint = baseUrl.concat('/login');
 
   const signInButton = {
     label: 'Sign In',
@@ -17,40 +14,6 @@
     prefix: 'New to Exodus?',
     label: 'Join Now',
     href: '/signUp',
-  };
-
-  export const signIn = async (
-    phoneNumber: string,
-    pwd: string
-  ): Promise<any> => {
-    const token = await fetch(loginEndpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: phoneNumber,
-        password: pwd,
-      }),
-    }).then((el) => el.json());
-    localStorage.setItem('token', token.token);
-
-    const statementEndpoint = baseUrl.concat('/auth');
-
-    const code = await fetch(statementEndpoint, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }).then((res) => res.status);
-    if (code === 200)
-      window.location.href = window.location.href
-        .slice(0, window.location.href.lastIndexOf('/'))
-        .concat('/home');
-    else {
-      alert('Ti ne Ptchiola');
-      location.reload();
-    }
   };
 </script>
 
