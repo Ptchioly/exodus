@@ -16,7 +16,7 @@
   class="md:shadow-xl max-w-none max-h-none md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
 >
   <h1
-    class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-7 leading-9"
+    class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-3 leading-9"
   >
     {title}
   </h1>

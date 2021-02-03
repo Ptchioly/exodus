@@ -2,9 +2,11 @@
   import { signIn } from '../endpointApi';
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
+  import PasswordInput from '../components/PasswordInput.svelte';
 
-  let phoneNumber;
-  let pwd;
+  let phoneNumber: string;
+  let pwd: string;
+  let token: string;
 
   const dispatch = createEventDispatcher();
   const singUpButton = {
@@ -31,18 +33,15 @@
     required
     bind:value={phoneNumber}
   />
+  <PasswordInput placeholder="Password" bind:value={pwd} />
+  <PasswordInput placeholder="Confirm Password" />
+
   <input
     class="sobaka-input mt-5"
-    type="password"
-    placeholder="Password"
+    type="text"
+    placeholder="Monobank token"
     required
-    bind:value={pwd}
-  />
-  <input
-    class="sobaka-input mt-5"
-    type="password"
-    placeholder="Confirm Password"
-    required
+    bind:value={token}
   />
   <!-- <img src="images/show-password.svg" alt="show"/> -->
 </LoginForm>
