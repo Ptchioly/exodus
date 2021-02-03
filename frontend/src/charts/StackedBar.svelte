@@ -1,33 +1,23 @@
 <script>
     import { onMount } from "svelte";
 
-
     export let title;
     export let current;
     export let previous;
     export let limit;
+    const barSize = 2000;
 
     let currentP = 0;
     let previousP = 0;
     let limitP = 0;
-    let element;
 
-    const barSize = 2000;
+    let bar;
+    let limits;
 
-    const detailed = () => {
-        if (!element) return;
-        element.classList.toggle('detailed')
+    const detailed = (e) => {
+        if (!bar || e.target.classList.contains('limit')) return;
+        bar.classList.toggle('detailed')
     }
-
-    // const showDetailed = () => {
-    //     if (!element || element && element.classList.contains('detailed')) return;
-    //     element.classList.add('detailed')
-    // }
-
-    // const hideDetailed = () => {
-    //     if (!element || element && !element.classList.contains('detailed')) return;
-    //     element.classList.remove('detailed')
-    // }
 
     const percentage = (i) => i * 100 / barSize;
 
@@ -38,6 +28,27 @@
         } else if ( e.key === 'ArrowDown' && limit - step >= 0) {
             limit -= step;
         }
+    }
+
+    const move = (e) => {
+        const node = e.target;
+        node.classList.add('moveable');
+        
+        const handleMove = (e) => {
+            const limitsRect = limits.getBoundingClientRect();
+            const targetPosition = Math.round((e.clientX - limitsRect.left) * 100 / limitsRect.width);
+            if (targetPosition >= 0 && targetPosition <= 100) {
+                limit = Math.round(targetPosition * barSize / 100);
+            }
+        }
+
+        const handleEnd = (e) => {
+            node.classList.remove('moveable');
+            window.removeEventListener('mousemove', handleMove);
+        }
+
+        window.addEventListener('mouseup', handleEnd)
+        window.addEventListener('mousemove', handleMove)
     }
 
     onMount( () => {
@@ -73,15 +84,15 @@
     </div>
 
     <div class="bottom">
-        <section class='bar__container' class:detailed={false} bind:this={element} on:click={detailed}>
+        <section class='bar__container' class:detailed={false} bind:this={bar} on:mousedown={detailed}>
     
             <div class='bars'>
                 <div class='bar bar--previous' data-value={`$${previous}`} style={`width: ${previousP}%`}></div>
                 <div class='bar bar--current' style={`width: ${currentP}%`}>{`$${current}`}</div>
             </div>
     
-            <div class='limits'>
-                <div class='limit limit--red' data-value={`$${limit}`} class:hidden={limit <= 0} style={`left: ${limitP}%`}></div>
+            <div class='limits' bind:this={limits}>
+                <div class='limit limit--red' on:mousedown={move} class:moveable={false} data-value={`${limit}`} class:hidden={limit <= 0} style={`left: ${limitP}%`}></div>
             </div>
     
         </section>
@@ -199,7 +210,9 @@
         margin-left: -1em;
     }
 
+    .detailed > .limits:hover > .limit--red,
     .detailed > .limits > .limit--red {
+        width: 2px;
         margin-left: -1em;
     }
 
@@ -241,17 +254,42 @@
         height: 2em;
         background-color: #EC0808;
         position: relative;
-        left: calc(30% - 2px);
         border-radius: 2px;
-        top: -2px;
+        top: -1px;
         border: 1px solid #EC0808;
-        border-top: 2px solid #EC0808;
-        border-bottom: 2px  solid #EC0808;
-        transition: margin .2s, left .4s;
+        border-top: 1px solid #EC0808;
+        border-bottom: 1px  solid #EC0808;
+        transition: margin .2s, left .4s, width .2s;
+        cursor: move;
+    }
+
+    .limit--red:hover {
+        width: 1em;
     }
 
     .limit.hidden {
         display: none;
+    }
+
+    .limits:hover > .limit {
+        width: 1em;
+    }
+
+    .limit.moveable {
+        cursor: default;
+        transition: margin .2s, left .001s, width .2s;
+
+    }
+
+    .limit.moveable::after {
+        content: attr(data-value);
+        position: absolute;
+        color: #EC0808;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        font-size: .8em;
+        margin-top: -1em;
+        margin-left: -8px;
     }
 
     @media(max-width: 50em) {
