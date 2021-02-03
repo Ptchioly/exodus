@@ -4,7 +4,6 @@
   import LoginForm from '../components/LoginForm.svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
   import { signIn } from '../endpointApi';
-  import { isSignedIn } from '../types/guards';
   import { validatePassword } from '../utils';
 
   let phoneNumber: string;
