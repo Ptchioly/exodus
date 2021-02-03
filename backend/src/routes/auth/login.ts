@@ -24,7 +24,6 @@ login.post('/login', async (req, res) => {
     return respond.FailureResponse('Unable to get user');
 
   const user: Users = userResponse.Item;
-
   if (!user) return respond.FailureResponse('Unauthorized user.');
 
   const decrypted = decrypt(user.password!, user.key!);
@@ -34,5 +33,7 @@ login.post('/login', async (req, res) => {
 
   const token = generateAccessToken(userResponse.Item.username);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   return respond.SuccessResponse({ user_id: userResponse.Item.id });
 });

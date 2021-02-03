@@ -14,7 +14,12 @@ import { logging } from './utils';
 
 export const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5000',
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
