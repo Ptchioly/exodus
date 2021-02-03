@@ -4,24 +4,24 @@ on:
     branches: 
       - 'main'
 jobs:
-  cypress-test:
-    name: Run Cypress tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests on Chrome
-        uses: cypress-io/github-action@v2
-        with:
-          browser: chrome
-          headless: true
+  # cypress-test:
+  #   name: Run Cypress tests
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Run tests on Chrome
+  #       uses: cypress-io/github-action@v2
+  #       with:
+  #         browser: chrome
+  #         headless: true
         #   record: true
         # env:
         #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
   update-server:
     name: Update Server
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: cypress-test
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # needs: cypress-test
     steps:
       - name: Configure SSH
         run: |
@@ -40,7 +40,10 @@ jobs:
           SSH_KEY: ${{ secrets.SERVER_KEY }}
           SSH_HOST: ${{ secrets.SERVER_HOST }}
 
-      - name: Restart the server
-        run: ssh staging 'cd exodus/backend && git fetch --prune origin && git pull && npm i && npm run build && forever restartall'
+      - name: Pull
+        run: ssh staging 'cd exodus/backend && git remote prune origin --dry-run && git fetch && git pull'
+
+      # - name: Restart the server
+      #   run: ssh staging 'npm i && npm run build && forever restartall'
 
 
