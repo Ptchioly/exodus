@@ -6,14 +6,14 @@
     onclick: () => any;
   };
   export let linkButton: {
-    href: string;
     label: string;
+    onclick: () => any;
     prefix: string;
   };
 </script>
 
 <div
-  class="md:shadow-xl max-w-none max-h-none md:max-w-sm  m-auto bg-opacity-50 lg:h-4/6 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
+  class="md:shadow-xl max-w-none max-h-none md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
 >
   <h1
     class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-7 leading-9"
@@ -36,7 +36,9 @@
   <div class="grid grid-cols-2 col-auto mt-9 pb-5 lg:pb-10">
     <p>{linkButton.prefix}</p>
     <!-- <Link to={linkButton.href}> -->
-    <a href={linkButton.href}>{linkButton.label}</a>
+    <p class="cursor-pointer" on:click={linkButton.onclick}>
+      {linkButton.label}
+    </p>
     <!-- </Link> -->
   </div>
 </div>

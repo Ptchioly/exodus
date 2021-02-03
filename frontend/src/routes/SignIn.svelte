@@ -19,7 +19,7 @@
   const signUpButton = {
     prefix: 'New to Exodus?',
     label: 'Join Now',
-    href: '/signUp',
+    onclick: () => dispatch('openSignUp', {}),
   };
 </script>
 

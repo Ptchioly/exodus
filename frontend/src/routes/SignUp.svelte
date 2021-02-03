@@ -1,10 +1,12 @@
 <script lang="ts">
   import { signIn } from '../endpointApi';
   import LoginForm from '../components/LoginForm.svelte';
+  import { createEventDispatcher } from 'svelte';
 
   let phoneNumber;
   let pwd;
 
+  const dispatch = createEventDispatcher();
   const singUpButton = {
     label: 'Sign Up',
     onclick: () => signIn(phoneNumber, pwd),
@@ -13,7 +15,7 @@
   const signInButton = {
     prefix: 'Have an account?',
     label: 'Sign In',
-    href: '/signIn',
+    onclick: () => dispatch('openSignIn', {}),
   };
 </script>
 

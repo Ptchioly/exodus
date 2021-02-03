@@ -5,36 +5,49 @@
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
+  import type { NavigationState } from './types.ts/Layout';
 
   export let url = '';
 
-  type NavigationState = 'home' | 'signIn' | 'signUp' | 'loading';
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
 
   onMount(async () => {
     authorized = await isAuthenticated();
-    console.log('onMount => authorized', authorized);
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleLogin = ({ detail: { success } }) => {
+  const handleLogin = ({
+    detail: { success },
+  }: CustomEvent<{ success: boolean }>) => {
     if (success) {
       navigationState = 'home';
       return;
     }
     alert('Ti ne ptchiola');
   };
+
+  const handleLogout = () => {
+    navigationState = 'signIn';
+  };
+
+  const handleOpenSignUp = () => {
+    navigationState = 'signUp';
+  };
+
+  const handleOpenSignIn = () => {
+    navigationState = 'signIn';
+  };
 </script>
 
 <TailwindCss />
 <main class="font-main h-screen text-center flex content-center">
   {#if navigationState === 'home'}
-    <Homepage />
+    <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
-    <SignIn on:login={handleLogin} />
+    <SignIn on:login={handleLogin} on:openSignUp={handleOpenSignUp} />
   {:else if navigationState === 'signUp'}
-    <SignUp />
+    <SignUp on:openSignIn={handleOpenSignIn} />
   {:else}
     Loading
   {/if}
