@@ -3,7 +3,6 @@ import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
-import { Users } from '../types/types';
 import { decrypt } from './utils';
 import { generateAccessToken } from './validate';
 
@@ -33,6 +32,6 @@ login.post('/login', async (req, res) => {
 
   const token = generateAccessToken(userResponse.Item.username);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
-  
+
   return respond.SuccessResponse({ user_id: userResponse.Item.id });
 });
