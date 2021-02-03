@@ -9,3 +9,13 @@ export type Users = {
   password: string;
   xtoken: string;
 };
+
+export type UserMeta = {
+  username: string;
+};
+
+export type StatementRequest = {
+  account: 0 | string;
+  from: number;
+  to?: number;
+};
