@@ -1,4 +1,4 @@
-import type { LoginResponse } from './types.ts/ApiApi';
+import type { LoginResponse } from './types.ts/Api';
 
 const baseUrl: string = process.env.host;
 const loginEndpoint = baseUrl.concat('/login');
