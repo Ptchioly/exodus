@@ -40,10 +40,7 @@ jobs:
           SSH_KEY: ${{ secrets.SERVER_KEY }}
           SSH_HOST: ${{ secrets.SERVER_HOST }}
 
-      - name: Checkout and Pull
-        run: ssh staging 'cd exodus/backend && git fetch && git checkout main && git pull'
-
-      - name: Restart the Server
-        run: ssh staging 'npm i && npm run build && forever restartall'
+      - name: Pull and Restart the Server
+        run: ssh staging 'cd exodus/backend && git fetch && git checkout main && git pull && npm i && npm run build && forever restartall'
 
 
