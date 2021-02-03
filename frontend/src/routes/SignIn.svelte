@@ -72,7 +72,7 @@
 
 <style global lang="postcss">
   .sobaka-input {
-    @apply text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
+    @apply w-3/4 text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
   }
   .sobaka-input:focus {
     @apply border-gray-400 border-2;
