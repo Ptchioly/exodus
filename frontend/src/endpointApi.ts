@@ -1,4 +1,3 @@
-//"process is not defined" is lie
 const baseUrl: string = process.env.host;
 const loginEndpoint = baseUrl.concat('/login');
 
