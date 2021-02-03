@@ -3,14 +3,12 @@
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
-  import { validatePassword } from '../utils';
 
   let phoneNumber: string;
   let pwd: string;
   let token: string;
   let confirmPwd: string;
   let pwdCheck: boolean;
-  let isValidPwd: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -48,20 +46,10 @@
     bind:value={phoneNumber}
   />
   <div class="flex items-center justify-center w-full relative">
-    <PasswordInput
-      placeholder="Password"
-      bind:value={pwd}
-      validator={validatePassword}
-      bind:isValid={isValidPwd}
-    />
+    <PasswordInput placeholder="Password" bind:value={pwd} />
   </div>
   <div class="flex items-center justify-center w-full relative">
-    <PasswordInput
-      placeholder="Confirm Password"
-      validator={validatePassword}
-      bind:isValid={isValidPwd}
-      bind:value={confirmPwd}
-    />
+    <PasswordInput placeholder="Confirm Password" bind:value={confirmPwd} />
   </div>
 
   <input

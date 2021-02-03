@@ -5,23 +5,16 @@
   import PasswordInput from '../components/PasswordInput.svelte';
   import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
   import { signIn } from '../endpointApi';
-  import { validatePhone } from '../utils';
 
   let phoneNumber: string;
   let countryCode: string = '380';
   let pwd: string;
-
-  let isValidPhone: boolean;
 
   const dispatch = createEventDispatcher();
 
   const signInButton = {
     label: 'Sign In',
     onclick: async () => {
-      if (!isValidPhone) {
-        alert('Invalid phone number');
-        return;
-      }
       const resp = await signIn(summaryPhone, pwd);
       dispatch('login', resp);
     },
@@ -46,12 +39,7 @@
 >
   <div class="flex flex-col justify-center w-full">
     <div class="phone flex justify-center w-3/4 self-center">
-      <PhoneNumberInput
-        {countryCode}
-        bind:value={phoneNumber}
-        bind:isValid={isValidPhone}
-        validator={validatePhone}
-      />
+      <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
     </div>
     <div class="flex items-center justify-center w-full self-center">
       <PasswordInput bind:value={pwd} placeholder={'Password'} />
