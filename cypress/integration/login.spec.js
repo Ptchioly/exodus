@@ -11,8 +11,8 @@ describe.only('Login', () => {
     cy.window().should('have.property', 'top')
   })
 
-  it('logs in', () => { })
+  // it('logs in', () => { })
 
-  it("should redirect unauthenticated user to signin page", () => { })
+  // it("should redirect unauthenticated user to signin page", () => { })
 
 })
