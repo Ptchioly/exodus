@@ -7,9 +7,9 @@ import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
 import { requests } from './endpoints';
 
-export const statement = Router();
+export const personalInfo = Router();
 
-statement.get('/personal', authenticateToken, async (req: any, res) => {
+personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
   const userFromDB = await getItem(configs.USER_TABLE, {
     username: req.user.data,
   });
