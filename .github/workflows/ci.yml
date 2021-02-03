@@ -5,7 +5,7 @@ on:
       - 'main'
 jobs:
   # cypress-test:
-  #   name: Run Cypress tests
+  #   name: Run Cypress Tests
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v2
@@ -18,7 +18,7 @@ jobs:
         # env:
         #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
   update-server:
-    name: Update Server
+    name: Update the Server
     runs-on: ubuntu-latest
     # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     # needs: cypress-test
@@ -40,10 +40,10 @@ jobs:
           SSH_KEY: ${{ secrets.SERVER_KEY }}
           SSH_HOST: ${{ secrets.SERVER_HOST }}
 
-      - name: Pull
-        run: ssh staging 'cd exodus/backend && git remote prune origin --dry-run'
+      - name: Checkout and Pull
+        run: ssh staging 'cd exodus/backend && git fetch && git checkout main && git pull'
 
-      # - name: Restart the server
-      #   run: ssh staging 'npm i && npm run build && forever restartall'
+      - name: Restart the Server
+        run: ssh staging 'npm i && npm run build && forever restartall'
 
 
