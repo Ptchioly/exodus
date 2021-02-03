@@ -5,7 +5,7 @@
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
-  import type { NavigationState } from './types.ts/Layout';
+  import type { NavigationState } from './types/Layout';
 
   export let url = '';
 

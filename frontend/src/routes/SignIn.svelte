@@ -3,6 +3,7 @@
 
   import LoginForm from '../components/LoginForm.svelte';
   import { signIn } from '../endpointApi';
+  import { isSignedIn } from '../types/guards';
 
   let phoneNumber: string;
   let pwd: string;
@@ -12,8 +13,8 @@
   const signInButton = {
     label: 'Sign In',
     onclick: () =>
-      signIn(phoneNumber, pwd).then((success) => {
-        dispatch('login', { success });
+      signIn(phoneNumber, pwd).then((resp) => {
+        dispatch('login', { success: isSignedIn(resp) });
       }),
   };
   const signUpButton = {
