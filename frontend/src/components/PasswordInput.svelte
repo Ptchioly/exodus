@@ -1,8 +1,10 @@
 <script lang="ts">
+  import type { Validator } from '../types/Layout';
+
   export let value: string;
   export let placeholder: string;
   export let isValid: boolean = false;
-  export let validator: (pwd: string) => boolean | undefined;
+  export let validator: Validator | undefined;
 
   let show: boolean = false;
 

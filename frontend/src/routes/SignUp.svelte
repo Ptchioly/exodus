@@ -3,15 +3,23 @@
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
+  import { validatePassword } from '../utils';
 
   let phoneNumber: string;
   let pwd: string;
   let token: string;
+  let isValidPwd: boolean;
 
   const dispatch = createEventDispatcher();
   const singUpButton = {
     label: 'Sign Up',
-    onclick: () => signIn(phoneNumber, pwd),
+    onclick: async () => {
+      if (!isValidPwd) {
+        alert('Invlid password');
+        return;
+      }
+      await signIn(phoneNumber, pwd);
+    },
   };
 
   const signInButton = {
@@ -33,7 +41,12 @@
     required
     bind:value={phoneNumber}
   />
-  <PasswordInput placeholder="Password" bind:value={pwd} />
+  <PasswordInput
+    placeholder="Password"
+    bind:value={pwd}
+    bind:isValid={isValidPwd}
+    validator={validatePassword}
+  />
   <PasswordInput placeholder="Confirm Password" />
 
   <input

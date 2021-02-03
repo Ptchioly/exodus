@@ -3,23 +3,28 @@
 
   import LoginForm from '../components/LoginForm.svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
+  import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
   import { signIn } from '../endpointApi';
-  import { validatePassword } from '../utils';
+  import { validatePhone } from '../utils';
 
   let phoneNumber: string;
   let countryCode: string = '380';
   let pwd: string;
 
-  let isValidPwd: boolean;
+  let isValidPhone: boolean;
 
   const dispatch = createEventDispatcher();
 
   const signInButton = {
     label: 'Sign In',
-    onclick: () =>
-      signIn(summaryPhone, pwd).then((resp) => {
-        dispatch('login', resp);
-      }),
+    onclick: async () => {
+      if (!isValidPhone) {
+        alert('Invalid phone number');
+        return;
+      }
+      const resp = await signIn(summaryPhone, pwd);
+      dispatch('login', resp);
+    },
   };
   const signUpButton = {
     prefix: 'New to Exodus?',
@@ -41,28 +46,15 @@
 >
   <div class="flex flex-col justify-center w-full">
     <div class="phone flex justify-center w-3/4 self-center">
-      <input
-        type="text"
-        class="sobaka-input code w-1/5"
-        required
-        bind:value={countryCode}
-      />
-
-      <input
-        class="sobaka-input tel w-4/5"
-        type="text"
-        placeholder="XXXX-XXX-XXX"
-        required
+      <PhoneNumberInput
+        {countryCode}
         bind:value={phoneNumber}
+        bind:isValid={isValidPhone}
+        validator={validatePhone}
       />
     </div>
     <div class="flex items-center justify-center w-full self-center">
-      <PasswordInput
-        bind:value={pwd}
-        placeholder={'Password'}
-        bind:isValid={isValidPwd}
-        validator={validatePassword}
-      />
+      <PasswordInput bind:value={pwd} placeholder={'Password'} />
     </div>
   </div>
 
