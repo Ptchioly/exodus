@@ -10,6 +10,7 @@ import { logout } from './routes/auth/logout';
 import { signup } from './routes/auth/signup';
 import { authentication } from './routes/auth/validate';
 import { statement } from './routes/monobank/statement';
+import { personalInfo } from './routes/monobank/personal';
 import { logging } from './utils';
 
 export const app = express();
@@ -30,6 +31,7 @@ app.use(login);
 app.use(signup);
 app.use(logout);
 app.use(statement);
+app.use(personalInfo);
 app.use(authentication);
 
 app.listen(configs.PORT, () => {
