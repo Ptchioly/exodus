@@ -57,7 +57,7 @@
         bind:value={phoneNumber}
       />
     </div>
-    <div class="flex items-center justify-center w-full self-center">
+    <div class="flex items-center justify-center w-full self-center relative">
       <PasswordInput
         bind:value={pwd}
         placeholder={'Password'}

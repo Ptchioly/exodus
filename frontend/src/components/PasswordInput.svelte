@@ -29,11 +29,11 @@
   />
 {/if}
 <div
-  class="pt-8 absolute -mr-3/12 cursor-pointer"
+  class="pt-8 absolute float-right ml-48 md:ml-52 cursor-pointer"
   on:click={() => (show = !show)}
 >
   <div class:show>
-    <img src="images/show-password.svg" />
+    <img src="images/show-password.svg" alt="show-password" />
   </div>
 </div>
 

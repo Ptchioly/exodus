@@ -1,17 +1,31 @@
 <script lang="ts">
-  import { signIn } from '../endpointApi';
+  import { signUp } from '../endpointApi';
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
+  import { validatePassword } from '../utils';
 
   let phoneNumber: string;
   let pwd: string;
   let token: string;
+  let confirmPwd: string;
+  let pwdCheck: boolean;
+  let isValidPwd: boolean;
 
   const dispatch = createEventDispatcher();
+
+  const checkPwd = (pwd, confirmPwd) => {
+    return pwd === confirmPwd;
+  };
+
   const singUpButton = {
     label: 'Sign Up',
-    onclick: () => signIn(phoneNumber, pwd),
+    onclick: () => {
+      pwdCheck = checkPwd(pwd, confirmPwd);
+      pwdCheck
+        ? signUp(phoneNumber, pwd, token)
+        : alert('Passwords do not match');
+    },
   };
 
   const signInButton = {
@@ -33,8 +47,22 @@
     required
     bind:value={phoneNumber}
   />
-  <PasswordInput placeholder="Password" bind:value={pwd} />
-  <PasswordInput placeholder="Confirm Password" />
+  <div class="flex items-center justify-center w-full relative">
+    <PasswordInput
+      placeholder="Password"
+      bind:value={pwd}
+      validator={validatePassword}
+      bind:isValid={isValidPwd}
+    />
+  </div>
+  <div class="flex items-center justify-center w-full relative">
+    <PasswordInput
+      placeholder="Confirm Password"
+      validator={validatePassword}
+      bind:isValid={isValidPwd}
+      bind:value={confirmPwd}
+    />
+  </div>
 
   <input
     class="sobaka-input mt-5"
@@ -43,11 +71,4 @@
     required
     bind:value={token}
   />
-  <!-- <img src="images/show-password.svg" alt="show"/> -->
 </LoginForm>
-
-<style global lang="postcss">
-  .sobaka-input {
-    @apply w-3/4 text-sm text-black placeholder-gray-500 border border-gray-200 py-4 pl-5;
-  }
-</style>
