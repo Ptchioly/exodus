@@ -14,9 +14,9 @@ jobs:
         with:
           browser: chrome
           headless: true
-          record: true
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        #   record: true
+        # env:
+        #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
   update-server:
     name: Update Server
     runs-on: ubuntu-latest
@@ -39,22 +39,7 @@ jobs:
           SSH_KEY: ${{ secrets.SERVER_KEY }}
           SSH_HOST: ${{ secrets.SERVER_HOST }}
 
-      - name: Stop the server
-        run: ssh staging 'sudo cd exodus/backend && git pull && npm i && npm run build && forever restartall'
+      - name: Restart the server
+        run: ssh staging 'cd exodus/backend && git pull && npm i && npm run build && forever restartall'
 
 
-
-      # - name: Restart Server
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     script: |
-      #       cd exodus/backend
-      #       git pull
-      #       npm i 
-      #       npm run build
-      #       sudo forever restartall
-      #     key: ${{ secrets.SERVER_KEY }}
-      #     host: ${{ secrets.SERVER_DOMAIN }}
-      #     username: ${{ secrets.SERVER_USERNAME }}
-      #     port: 22
-       
