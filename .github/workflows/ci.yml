@@ -41,7 +41,7 @@ jobs:
           SSH_HOST: ${{ secrets.SERVER_HOST }}
 
       - name: Pull
-        run: ssh staging 'cd exodus/backend && git remote prune origin --dry-run && git fetch && git pull'
+        run: ssh staging 'cd exodus/backend && git remote prune origin --dry-run'
 
       # - name: Restart the server
       #   run: ssh staging 'npm i && npm run build && forever restartall'
