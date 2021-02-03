@@ -1,20 +1,47 @@
-import fetch from 'node-fetch';
+import type { LoginResponse } from './types.ts/ApiApi';
 
-const baseUrl = 'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com';
+const baseUrl: string = process.env.host;
 const loginEndpoint = baseUrl.concat('/login');
+
+const defaultInit: RequestInit = {
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<any> => {
-  return await fetch(loginEndpoint, {
+): Promise<LoginResponse> => {
+  console.log(baseUrl);
+
+  const response = await fetch(loginEndpoint, {
+    ...defaultInit,
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({
       username: phoneNumber,
       password: pwd,
     }),
   });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, user_id };
+  }
+
+  const { message } = await response.json();
+  return { status, message };
+};
+
+export const isAuthenticated = async (): Promise<boolean> => {
+  const authEndpoint = baseUrl.concat('/authentication');
+  const { ok } = await fetch(authEndpoint, defaultInit);
+  return ok;
+};
+
+export const logout = async (): Promise<void> => {
+  await fetch(baseUrl.concat('/logout'), defaultInit);
 };
