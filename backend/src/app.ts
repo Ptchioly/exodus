@@ -17,7 +17,7 @@ export const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:5000',
+    origin: ['http://localhost:5000', 'https://ptchioly.github.io/exodus'],
     credentials: true,
   })
 );
