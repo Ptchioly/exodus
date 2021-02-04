@@ -33,6 +33,8 @@
     const move = (e) => {
         const node = e.target;
         node.classList.add('moveable');
+        const overlap = bar.querySelector('.bar__over');
+        overlap.classList.add('moveable');
 
         const handleMove = (e) => {
             const limitsRect = limits.getBoundingClientRect();
@@ -44,6 +46,7 @@
 
         const handleEnd = (e) => {
             node.classList.remove('moveable');
+            overlap.classList.remove('moveable');
             window.removeEventListener('mousemove', handleMove);
         }
 
@@ -89,7 +92,7 @@
             <div class='bars'>
                 <div class='bar bar--previous' data-value={`$${previous}`} style={`width: ${previousP}%`}></div>
                 <div class='bar bar--current' style={`width: ${currentP}%`} data-value={`$${current}`}>
-                    <div class='bar__over' style={`width: ${limit && current > limit ? (currentP - limitP) * bar.offsetWidth / 100 : 0}px`}></div>
+                    <div class='bar__over' class:moveable={false} style={`width: ${limit && current > limit ? (currentP - limitP) * bar.offsetWidth / 100 : 0}px`}></div>
                 </div>
             </div>
     
@@ -209,6 +212,10 @@
         background-color: #EC080899;
         border-radius: 0 8px 8px 0;
         transition: width .4s;
+    }
+
+    .bar__over.moveable {
+        transition: width 0s;
     }
 
     .detailed > .bars > .bar--previous {
