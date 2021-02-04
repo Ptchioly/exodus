@@ -8,6 +8,7 @@ export type Users = {
   username: string;
   password: string;
   xtoken: string;
+  telegramId?: string;
 };
 
 export type UserMeta = {

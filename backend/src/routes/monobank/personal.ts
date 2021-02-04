@@ -20,7 +20,6 @@ type MonoClientInfo = {
   clientId: string;
   name: string;
   webHookUrl: string;
-  permissions: string;
   accounts: MonoAccount[];
 };
 
@@ -38,7 +37,6 @@ type MonoAccount = {
 type ClientInfo = {
   name: string;
   webHookUrl: string;
-  permissions: string;
   accounts: Account[];
 };
 
@@ -53,14 +51,12 @@ type Account = {
 const updatePersonalInfo = ({
   name,
   webHookUrl,
-  permissions,
   accounts,
 }: MonoClientInfo): ClientInfo => {
   // put to db
   return {
     name,
     webHookUrl,
-    permissions,
     accounts,
   };
 };
