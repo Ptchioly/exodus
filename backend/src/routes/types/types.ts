@@ -20,3 +20,35 @@ export type StatementRequest = {
   from: number;
   to?: number;
 };
+
+export type MonoClientInfo = {
+  clientId: string;
+  name: string;
+  webHookUrl: string;
+  accounts: MonoAccount[];
+};
+
+type MonoAccount = {
+  id: string;
+  currencyCode: number;
+  cashbackType: string;
+  balance: number;
+  creditLimit: number;
+  maskedPan: string[];
+  type: string;
+  iban: string;
+};
+
+export type ClientInfo = {
+  name: string;
+  webHookUrl: string;
+  accounts: Account[];
+};
+
+type Account = {
+  id: string;
+  currencyCode: number;
+  balance: number;
+  creditLimit: number;
+  type: string;
+};

@@ -5,48 +5,10 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
+import { ClientInfo, MonoClientInfo } from '../types/types';
 import { requests } from './endpoints';
 
 export const personalInfo = Router();
-
-export const currencyCode = {
-  980: 'UAH',
-  985: 'PLN',
-  840: 'USD',
-  978: 'EUR',
-};
-
-type MonoClientInfo = {
-  clientId: string;
-  name: string;
-  webHookUrl: string;
-  accounts: MonoAccount[];
-};
-
-type MonoAccount = {
-  id: string;
-  currencyCode: number;
-  cashbackType: string;
-  balance: number;
-  creditLimit: number;
-  maskedPan: string[];
-  type: string;
-  iban: string;
-};
-
-type ClientInfo = {
-  name: string;
-  webHookUrl: string;
-  accounts: Account[];
-};
-
-type Account = {
-  id: string;
-  currencyCode: number;
-  balance: number;
-  creditLimit: number;
-  type: string;
-};
 
 const updatePersonalInfo = ({
   name,
