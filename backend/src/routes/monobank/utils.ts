@@ -5,9 +5,9 @@ export const requiredFields = ({
   from,
   to,
 }: Partial<StatementRequest>): StatementRequest => {
-  const date = Date.now();
-  const dateFrom = date - 2678400000;
-  const dateTo = date;
+  const date = new Date(Date.now());
+  const dateFrom = new Date(date.getFullYear(), date.getMonth() - 1).valueOf();
+  const dateTo = new Date(date.getFullYear(), date.getMonth()).valueOf();
 
   return {
     account: account || 0,
