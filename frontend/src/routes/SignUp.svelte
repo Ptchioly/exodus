@@ -1,15 +1,35 @@
 <script lang="ts">
-  import { signIn } from '../endpointApi';
+  import { signUp } from '../endpointApi';
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
+  import PasswordInput from '../components/PasswordInput.svelte';
+  import MonoLogo from '../components/MonoLogo.svelte';
 
-  let phoneNumber;
-  let pwd;
+  let phoneNumber: string;
+  let pwd: string;
+  let token: string;
+  let confirmPwd: string;
+  let pwdCheck: boolean;
 
   const dispatch = createEventDispatcher();
+
+  const checkPwd = (pwd, confirmPwd) => {
+    return pwd === confirmPwd;
+  };
+
   const singUpButton = {
     label: 'Sign Up',
-    onclick: () => signIn(phoneNumber, pwd),
+    onclick: async () => {
+      console.log('AAAAA');
+      pwdCheck = checkPwd(pwd, confirmPwd);
+      console.log('onclick: => pwdCheck', pwdCheck);
+      if (pwdCheck) {
+        const resp = await signUp(phoneNumber, pwd, token);
+
+        return dispatch('signUp', resp);
+      }
+      alert('Passwords do not match');
+    },
   };
 
   const signInButton = {
@@ -24,31 +44,35 @@
   actionButton={singUpButton}
   linkButton={signInButton}
 >
-  <input
-    class="sobaka-input"
-    type="text"
-    placeholder="Phone number"
-    required
-    bind:value={phoneNumber}
-  />
-  <input
-    class="sobaka-input mt-5"
-    type="password"
-    placeholder="Password"
-    required
-    bind:value={pwd}
-  />
-  <input
-    class="sobaka-input mt-5"
-    type="password"
-    placeholder="Confirm Password"
-    required
-  />
-  <!-- <img src="images/show-password.svg" alt="show"/> -->
-</LoginForm>
+  <div class="flex justify-center flex-col">
+    <div class="items-center">
+      <input
+        class="sobaka-input"
+        type="text"
+        placeholder="Phone number"
+        required
+        bind:value={phoneNumber}
+      />
+    </div>
 
-<style global lang="postcss">
-  .sobaka-input {
-    @apply w-3/4 text-sm text-black placeholder-gray-500 border border-gray-200 py-4 pl-5;
-  }
-</style>
+    <div class="flex items-center justify-center w-full relative">
+      <PasswordInput placeholder="Password" bind:value={pwd} />
+    </div>
+    <div class="flex items-center justify-center w-full relative">
+      <PasswordInput placeholder="Confirm Password" bind:value={confirmPwd} />
+    </div>
+
+    <div class="flex items-center w-full justify-center">
+      <div class="w-3/4 flex">
+        <input
+          class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 pl-2 mt-8"
+          type="text"
+          placeholder="Monobank token"
+          required
+          bind:value={token}
+        />
+        <div class=""><MonoLogo /></div>
+      </div>
+    </div>
+  </div>
+</LoginForm>
