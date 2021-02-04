@@ -7,6 +7,7 @@ import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
 import { StatementRequest } from '../types/types';
 import { requests } from './endpoints';
+import { categorize } from './paymentsProcessing';
 
 export const statement = Router();
 
@@ -35,7 +36,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
         'X-Token': userFromDB.Item.xtoken,
       },
     }).then((el) => el.json());
-    return respond.SuccessResponse(data);
+    return respond.SuccessResponse(categorize(data));
   }
   return respond.FailureResponse('Failed to get statement');
 });

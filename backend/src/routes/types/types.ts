@@ -22,25 +22,25 @@ export type StatementRequest = {
 
 export type Category = {
   mcc: {
-    numbers: number[],
-    ranges: number[][]
-  },
-  category: string
-  id: number,
-}
+    numbers: number[];
+    ranges: number[][];
+  };
+  category: string;
+  id: number;
+};
 
 export type LimitCategory = {
-  name: string,
-  currMonth: number,
-  prevMonth: number,
-  limit: number,
-  id: number,
-}
+  name: string;
+  currMonth: number;
+  prevMonth: number;
+  limit: number;
+  id: number;
+};
 
 export type Payment = {
-  category: string
-  categoryId: number,
-  description: string
-  operationAmount: number,
-  time: number,
-}
+  category: string;
+  categoryId: number;
+  description: string;
+  amount: number;
+  time: number;
+};
