@@ -4,7 +4,7 @@ import { getItem, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { encrypt } from '../auth/utils';
 import { authenticateToken } from '../auth/validate';
-import { isFailure } from '../types/guards';
+import { atLeast, isFailure } from '../types/guards';
 
 export const updateInfo = Router();
 
@@ -15,12 +15,8 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
 
   const { newPassword, newMonoToken, newTelegramId } = req.body;
 
-  if (
-    newPassword === undefined &&
-    newMonoToken === undefined &&
-    newTelegramId === undefined
-  )
-    return respond.FailureResponse('Empty body.');
+  if (!atLeast(newPassword, newMonoToken, newTelegramId))
+    return respond.FailureResponse('Required at least one field');
 
   const userFromDB = await getItem(configs.USER_TABLE, {
     username: req.user.data,

@@ -5,3 +5,6 @@ export const isFailure = (response: any): response is AWSError =>
 
 export const exist = (...fields: string[]): boolean =>
   fields.every((field) => !!field);
+
+export const atLeast = (...fields: string[]): boolean =>
+  fields.some((field) => !!field);
