@@ -5,15 +5,41 @@
   import type { UserInfo } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
   const dispatch = createEventDispatcher();
+  import RawCharts from '../charts/RawCharts.svelte';
+  import StackedBar from '../charts/StackedBar.svelte';
   let userInfo: UserInfo;
   onMount(async () => {
     const resp = await getUserInfo();
     if (isSuccessResponse(resp)) userInfo = resp.data;
   });
+
+  const data = [
+    {
+      name: 'Taxi',
+      currMonth: 560,
+      prevMonth: 815,
+      limit: 760,
+      id: 1,
+    },
+    {
+      name: 'Groceries',
+      currMonth: 910,
+      prevMonth: 1300,
+      limit: 1500,
+      id: 2,
+    },
+    {
+      name: 'KRASOTA & MEDICINA',
+      currMonth: 1300,
+      prevMonth: 920,
+      limit: 0,
+      id: 3,
+    },
+  ];
 </script>
 
-<main class="flex justify-center w-full">
-  <div class="header flex justify-between w-full px-5 mt-4">
+<main class="flex  w-full flex-col items-center">
+  <div class="header flex justify-between w-full px-5 mt-4 mb-20">
     {#if userInfo}
       <div class="user flex">
         <div class="settings w-4 cursor-pointer mr-4">
@@ -36,4 +62,15 @@
       </div>
     </div>
   </div>
+  <section class="container">
+    <!-- <RawCharts /> -->
+    {#each data as bar}
+      <StackedBar
+        title={bar.name}
+        current={bar.currMonth}
+        previous={bar.prevMonth}
+        limit={bar.limit}
+      />
+    {/each}
+  </section>
 </main>
