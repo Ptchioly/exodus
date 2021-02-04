@@ -19,7 +19,7 @@
         bar.classList.toggle('detailed')
     }
 
-    const percentage = (i) => i * 100 / barSize;
+    const percentOf = (i) => i * 100 / barSize;
 
     const handlePress = (e) => {
         const step = 50;
@@ -33,12 +33,12 @@
     const move = (e) => {
         const node = e.target;
         node.classList.add('moveable');
-        
+
         const handleMove = (e) => {
             const limitsRect = limits.getBoundingClientRect();
-            const targetPosition = Math.round((e.clientX - limitsRect.left) * 100 / limitsRect.width);
-            if (targetPosition >= 0 && targetPosition <= 100) {
-                limit = Math.round(targetPosition * barSize / 100);
+            const movePercent = Math.round((e.clientX - limitsRect.left) * 100 / limitsRect.width);
+            if (movePercent >= 0 && movePercent <= 100) {
+                limit = Math.round(movePercent * barSize / 100);
             }
         }
 
@@ -53,14 +53,14 @@
 
     onMount( () => {
         setTimeout(() => {
-            currentP = percentage(current);
-            previousP = percentage(previous);
-            limitP = percentage(limit);
+            currentP = percentOf(current);
+            previousP = percentOf(previous);
+            limitP = percentOf(limit);
         }, 20)
     })
 
     $: {
-        limitP = percentage(limit);
+        limitP = percentOf(limit);
     }
 </script>
 <div class='wrapper'>
@@ -88,7 +88,9 @@
     
             <div class='bars'>
                 <div class='bar bar--previous' data-value={`$${previous}`} style={`width: ${previousP}%`}></div>
-                <div class='bar bar--current' style={`width: ${currentP}%`}>{`$${current}`}</div>
+                <div class='bar bar--current' style={`width: ${currentP}%`} data-value={`$${current}`}>
+                    <div class='bar__over' style={`width: ${limit && current > limit ? (currentP - limitP) * bar.offsetWidth / 100 : 0}px`}></div>
+                </div>
             </div>
     
             <div class='limits' bind:this={limits}>
@@ -198,6 +200,14 @@
         min-width: 5em;
         border-radius: 8px;
         transition: margin .2s, width .5s ease;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .bar__over {
+        height: 2em;
+        background-color: #EC080899;
+        border-radius: 0 8px 8px 0;
     }
 
     .detailed > .bars > .bar--previous {
@@ -234,14 +244,20 @@
         background-color: #2F9E9E;
         margin-top: -2em;
         display: flex;
-        flex-direction: row-reverse;
-        align-items: center;
-        padding-right: 1em;
         box-sizing: border-box;
         font-weight: bold;
         font-family: 'Courier New', Courier, monospace;
         color: #A6D6D1;
         transition: margin .2s, width .7s;
+    }
+
+    .bar--current::after {
+        content: attr(data-value);
+        position: absolute;
+        height: 2em;
+        display: flex;
+        align-items: center;
+        padding-right: .75em;
     }
 
     .limits {
@@ -278,7 +294,7 @@
     .limit.moveable {
         cursor: default;
         transition: margin .2s, left .001s, width .2s;
-
+        width: 1em;
     }
 
     .limit.moveable::after {
