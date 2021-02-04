@@ -1,5 +1,5 @@
-import type { LoginResponse, SignedIn } from './Api';
+import type { APIResponse, SuccessResponse } from './Api';
 
-export const isSignedIn = (
-  apiResponse: LoginResponse
-): apiResponse is SignedIn => apiResponse.status === 200;
+export const isSuccessResponse = (
+  apiResponse: APIResponse
+): apiResponse is SuccessResponse => apiResponse.status === 200;

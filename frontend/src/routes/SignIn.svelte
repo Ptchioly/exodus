@@ -26,6 +26,7 @@
   };
 
   $: summaryPhone = countryCode + phoneNumber;
+  // $: summaryPhone = phoneNumber;
 </script>
 
 <!-- TODO: Make template more responsive.

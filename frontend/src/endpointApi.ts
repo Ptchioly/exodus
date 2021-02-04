@@ -49,18 +49,21 @@ export const logout = async (): Promise<void> => {
 };
 
 export const signUp = async (
-  phoneNumber: string,
-  pwd: string,
-  monoToken: string
+  username: string,
+  password: string,
+  xtoken: string
 ): Promise<APIResponse> => {
-  const response = await fetch(signupEndpoint, {
+  const t = {
+    ...defaultInit,
     method: 'POST',
     body: JSON.stringify({
-      phoneNumber,
-      pwd,
-      monoToken,
+      username,
+      password,
+      xtoken,
     }),
-  });
+  };
+  console.log('t', t);
+  const response = await fetch(signupEndpoint, t);
 
   const { status } = response;
 

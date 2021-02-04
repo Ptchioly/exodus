@@ -7,7 +7,7 @@
   import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
-  import { isSignedIn } from './types/guards';
+  import { isSuccessResponse } from './types/guards';
 
   export let url = '';
 
@@ -19,8 +19,8 @@
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleLogin = ({ detail }: CustomEvent<APIResponse>) => {
-    if (isSignedIn(detail)) {
+  const handleApiResponse = ({ detail }: CustomEvent<APIResponse>) => {
+    if (isSuccessResponse(detail)) {
       navigationState = 'home';
       return;
     }
@@ -45,9 +45,9 @@
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
-    <SignIn on:login={handleLogin} on:openSignUp={handleOpenSignUp} />
+    <SignIn on:login={handleApiResponse} on:openSignUp={handleOpenSignUp} />
   {:else if navigationState === 'signUp'}
-    <SignUp on:openSignIn={handleOpenSignIn} />
+    <SignUp on:signUp={handleApiResponse} on:openSignIn={handleOpenSignIn} />
   {:else}
     Loading
   {/if}
