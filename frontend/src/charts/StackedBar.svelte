@@ -10,6 +10,7 @@
     let currentP = 0;
     let previousP = 0;
     let limitP = 0;
+    let overlap;
 
     let bar;
     let limits;
@@ -17,6 +18,10 @@
     const detailed = (e) => {
         if (!bar || e.target.classList.contains('limit')) return;
         bar.classList.toggle('detailed')
+    }
+
+    const countOverlap = () => {
+        return limit && current > limit ? (currentP - limitP) * bar.offsetWidth / 100 : 0;
     }
 
     const percentOf = (i) => i * 100 / barSize;
@@ -54,6 +59,8 @@
         window.addEventListener('mousemove', handleMove)
     }
 
+    window.addEventListener('resize', () => overlap = countOverlap())
+
     onMount( () => {
         setTimeout(() => {
             currentP = percentOf(current);
@@ -64,6 +71,7 @@
 
     $: {
         limitP = percentOf(limit);
+        overlap = countOverlap();
     }
 </script>
 <div class='wrapper'>
@@ -92,12 +100,12 @@
             <div class='bars'>
                 <div class='bar bar--previous' data-value={`$${previous}`} style={`width: ${previousP}%`}></div>
                 <div class='bar bar--current' style={`width: ${currentP}%`} data-value={`$${current}`}>
-                    <div class='bar__over' class:moveable={false} style={`width: ${limit && current > limit ? (currentP - limitP) * bar.offsetWidth / 100 : 0}px`}></div>
+                    <div class='bar__over' class:moveable={false} style={`width: ${overlap}px`}></div>
                 </div>
             </div>
     
             <div class='limits' bind:this={limits}>
-                <div class='limit limit--red' on:mousedown={move} class:moveable={false} data-value={`${limit}`} class:hidden={limit <= 0} style={`left: ${limitP}%`}></div>
+                <div class='limit limit--red' on:mousedown={move} class:hidden={limit <= 0} class:moveable={false} data-value={`${limit}`} style={`left: ${limitP}%`}></div>
             </div>
     
         </section>
