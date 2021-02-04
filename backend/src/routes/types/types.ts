@@ -19,3 +19,26 @@ export type StatementRequest = {
   from: number;
   to?: number;
 };
+
+export type Category = {
+  mcc: {
+    nubmers: number[],
+    ranges: number[][]
+  },
+  category: string
+}
+
+export type LimitCategory = {
+  name: string,
+  currMonth: number,
+  prevMonth: number,
+  limit: number,
+  id: number,
+}
+
+export type Payment = {
+  category: string
+  description: string
+  operationAmount: number,
+  time: number,
+}
