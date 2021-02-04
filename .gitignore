@@ -111,3 +111,4 @@ dist
 
 #cypress
 cypress/videos/
+.DS_Store
