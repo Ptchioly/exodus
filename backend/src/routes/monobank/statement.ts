@@ -5,28 +5,18 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
-import { StatementRequest } from '../types/types';
 import { requests } from './endpoints';
+import { requiredFields } from './utils';
 
 export const statement = Router();
 
-const requiredFields = ({
-  account,
-  from,
-  to,
-}: Partial<StatementRequest>): StatementRequest => {
-  return {
-    account: account || 0, // error
-    from: from || Date.now() - 2678400000,
-    to,
-  };
-};
-
 statement.post('/statement', authenticateToken, async (req: any, res) => {
   const respond = endpointRespond(res);
-  if (req.body && requiredFields(req.body))
-    return respond.FailureResponse('hui');
-  const { account, from, to } = req.body; // check exist
+
+  if (req.body) return respond.FailureResponse('Empty body.');
+
+  const { account, from, to } = requiredFields(req.body);
+
   const userFromDB = await getItem(configs.USER_TABLE, {
     username: req.user.data,
   });
