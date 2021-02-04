@@ -8,8 +8,8 @@
 //     // cy.login()
 //     // })
 
-//     it('logs out', () => { })
+//     it('clears the session and logs out', () => { })
 
-//     it("logs user out if API request gets back unauthorized", () => { })
+//     it("forces log out if API request gets back unauthorized", () => { })
 
 // })

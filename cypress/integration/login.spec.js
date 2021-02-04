@@ -7,12 +7,9 @@ describe.only('Login', () => {
     cy.visit('/exodus/')
   })
 
-  it('does not work with wrong credentials', () => {
-    cy.window().should('have.property', 'top')
-  })
+  // it('does not work with wrong credentials', () => {
+  // })
 
-  // it('logs in', () => { })
-
-  // it("should redirect unauthenticated user to signin page", () => { })
+  it('logs in', () => { cy.window().should('have.property', 'top') })
 
 })
