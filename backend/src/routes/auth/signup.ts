@@ -12,7 +12,6 @@ export const signup = Router();
 signup.post('/signup', async (req, res) => {
   const respond = endpointRespond(res);
   const { username, password, xtoken } = req.body;
-
   if (!exist(req.body, username, password, xtoken))
     return respond.FailureResponse('Required fields are empty');
 

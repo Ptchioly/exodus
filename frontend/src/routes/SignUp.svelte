@@ -20,9 +20,7 @@
   const singUpButton = {
     label: 'Sign Up',
     onclick: async () => {
-      console.log('AAAAA');
       pwdCheck = checkPwd(pwd, confirmPwd);
-      console.log('onclick: => pwdCheck', pwdCheck);
       if (pwdCheck) {
         const resp = await signUp(phoneNumber, pwd, token);
 
