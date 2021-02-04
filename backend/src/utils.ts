@@ -18,4 +18,5 @@ export const logging = (
   next();
 };
 
-export const isInRange = (ranges: number[][], num: number): boolean => ranges.some(([min, max]) => min <= num && num <= max)
+export const isInRange = (ranges: number[][], num: number): boolean =>
+  ranges.some(([min, max]) => min <= num && num <= max);

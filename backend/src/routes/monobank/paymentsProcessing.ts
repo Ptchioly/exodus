@@ -33,15 +33,17 @@ export const categorize = (payments: any[]): LimitCategory[] => {
     {}
   );
 
-  return Object.keys(categoryObj).map((e): LimitCategory => {
-    const catId = parseInt(e)
-    const { category } = categories.find(({ id }) => catId === id)!;
-    return {
-      name: category,
-      currMonth: categoryObj[e],
-      prevMonth: 0,
-      limit: 0,
-      id: catId,
-    };
-  });
+  return Object.keys(categoryObj).map(
+    (e): LimitCategory => {
+      const catId = parseInt(e);
+      const { category } = categories.find(({ id }) => catId === id)!;
+      return {
+        name: category,
+        currMonth: categoryObj[e],
+        prevMonth: 0,
+        limit: 0,
+        id: catId,
+      };
+    }
+  );
 };
