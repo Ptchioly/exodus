@@ -27,18 +27,20 @@
     label: 'Sign Up',
     onclick: async () => {
       pwdCheck = checkPwd(pwd, confirmPwd);
-      if (!pwdCheck) {
-        error = true;
-        errorMessage = 'Passwords do not match';
-        return;
-      }
       if (pwdCheck) {
-        const resp = (await signUp(phoneNumber, pwd, token)) as any;
+        const resp = (await signUp(
+          countryCode + phoneNumber,
+          pwd,
+          token
+        )) as any;
         if (resp.message !== undefined) {
           errorMessage = resp.message;
           error = true;
         }
         return dispatch('signUp', resp);
+      } else {
+        error = true;
+        errorMessage = 'Passwords do not match';
       }
     },
   };

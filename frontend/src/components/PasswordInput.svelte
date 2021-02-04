@@ -33,7 +33,7 @@
   />
 {/if}
 <div
-  class="pt-8 absolute float-right ml-48 md:ml-52 cursor-pointer"
+  class="pt-8 absolute float-right ml-48 md:ml-56 cursor-pointer"
   on:click={() => (show = !show)}
 >
   <div class:show>
