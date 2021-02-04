@@ -13,20 +13,21 @@
 </script>
 
 <div
-  class="md:shadow-xl max-w-none max-h-none md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
+  class="md:shadow-xl max-w-none max-h-none w-full md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
 >
   <h1
-    class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-7 leading-9"
+    class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-3 leading-9"
   >
     {title}
   </h1>
 
   <form class="m-auto">
-    <div id="aaa">
+    <div>
       <slot />
     </div>
     <button
       type="button"
+      data-automation-id="form-button"
       on:click|preventDefault={actionButton.onclick}
       class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl"
       >{actionButton.label}</button

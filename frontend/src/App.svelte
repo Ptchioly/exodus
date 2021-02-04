@@ -6,6 +6,8 @@
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
+  import type { APIResponse } from './types/Api';
+  import { isSignedIn } from './types/guards';
 
   export let url = '';
 
@@ -17,14 +19,12 @@
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleLogin = ({
-    detail: { success },
-  }: CustomEvent<{ success: boolean }>) => {
-    if (success) {
+  const handleLogin = ({ detail }: CustomEvent<APIResponse>) => {
+    if (isSignedIn(detail)) {
       navigationState = 'home';
       return;
     }
-    alert('Ti ne ptchiola');
+    alert(detail.message);
   };
 
   const handleLogout = () => {

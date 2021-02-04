@@ -1,7 +1,10 @@
-import type { LoginResponse } from './types/Api';
+import type { APIResponse } from './types/Api';
 
 const baseUrl: string = process.env.host;
 const loginEndpoint = baseUrl.concat('/login');
+const authEndpoint = baseUrl.concat('/authentication');
+const signupEndpoint = baseUrl.concat('/signup');
+const logoutEndpoint = baseUrl.concat('/logout');
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -13,7 +16,7 @@ const defaultInit: RequestInit = {
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<LoginResponse> => {
+): Promise<APIResponse> => {
   console.log(baseUrl);
 
   const response = await fetch(loginEndpoint, {
@@ -37,11 +40,35 @@ export const signIn = async (
 };
 
 export const isAuthenticated = async (): Promise<boolean> => {
-  const authEndpoint = baseUrl.concat('/authentication');
   const { ok } = await fetch(authEndpoint, defaultInit);
   return ok;
 };
 
 export const logout = async (): Promise<void> => {
-  await fetch(baseUrl.concat('/logout'), defaultInit);
+  await fetch(logoutEndpoint, defaultInit);
+};
+
+export const signUp = async (
+  phoneNumber: string,
+  pwd: string,
+  monoToken: string
+): Promise<APIResponse> => {
+  const response = await fetch(signupEndpoint, {
+    method: 'POST',
+    body: JSON.stringify({
+      phoneNumber,
+      pwd,
+      monoToken,
+    }),
+  });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, user_id };
+  }
+
+  const { message } = await response.json();
+  return { status, message };
 };
