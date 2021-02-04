@@ -208,6 +208,7 @@
         height: 2em;
         background-color: #EC080899;
         border-radius: 0 8px 8px 0;
+        transition: width .4s;
     }
 
     .detailed > .bars > .bar--previous {
