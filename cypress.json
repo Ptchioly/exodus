@@ -4,6 +4,13 @@
         "runMode": 1,
         "openMode": 0
     },
+    "env": {
+        "user": {
+            "phone": "123456789011",
+            "password": "Password1234"
+        },
+        "apiUrl": "https://ptchioly.github.io"
+    },
     "videoUploadOnPasses": false,
     "projectId": "door68",
     "experimentalStudio": true
