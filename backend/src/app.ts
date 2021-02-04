@@ -12,6 +12,8 @@ import { authentication } from './routes/auth/validate';
 import { statement } from './routes/monobank/statement';
 import { personalInfo } from './routes/monobank/personal';
 import { logging } from './utils';
+import { updateInfo } from './routes/settings/updateInfo';
+import { deleteUser } from './routes/settings/deleteUser';
 
 export const app = express();
 
@@ -33,6 +35,8 @@ app.use(logout);
 app.use(statement);
 app.use(personalInfo);
 app.use(authentication);
+app.use(updateInfo);
+app.use(deleteUser);
 
 app.listen(configs.PORT, () => {
   console.log(`Server is running at port ${configs.PORT}`);
