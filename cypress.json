@@ -5,5 +5,6 @@
         "openMode": 0
     },
     "videoUploadOnPasses": false,
-    "projectId": "door68"
+    "projectId": "door68",
+    "experimentalStudio": true
 }
