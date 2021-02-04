@@ -22,10 +22,11 @@ export type StatementRequest = {
 
 export type Category = {
   mcc: {
-    nubmers: number[],
+    numbers: number[],
     ranges: number[][]
   },
   category: string
+  id: number,
 }
 
 export type LimitCategory = {
@@ -38,6 +39,7 @@ export type LimitCategory = {
 
 export type Payment = {
   category: string
+  categoryId: number,
   description: string
   operationAmount: number,
   time: number,
