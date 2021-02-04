@@ -6,7 +6,7 @@
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
-  import type { LoginResponse } from './types/Api';
+  import type { APIResponse } from './types/Api';
   import { isSignedIn } from './types/guards';
 
   export let url = '';
@@ -19,7 +19,7 @@
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleLogin = ({ detail }: CustomEvent<LoginResponse>) => {
+  const handleLogin = ({ detail }: CustomEvent<APIResponse>) => {
     if (isSignedIn(detail)) {
       navigationState = 'home';
       return;

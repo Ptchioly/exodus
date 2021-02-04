@@ -3,6 +3,7 @@
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
+  import MonoLogo from '../components/MonoLogo.svelte';
 
   let phoneNumber: string;
   let pwd: string;
@@ -18,11 +19,13 @@
 
   const singUpButton = {
     label: 'Sign Up',
-    onclick: () => {
+    onclick: async () => {
       pwdCheck = checkPwd(pwd, confirmPwd);
-      pwdCheck
-        ? signUp(phoneNumber, pwd, token)
-        : alert('Passwords do not match');
+      if (pwdCheck) {
+        await signUp(phoneNumber, pwd, token);
+        return dispatch('openSignIn');
+      }
+      alert('Passwords do not match');
     },
   };
 
@@ -38,25 +41,35 @@
   actionButton={singUpButton}
   linkButton={signInButton}
 >
-  <input
-    class="sobaka-input"
-    type="text"
-    placeholder="Phone number"
-    required
-    bind:value={phoneNumber}
-  />
-  <div class="flex items-center justify-center w-full relative">
-    <PasswordInput placeholder="Password" bind:value={pwd} />
-  </div>
-  <div class="flex items-center justify-center w-full relative">
-    <PasswordInput placeholder="Confirm Password" bind:value={confirmPwd} />
-  </div>
+  <div class="flex justify-center flex-col">
+    <div class="items-center">
+      <input
+        class="sobaka-input"
+        type="text"
+        placeholder="Phone number"
+        required
+        bind:value={phoneNumber}
+      />
+    </div>
 
-  <input
-    class="sobaka-input mt-5"
-    type="text"
-    placeholder="Monobank token"
-    required
-    bind:value={token}
-  />
+    <div class="flex items-center justify-center w-full relative">
+      <PasswordInput placeholder="Password" bind:value={pwd} />
+    </div>
+    <div class="flex items-center justify-center w-full relative">
+      <PasswordInput placeholder="Confirm Password" bind:value={confirmPwd} />
+    </div>
+
+    <div class="flex items-center w-full justify-center">
+      <div class="w-3/4 flex">
+        <input
+          class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 pl-2 mt-8"
+          type="text"
+          placeholder="Monobank token"
+          required
+          bind:value={token}
+        />
+        <div class=""><MonoLogo /></div>
+      </div>
+    </div>
+  </div>
 </LoginForm>

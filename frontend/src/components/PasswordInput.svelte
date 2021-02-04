@@ -16,6 +16,7 @@
 {#if show}
   <input
     class="sobaka-input mt-5"
+    data-automation-id="pwd-input"
     type="text"
     {placeholder}
     bind:value
@@ -25,6 +26,7 @@
   <input
     class="sobaka-input mt-5"
     type="password"
+    data-automation-id="pwd-input"
     {placeholder}
     bind:value
     on:input={handleInput}

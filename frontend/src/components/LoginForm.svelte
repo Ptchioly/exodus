@@ -27,6 +27,7 @@
     </div>
     <button
       type="button"
+      data-automation-id="form-button"
       on:click|preventDefault={actionButton.onclick}
       class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl"
       >{actionButton.label}</button
