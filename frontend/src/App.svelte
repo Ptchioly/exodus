@@ -38,6 +38,7 @@
   const handleOpenSignIn = () => {
     navigationState = 'signIn';
   };
+  $: console.log(navigationState);
 </script>
 
 <TailwindCss />

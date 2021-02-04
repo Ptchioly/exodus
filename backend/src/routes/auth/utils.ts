@@ -10,7 +10,7 @@ const reLower = /[a-z]/;
 const reUpper = /[a-z]/;
 const reNumber = /[0-9]/;
 const reWhitespace = /\s/;
-const reNineNumbers = /^[0-9]{9}$/;
+const reTwelweNumbers = /^[0-9]{12}$/;
 
 export const isValidPassword = (password: string): boolean =>
   password.length >= 8 &&
@@ -20,6 +20,6 @@ export const isValidPassword = (password: string): boolean =>
   reNumber.test(password);
 
 export const isValidUsername = (username: string): boolean =>
-  username.length === 9 &&
+  username.length === 12 &&
   Number(username) !== NaN &&
-  reNineNumbers.test(username);
+  reTwelweNumbers.test(username);

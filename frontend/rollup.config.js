@@ -13,7 +13,7 @@ const production = !process.env.ROLLUP_WATCH;
 
 //api host (in dev mode backend should be run locally)
 const host = production
-  ? 'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com'
+  ? 'https://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com'
   : 'http://localhost';
 
 function serve() {
