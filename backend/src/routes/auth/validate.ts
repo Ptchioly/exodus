@@ -2,6 +2,7 @@ import { NextFunction, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
+import { isValidUsername, isValidPassword } from './utils';
 
 export const authenticateToken = (
   req: any,
@@ -30,3 +31,14 @@ export const authentication = Router().get(
   authenticateToken,
   (req: any, res) => endpointRespond(res).SuccessResponse({})
 );
+
+export const validateUserInfo = (
+  username: string,
+  password: string
+): string => {
+  if (!isValidUsername(username)) return 'Phone number is not valid.';
+
+  if (!isValidPassword(password))
+    return 'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.';
+  return 'OK';
+};

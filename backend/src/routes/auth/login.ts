@@ -4,7 +4,7 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
 import { decrypt } from './utils';
-import { generateAccessToken } from './validate';
+import { generateAccessToken, validateUserInfo } from './validate';
 
 export const login = Router();
 
@@ -14,6 +14,11 @@ login.post('/login', async (req, res) => {
 
   if (!exist(req.body, username, password))
     return respond.FailureResponse('Required fields are empty');
+
+  const validationVerdict = validateUserInfo(username, password);
+
+  if (validationVerdict !== 'OK')
+    return respond.FailureResponse(validationVerdict);
 
   const userResponse = await getItem(configs.USER_TABLE, {
     username,
