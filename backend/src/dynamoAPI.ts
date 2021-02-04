@@ -17,6 +17,7 @@ export const getItem = async (
     TableName: table,
     Key: keyData,
   };
+
   return await documentClient
     .get(params)
     .promise()
@@ -31,8 +32,24 @@ export const putItem = async (
     TableName: table,
     Item: keyData,
   };
+
   return await documentClient
     .put(params)
+    .promise()
+    .catch((err) => err);
+};
+
+export const deleteItem = async (
+  table: string,
+  keyData: any
+): Promise<PutItemOutput | AWSError> => {
+  const params = {
+    TableName: table,
+    Key: keyData,
+  };
+
+  return await documentClient
+    .delete(params)
     .promise()
     .catch((err) => err);
 };
