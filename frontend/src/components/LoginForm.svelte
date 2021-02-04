@@ -1,6 +1,5 @@
 <script lang="ts">
   export let title: string;
-
   export let actionButton: {
     label: string;
     onclick: () => any;
@@ -29,7 +28,7 @@
       type="button"
       data-automation-id="form-button"
       on:click|preventDefault={actionButton.onclick}
-      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl"
+      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl focus:outline-none hover:shadow-lg hover:bg-coolGreen-dark active:bg-coolGreen-darkest active:shadow-xl"
       >{actionButton.label}</button
     >
   </form>
@@ -43,3 +42,9 @@
     <!-- </Link> -->
   </div>
 </div>
+
+<style>
+  .signButton {
+    box-shadow: 0px 10px 13px -2px rgba(0, 0, 0, 0.71);
+  }
+</style>

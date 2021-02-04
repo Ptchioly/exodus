@@ -15,7 +15,7 @@
 
 {#if show}
   <input
-    class="sobaka-input mt-5"
+    class="login-input mt-5"
     data-automation-id="pwd-input"
     type="text"
     {placeholder}
@@ -24,7 +24,7 @@
   />
 {:else}
   <input
-    class="sobaka-input mt-5"
+    class="login-input mt-5"
     type="password"
     data-automation-id="pwd-input"
     {placeholder}
