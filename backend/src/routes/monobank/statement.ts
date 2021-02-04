@@ -15,18 +15,17 @@ const requiredFields = ({
   from,
   to,
 }: Partial<StatementRequest>): StatementRequest => {
+  const date = Date.now();
   return {
-    account: account || 0, // error
-    from: from || Date.now() - 2678400000,
-    to,
+    account: account || 0,
+    from: from || date - 2678400000,
+    to: to || date,
   };
 };
 
 statement.post('/statement', authenticateToken, async (req: any, res) => {
   const respond = endpointRespond(res);
-  if (req.body && requiredFields(req.body))
-    return respond.FailureResponse('hui');
-  const { account, from, to } = req.body; // check exist
+  const { account, from, to } = requiredFields(req.body);
   const userFromDB = await getItem(configs.USER_TABLE, {
     username: req.user.data,
   });
