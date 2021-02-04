@@ -14,8 +14,6 @@ export const statement = Router();
 statement.post('/statement', authenticateToken, async (req: any, res) => {
   const respond = endpointRespond(res);
 
-  if (req.body) return respond.FailureResponse('Empty body.');
-
   const { account, from, to } = requiredFields(req.body);
 
   const userFromDB = await getItem(configs.USER_TABLE, {

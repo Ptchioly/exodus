@@ -1,14 +1,21 @@
 import { categories } from '../../../mccCategories';
 import { isInRange } from '../../utils';
-import { Category, LimitCategory, Payment } from '../types/types';
+import {
+  Category,
+  LimitCategory,
+  MonoStatements,
+  Payment,
+} from '../types/types';
+
+const other = 15;
 
 const getMccCategory = (mccNumber: number): Category =>
   categories.find(
     ({ mcc }) =>
       mcc.numbers.includes(mccNumber) || isInRange(mcc.ranges, mccNumber)
-  ) || categories[15];
+  ) || categories[other];
 
-const defineCategory = (payments: any[]): Payment[] => {
+const defineCategory = (payments: MonoStatements): Payment[] => {
   const spending = payments.filter((e) => e.operationAmount < 0);
   return spending.map(({ mcc, description, amount, time }) => {
     const { category, id } = getMccCategory(mcc);
@@ -22,7 +29,11 @@ const defineCategory = (payments: any[]): Payment[] => {
   });
 };
 
-export const categorize = (payments: any[]): LimitCategory[] => {
+export const categorize = (
+  payments: MonoStatements,
+  previousMonth = false
+): LimitCategory[] => {
+  const field = previousMonth ? 'previousMonth' : 'currentMonth';
   const categoryObj = defineCategory(payments).reduce(
     (acc: any, { categoryId, amount }) => {
       if (acc[categoryId] === undefined) acc[categoryId] = amount;
@@ -35,14 +46,11 @@ export const categorize = (payments: any[]): LimitCategory[] => {
 
   return Object.keys(categoryObj).map(
     (e): LimitCategory => {
-      const catId = parseInt(e);
-      const { category } = categories.find(({ id }) => catId === id)!;
+      const { category } = categories.find(({ id }) => +e === id) as Category;
       return {
-        name: category,
-        currMonth: categoryObj[e],
-        prevMonth: 0,
-        limit: 0,
-        id: catId,
+        category,
+        [field]: categoryObj[e],
+        id: +e,
       };
     }
   );

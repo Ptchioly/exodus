@@ -19,6 +19,7 @@ export type StatementRequest = {
   account: 0 | string;
   from: number;
   to?: number;
+  previous: boolean;
 };
 
 export type Category = {
@@ -30,12 +31,12 @@ export type Category = {
   id: number;
 };
 
+type Month = 'previousMonth' | 'currentMonth';
 export type LimitCategory = {
-  name: string;
-  currMonth: number;
-  prevMonth: number;
-  limit: number;
+  category: string;
   id: number;
+} & {
+  [k in Month]?: number;
 };
 
 export type Payment = {
@@ -76,4 +77,20 @@ type Account = {
   balance: number;
   creditLimit: number;
   type: string;
+};
+
+export type MonoStatements = MonoStatement[];
+
+export type MonoStatement = {
+  id: string;
+  time: number;
+  description: string;
+  mcc: number;
+  amount: number;
+  operationAmount: number;
+  currencyCode: number;
+  commissionRate: number;
+  cashbackAmount: number;
+  balance: number;
+  hold: boolean;
 };
