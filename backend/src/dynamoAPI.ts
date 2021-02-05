@@ -53,3 +53,38 @@ export const deleteItem = async (
     .promise()
     .catch((err) => err);
 };
+
+const buildUpdateParam = (obj: Record<string, any>) => {
+  const ExpressionAttributeNames: Record<string, any> = {};
+  const ExpressionAttributeValues: Record<string, any> = {};
+
+  const keys = Object.keys(obj).map((k) => {
+    ExpressionAttributeNames['#' + k] = k;
+    ExpressionAttributeValues[':' + k] = obj[k];
+    return `#${k} = :${k}`;
+  });
+
+  return {
+    UpdateExpression: `SET ${keys.join(', ')}`,
+    ExpressionAttributeNames,
+    ExpressionAttributeValues,
+  };
+};
+
+export const updateItem = async (
+  table: string,
+  keyData: any,
+  obj: Record<string, any>
+): Promise<PutItemOutput | AWSError> => {
+  const params = {
+    TableName: table,
+    Key: keyData,
+    ReturnValues: 'ALL_NEW',
+    ...buildUpdateParam(obj),
+  };
+
+  return await documentClient
+    .update(params)
+    .promise()
+    .catch((err) => err);
+};
