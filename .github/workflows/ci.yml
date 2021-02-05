@@ -56,7 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd exodus/frontend
+      - run: pwd
+      - run: cd /frontend
       - run: git fetch && git checkout main && git pull
       - run: npm ci
       - run: npm run build
