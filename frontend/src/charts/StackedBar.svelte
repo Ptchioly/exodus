@@ -20,11 +20,12 @@
         bar.classList.toggle('detailed')
     }
 
+    const percentOf = (i) => i * 100 / barSize;
+
     const countOverlap = () => {
-        return limit && current > limit ? (currentP - limitP) * bar.offsetWidth / 100 : 0;
+        return limit && current > limit ? (barSize / current) * (currentP - limitP) : 0;
     }
 
-    const percentOf = (i) => i * 100 / barSize;
 
     const handlePress = (e) => {
         const step = 50;
@@ -58,8 +59,6 @@
         window.addEventListener('mouseup', handleEnd)
         window.addEventListener('mousemove', handleMove)
     }
-
-    window.addEventListener('resize', () => overlap = countOverlap())
 
     onMount( () => {
         setTimeout(() => {
@@ -100,7 +99,12 @@
             <div class='bars'>
                 <div class='bar bar--previous' data-value={`$${previous}`} style={`width: ${previousP}%`}></div>
                 <div class='bar bar--current' style={`width: ${currentP}%`} data-value={`$${current}`}>
-                    <div class='bar__over' class:moveable={false} style={`width: ${overlap}px`}></div>
+                    <div class='bar__over' class:moveable={false} style={`width: ${overlap}%`}></div>
+                    <div class='bar__toLimit' style={`width: ${(limitP - currentP) * (barSize / current)}%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}>
+                        {#if limit && limit > current}
+                            <div><div class:detailed={limit - current > 99} data-value={limit - current}></div></div>
+                        {/if}
+                    </div>
                 </div>
             </div>
     
@@ -226,6 +230,40 @@
         transition: width 0s;
     }
 
+    .bar__toLimit {
+        display: flex;
+        align-items: center;
+    }
+
+    .bar__toLimit > div {
+        width: 100%;
+        height: 1em;
+        margin: 4px;
+        display: flex;
+        align-items: center;
+        border-left: 1px solid #2F9E9E;
+        border-right: 1px solid #2F9E9E;
+    }
+
+    .bar__toLimit > div > div {
+        width: 100%;
+        height: 0px;
+        border-top: 1px dashed #2F9E9E;
+    }
+
+    .bar__toLimit > div > div.detailed::before {
+        content: attr(data-value);
+        font-size: .6em;
+        color: #2F9E9E;
+        margin-left: -1.1em;
+        margin-top: -.7em;
+        position: absolute;
+        background-color: #2F9E9E;
+        border-radius: .3em;
+        color: white;
+        padding: 1px 3px;
+    }
+
     .detailed > .bars > .bar--previous {
         margin-top: .5em;
         margin-left: -.5em;
@@ -309,7 +347,7 @@
 
     .limit.moveable {
         cursor: default;
-        transition: margin .2s, left .001s, width .2s;
+        transition: margin .2s, left 0s, width .2s;
         width: 1em;
     }
 
