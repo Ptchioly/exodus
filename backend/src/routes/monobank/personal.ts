@@ -1,27 +1,13 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
 import { configs } from '../../config';
-import { getItem, updateUser } from '../../dynamoAPI';
+import { getItem, updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
-import { ClientInfo, MonoClientInfo } from '../types/types';
 import { requests } from './endpoints';
 
 export const personalInfo = Router();
-
-const updatePersonalInfo = async (
-  user: string,
-  { name, webHookUrl, accounts }: MonoClientInfo
-): Promise<ClientInfo> => {
-  // TODO: update all fields
-  await updateUser(user, name);
-  return {
-    name,
-    webHookUrl,
-    accounts,
-  };
-};
 
 personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
   const username = req.user.data;
@@ -30,13 +16,21 @@ personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
   });
   const respond = endpointRespond(res);
   if (!isFailure(userFromDB)) {
-    const data = await fetch(requests.personal(), {
+    const { name, webHookUrl, accounts } = await fetch(requests.personal(), {
       headers: {
         'X-Token': userFromDB.Item.xtoken,
       },
     }).then((el) => el.json());
-    const info = updatePersonalInfo(username, data);
+    const info = await updateItem(
+      configs.USER_TABLE,
+      {
+        username,
+      },
+      { name, webHookUrl, accounts }
+    );
+    if (isFailure(info))
+      return respond.FailureResponse('Failed to update user info');
 
-    return respond.SuccessResponse(info);
+    return respond.SuccessResponse({ name, webHookUrl, accounts });
   } else return respond.FailureResponse('Failed to get user info.');
 });
