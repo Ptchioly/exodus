@@ -42,7 +42,7 @@ jobs:
             working-directory: e2e
             # group: 'Web browser tests'
             # record: true
-            start: cd ./frontend && npm run dev
+            start: cd ../frontend && npm run dev
             config: 'baseUrl=http://localhost:5000'
             wait-on: 'http://localhost:5000, http://localhost:80'
           # env:
