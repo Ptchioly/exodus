@@ -4,7 +4,7 @@ describe.only('Login', () => {
   //TO DO
   // before(() => cy.registerUserIfNeeded())
   beforeEach(() => {
-    cy.visit('/exodus/')
+    cy.visit('/')
   })
 
   // it('greets with Sign in', () => {
