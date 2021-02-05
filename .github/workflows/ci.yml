@@ -42,6 +42,7 @@ jobs:
           runTests: false
           working-directory: e2e
           wait-on: 'http://localhost:5000, http://localhost:80'
+          wait-on-timeout: 180
 
   cypress-test:
       name: Run Cypress Tests
