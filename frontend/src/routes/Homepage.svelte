@@ -38,21 +38,19 @@
   ];
 </script>
 
-<main class="flex  w-full flex-col items-center">
-  <div class="header flex justify-between w-full px-5 mt-4 mb-20">
-    {#if userInfo}
-      <div class="user flex">
-        <div class="settings w-4 cursor-pointer mr-4">
-          <img alt="settings" src="images/settings.svg" />
-        </div>
-        <UserProfile user={userInfo} />
+<main class="flex w-full flex-col items-center mx-20">
+  <div class="header flex justify-between w-full px-5 mt-4 mb-40">
+    <div class="user flex">
+      <div class="settings w-4 cursor-pointer mr-4">
+        <img alt="settings" src="images/settings.svg" />
       </div>
-    {/if}
-    <div>YO MOTHERFUCKER</div>
-    <div>TI PTCHIOLA</div>
-    <div class="logout">
+      {#if userInfo}
+        <UserProfile user={userInfo} />
+      {/if}
+    </div>
+    <div class="logout ">
       <div
-        class="cursor-pointer bg-coolGreen-default rounded-3xl h-10  flex px-5 justify-center items-center text-white"
+        class="cursor-pointer bg-coolGreen-default rounded-3xl h-8 w-18 text-sm flex px-3 justify-center items-center text-white"
         on:click={async () => {
           await logout();
           dispatch('logout', {});
