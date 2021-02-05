@@ -57,29 +57,29 @@ jobs:
 
       #   run: ssh main 'cd exodus/frontend && git fetch && git checkout main && git checkout package-lock.json && git pull && npm i && npm run build && npm run deploy'
 
-  update-server:
-    name: Update the Server
-    runs-on: ubuntu-latest
-    needs: cypress-test
-    steps:
-      - name: Configure SSH
-        shell: bash
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/main.key
-          chmod 600 ~/.ssh/main.key
-          cat >>~/.ssh/config <<END
-          Host main
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/main.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_USER: ${{ secrets.SERVER_USERNAME }}
-          SSH_KEY: ${{ secrets.SERVER_KEY }}
-          SSH_HOST: ${{ secrets.SERVER_HOST }}
+  # update-server:
+  #   name: Update the Server
+  #   runs-on: ubuntu-latest
+  #   needs: servers-up
+  #   steps:
+  #     - name: Configure SSH
+  #       shell: bash
+  #       run: |
+  #         mkdir -p ~/.ssh/
+  #         echo "$SSH_KEY" > ~/.ssh/main.key
+  #         chmod 600 ~/.ssh/main.key
+  #         cat >>~/.ssh/config <<END
+  #         Host main
+  #           HostName $SSH_HOST
+  #           User $SSH_USER
+  #           IdentityFile ~/.ssh/main.key
+  #           StrictHostKeyChecking no
+  #         END
+  #       env:
+  #         SSH_USER: ${{ secrets.SERVER_USERNAME }}
+  #         SSH_KEY: ${{ secrets.SERVER_KEY }}
+  #         SSH_HOST: ${{ secrets.SERVER_HOST }}
 
-      - name: Restart Forever Server
-        shell: bash
-        run: ssh main 'cd exodus/backend && git fetch && git checkout main && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
+  #     - name: Restart Forever Server
+  #       shell: bash
+  #       run: ssh main 'cd exodus/backend && git fetch && git checkout main && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
