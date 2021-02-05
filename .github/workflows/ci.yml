@@ -11,12 +11,22 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run tests on Chrome
         uses: cypress-io/github-action@v2
+        id: cypress
+        # Continue the build in case of an error, as we need to set the
+        # commit status in the next step, both in case of success and failure
+        continue-on-error: true
         with:
           browser: chrome
           headless: true
-        #   record: true
-        # env:
-        #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          group: 'Web browser tests'
+          working-directory: e2e
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      - name: Print Dashboard URL
+        run: |
+          echo Cypress finished with: ${{ steps.cypress.outcome }}
+          echo See results at ${{ steps.cypress.outputs.dashboardUrl }}
   # update-front-end:
   #   name: Update Front End
   #   runs-on: ubuntu-latest
@@ -48,6 +58,7 @@ jobs:
     needs: cypress-test
     steps:
       - name: Configure SSH
+        shell: bash
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/main.key
@@ -65,6 +76,7 @@ jobs:
           SSH_HOST: ${{ secrets.SERVER_HOST }}
 
       - name: Restart the Server
+        shell: bash
         run: ssh main 'cd exodus/backend && git fetch && git checkout main && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
 
 
