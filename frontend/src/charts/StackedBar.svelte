@@ -101,7 +101,7 @@
                 <div class='bar bar--current' style={`width: ${currentP}%`} data-value={`$${current}`}>
                     <div class='bar__over' class:moveable={false} style={`width: ${overlap}%`}></div>
                     <div class='bar__toLimit' style={`width: ${(limitP - currentP) * (barSize / current)}%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}>
-                        {#if limit && limit > current}
+                        {#if limit && limit > (current + 20)}
                             <div><div class:detailed={limit - current > 99} data-value={limit - current}></div></div>
                         {/if}
                     </div>
