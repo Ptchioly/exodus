@@ -36,7 +36,7 @@ jobs:
           git checkout test-ci
           git pull
           npm ci
-          sudo npm run start &
+          sudo npx tsc && node out/src/app.js &
       - run: |
           cd ./frontend
           git fetch
