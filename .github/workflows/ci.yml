@@ -15,7 +15,7 @@ jobs:
           git checkout main
           git pull
           npm ci
-          sudo nohup nodemon src/app.ts
+          sudo nohup npm run server
 
   start-frontend:
     name: Update Front End
@@ -28,7 +28,7 @@ jobs:
           git checkout main 
           git pull
           npm ci
-          npm run dev
+          nohup npm run dev
 
   servers-up:
     name: Waaaait
