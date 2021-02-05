@@ -9,21 +9,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd ./backend
-      - run: git fetch && git checkout main && git pull
-      - run: npm ci
-      - run: npm run server
+      - run: |
+          cd ./backend
+          git fetch
+          git checkout main
+          git pull
+          npm ci
+          npm run server
 
   start-frontend:
     name: Update Front End
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd ./frontend
-      - run: git fetch && git checkout main && git pull
-      - run: npm ci
-      - run: npm run dev
-
+      - run: |
+          cd ./frontend
+          git fetch
+          git checkout main 
+          git pull
+          npm ci
+          npm run dev
 
   cypress-test:
       name: Run Cypress Tests
