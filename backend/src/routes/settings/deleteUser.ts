@@ -17,7 +17,7 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
   });
 
   if (isFailure(userFromDB)) {
-    return respond.FailureResponse('Failed to delte user');
+    return respond.FailureResponse('Failed to delete user');
   }
 
   const updateResponse = await deleteItem(configs.USER_TABLE, {
@@ -25,7 +25,7 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
   });
 
   if (isFailure(updateResponse)) {
-    return respond.FailureResponse('Failed to delte user');
+    return respond.FailureResponse('Failed to delete user');
   }
 
   return respond.SuccessResponse({});

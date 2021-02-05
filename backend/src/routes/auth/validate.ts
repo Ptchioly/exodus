@@ -23,7 +23,7 @@ export const authenticateToken = (
 
 export const generateAccessToken = (username: string): string =>
   jwt.sign({ data: username }, secrets.SESSION_TOKEN as string, {
-    expiresIn: '1h',
+    expiresIn: '1d',
   });
 
 export const authentication = Router().get(
