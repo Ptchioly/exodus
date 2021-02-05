@@ -7,7 +7,7 @@ export const secrets = {
 };
 
 export const configs = {
-  PORT: '80',
+  PORT: '8081',
   USER_TABLE: 'users',
   MAX_AGE: 86400000,
   DYNAMO_OPTS: {
