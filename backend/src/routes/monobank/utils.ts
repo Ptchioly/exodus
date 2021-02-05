@@ -7,13 +7,15 @@ export const requiredFields = ({
   previous,
 }: Partial<StatementRequest>): StatementRequest => {
   const date = new Date(Date.now());
-  const dateFrom = new Date(date.getFullYear(), date.getMonth() - 1).valueOf();
-  const dateTo = new Date(date.getFullYear(), date.getMonth()).valueOf();
-
+  const currentMonth = date.getMonth();
+  const currentYear = date.getFullYear();
+  const previousMonth = currentMonth > 0 ? currentMonth - 1 : 11;
+  const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
+  const dateFrom = new Date(yearCheck, previousMonth).valueOf();
   return {
     account: account || 0,
     from: from || dateFrom,
-    to: to || dateTo,
+    to: to,
     previous: !!previous,
   };
 };

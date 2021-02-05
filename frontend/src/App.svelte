@@ -4,7 +4,7 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { isAuthenticated } from './endpointApi';
+  import { getStatement, isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
@@ -13,18 +13,22 @@
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
+  const currentDate = Date.now();
 
   onMount(async () => {
     authorized = await isAuthenticated();
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleApiResponse = ({ detail }: CustomEvent<APIResponse>) => {
+  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
+      await getStatement(currentDate, 'previous');
+      setTimeout(async () => {
+        await getStatement(currentDate, 'current');
+      }, 70000);
       return;
     }
-    alert(detail.message);
   };
 
   const handleLogout = () => {
