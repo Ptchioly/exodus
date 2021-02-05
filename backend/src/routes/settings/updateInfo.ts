@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { configs } from '../../config';
-import { getItem, putItem } from '../../dynamoAPI';
+import { updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { encrypt } from '../auth/utils';
 import { authenticateToken } from '../auth/validate';
 import { atLeast, isFailure } from '../types/guards';
 
@@ -13,29 +12,18 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
 
   if (!req.body) return respond.FailureResponse('Empty body.');
 
-  const { newPassword, newMonoToken, newTelegramId } = req.body;
+  const { password, xtoken, telegramId } = req.body;
 
-  if (!atLeast(newPassword, newMonoToken, newTelegramId))
+  if (!atLeast(password, xtoken, telegramId))
     return respond.FailureResponse('Required at least one field');
 
-  const userFromDB = await getItem(configs.USER_TABLE, {
-    username: req.user.data,
-  });
-
-  if (isFailure(userFromDB)) {
-    return respond.FailureResponse('Failed to update personal info');
-  }
-
-  const { id, key, username, password, xtoken, telegramId } = userFromDB.Item;
-
-  const updateUserResponse = await putItem(configs.USER_TABLE, {
-    id,
-    key,
-    username,
-    password: newPassword === undefined ? password : encrypt(password, key),
-    xtoken: newMonoToken === undefined ? xtoken : newMonoToken,
-    telegramId: newTelegramId === undefined ? telegramId : newTelegramId,
-  });
+  const updateUserResponse = await updateItem(
+    configs.USER_TABLE,
+    {
+      username: req.user.data,
+    },
+    req.body
+  );
 
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Failed to update user info');
