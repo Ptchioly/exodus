@@ -6,14 +6,16 @@ export const requiredFields = ({
   to,
   previous,
 }: Partial<StatementRequest>): StatementRequest => {
-  const date = Date.now();
-  const dateFrom = date - 2678400000;
-  const dateTo = date;
-
+  const date = new Date(Date.now());
+  const currentMonth = date.getMonth();
+  const currentYear = date.getFullYear();
+  const previousMonth = currentMonth > 0 ? currentMonth - 1 : 11;
+  const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
+  const dateFrom = new Date(yearCheck, previousMonth).valueOf();
   return {
     account: account || 0,
     from: from || dateFrom,
-    to: to || dateTo,
+    to: to,
     previous: !!previous,
   };
 };
