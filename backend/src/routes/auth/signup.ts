@@ -4,8 +4,8 @@ import { configs } from '../../config';
 import { getItem, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
-import { encrypt, isValidPassword, isValidUsername } from './utils';
-import { generateAccessToken } from './validate';
+import { encrypt } from './utils';
+import { generateAccessToken, validateUserInfo } from './validate';
 
 export const signup = Router();
 
@@ -16,13 +16,11 @@ signup.post('/signup', async (req, res) => {
   if (!exist(req.body, username, password, xtoken))
     return respond.FailureResponse('Required fields are empty');
 
-  if (!isValidUsername(username))
-    return respond.FailureResponse('Phone number is not valid.');
+  const validationVerdict = validateUserInfo(username, password);
 
-  if (!isValidPassword(password))
-    return respond.FailureResponse(
-      'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
-    );
+  if (validationVerdict !== 'OK')
+    return respond.FailureResponse(validationVerdict);
+
   const userResponse = await getItem(configs.USER_TABLE, {
     username,
   });

@@ -20,4 +20,10 @@ export const configs = {
     readCapacityUnits: 1,
     writeCapacityUnits: 1,
   },
+  CURRENCY_CODE: {
+    980: 'UAH',
+    985: 'PLN',
+    840: 'USD',
+    978: 'EUR',
+  },
 };
