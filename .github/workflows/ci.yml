@@ -47,7 +47,7 @@ jobs:
       - name: Run tests on Chrome
         uses: cypress-io/github-action@v2
         with:
-          wait-on: 'http://localhost:5000, http://localhost:80'
+          wait-on: 'http://localhost:5000, http://localhost:8081'
           # wait-on: 'http://localhost:5000'
           browser: chrome
           headless: true
