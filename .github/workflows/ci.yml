@@ -15,7 +15,7 @@ jobs:
           git checkout main
           git pull
           npm ci
-          sudo nohup npm start
+          sudo nohup nodemon src/app.ts
 
   start-frontend:
     name: Update Front End
@@ -33,7 +33,7 @@ jobs:
   servers-up:
     name: Waaaait
     runs-on: ubuntu-latest
-    needs: start-frontend
+    # needs: start-frontend
     steps:
       - uses: actions/checkout@v2
       - name: wait for localhost up
