@@ -15,7 +15,7 @@ jobs:
           git checkout main
           git pull
           npm ci
-          npm run server
+          npm start
 
   start-frontend:
     name: Update Front End
@@ -28,7 +28,6 @@ jobs:
           git checkout main 
           git pull
           npm ci
-          npm run dev
 
   cypress-test:
       name: Run Cypress Tests
@@ -43,6 +42,7 @@ jobs:
             working-directory: e2e
             # group: 'Web browser tests'
             # record: true
+            start: cd ./frontend && npm run dev
             config: 'baseUrl=http://localhost:5000'
             wait-on: 'http://localhost:5000, http://localhost:80'
           # env:
