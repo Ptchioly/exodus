@@ -15,7 +15,7 @@ jobs:
           git checkout main
           git pull
           npm ci
-          sudo nohup npm run server
+          sudo npm run start
 
   start-frontend:
     name: Update Front End
@@ -28,7 +28,7 @@ jobs:
           git checkout main 
           git pull
           npm ci
-          nohup npm run dev
+          npm run dev
 
   servers-up:
     name: Waaaait
@@ -40,6 +40,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           runTests: false
+          working-directory: e2e
           wait-on: 'http://localhost:5000, http://localhost:80'
 
   cypress-test:
