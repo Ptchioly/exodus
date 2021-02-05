@@ -4,14 +4,17 @@
   import { getUserInfo, logout } from '../endpointApi';
   import type { UserInfo } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
-  const dispatch = createEventDispatcher();
   import RawCharts from '../charts/RawCharts.svelte';
   import StackedBar from '../charts/StackedBar.svelte';
+
   let userInfo: UserInfo;
+  const dispatch = createEventDispatcher();
   onMount(async () => {
     const resp = await getUserInfo();
     if (isSuccessResponse(resp)) userInfo = resp.data;
   });
+
+  const handleSetLimit = async () => {};
 
   const data = [
     {
@@ -68,6 +71,7 @@
         current={bar.currMonth}
         previous={bar.prevMonth}
         limit={bar.limit}
+        on:setLimit={handleSetLimit}
       />
     {/each}
   </section>

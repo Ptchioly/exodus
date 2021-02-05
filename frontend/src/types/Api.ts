@@ -6,13 +6,19 @@ export type UserInfo = {
   name: string;
   accounts: [
     {
-      id: 'S3uUiJEW20GuVOEuS67iNw';
-      currencyCode: 980;
-      cashbackType: 'UAH';
-      balance: 729214;
-      creditLimit: 200000;
-      maskedPan: ['537541******3975'];
+      id: string;
+      currencyCode: number;
+      cashbackType: 'string';
+      balance: number;
+      creditLimit: number;
+      maskedPan: string[];
       type: 'black' | 'white';
     }
   ];
 };
+
+export type OnResponseCB = (response: Response) => void;
+export interface RequestsQueue {
+  pushRequest: (url: string, init?: RequestInit) => void;
+  onResponse: (cb: OnResponseCB) => void;
+}
