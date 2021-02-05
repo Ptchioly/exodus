@@ -44,13 +44,20 @@ jobs:
           git pull
           npm ci
           npm run dev &
-      - name: wait for localhost up
+      - name: Run tests on Chrome
         uses: cypress-io/github-action@v2
         with:
-          runTests: false
+          # wait-on: 'http://localhost:5000, http://localhost:80'
+          wait-on: 'http://localhost:5000'
+          wait-on-timeout: 120
+          browser: chrome
+          headless: true
           working-directory: e2e
-          wait-on: 'http://localhost:5000, http://localhost:80'
-          wait-on-timeout: 180
+          # group: 'Web browser tests'
+          # record: true
+          config: 'baseUrl=http://localhost:5000'
+        # env:
+        #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}    
 
   cypress-test:
       name: Run Cypress Tests
