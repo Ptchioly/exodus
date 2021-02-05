@@ -2,79 +2,60 @@ name: CI
 on:
   push:
     branches: 
-      - 'main'
+      - 'test-ci'
 jobs:
-  start-server:
-    name: Start Server
+
+  servers-up:
+    name: Setup env and run tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: |
           cd ./backend
           git fetch
-          git checkout main
+          git checkout test-ci
           git pull
           npm ci
-          sudo npm run start
-
-  start-frontend:
-    name: Update Front End
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
+          sudo npx tsc && node out/src/app.js &
       - run: |
           cd ./frontend
           git fetch
-          git checkout main 
+          git checkout test-ci 
           git pull
           npm ci
-          npm run dev
-
-  servers-up:
-    name: Waaaait
-    runs-on: ubuntu-latest
-    # needs: start-frontend
-    steps:
-      - uses: actions/checkout@v2
-      - name: wait for localhost up
+          npm run dev &
+      - name: Run tests on Chrome
         uses: cypress-io/github-action@v2
         with:
-          runTests: false
+          wait-on: 'http://localhost:5000'
+          # wait-on: 'http://localhost:5000, http://localhost:8081' #uncomment when backend returns something other than 404
+          browser: chrome
+          headless: true
           working-directory: e2e
-          wait-on: 'http://localhost:5000, http://localhost:80'
+          # group: 'Web browser tests'
+          # record: true
+          config: 'baseUrl=http://localhost:5000'
+        # env:
+        #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
-  cypress-test:
-      name: Run Cypress Tests
-      runs-on: ubuntu-latest
-      needs: servers-up
-      steps:
-        - uses: actions/checkout@v2
-        - name: Run tests on Chrome
-          uses: cypress-io/github-action@v2
-          with:
-            browser: chrome
-            install: false
-            headless: true
-            working-directory: e2e
-            # group: 'Web browser tests'
-            # record: true
-            config: 'baseUrl=http://localhost:5000'
-          # env:
-          #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  # deploy:
+  #   name: Deploy to gh-pages
+  #   needs: servers-up
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - run: |
+  #        cd ./frontend
+  #        git fetch
+  #        git checkout test-ci
+  #        git pull
+  #        npm ci
+  #        npm run build
+  #        git config --global user.email "exodus-ci@exodus.com"
+  #        git config --global user.name "Exodus Ci"
+  #        npm run deploy
 
-  deploy:
-    name: deploy
-    needs: cypress-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: cd ./frontend
-      - run: git fetch && git checkout main && git pull
-      - run: npm ci
-      - run: npm run build
-      - run: npm run deploy
-
-      #   run: ssh main 'cd exodus/frontend && git fetch && git checkout main && git checkout package-lock.json && git pull && npm i && npm run build && npm run deploy'
+      #   run: ssh test-ci 'cd exodus/frontend && git fetch && git checkout test-ci && git checkout package-lock.json && git pull && npm i && npm run build && npm run deploy'
 
   update-server:
     name: Update the Server
@@ -85,13 +66,13 @@ jobs:
         shell: bash
         run: |
           mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/main.key
-          chmod 600 ~/.ssh/main.key
+          echo "$SSH_KEY" > ~/.ssh/test-ci.key
+          chmod 600 ~/.ssh/test-ci.key
           cat >>~/.ssh/config <<END
-          Host main
+          Host test-ci
             HostName $SSH_HOST
             User $SSH_USER
-            IdentityFile ~/.ssh/main.key
+            IdentityFile ~/.ssh/test-ci.key
             StrictHostKeyChecking no
           END
         env:
@@ -101,4 +82,4 @@ jobs:
 
       - name: Restart Forever Server
         shell: bash
-        run: ssh main 'cd exodus/backend && git fetch && git checkout main && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
+        run: ssh test-ci 'cd exodus/backend && git fetch && git checkout test-ci && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
