@@ -36,13 +36,12 @@ jobs:
             browser: chrome
             headless: true
             working-directory: e2e
-            group: 'Web browser tests'
-            record: true
-            with:
-              config: 'baseUrl=http://localhost:5000'
-              wait-on: 'http://localhost:5000, http://localhost:80'
-          env:
-            CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+            # group: 'Web browser tests'
+            # record: true
+            config: 'baseUrl=http://localhost:5000'
+            wait-on: 'http://localhost:5000, http://localhost:80'
+          # env:
+          #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
   deploy:
     name: deploy
