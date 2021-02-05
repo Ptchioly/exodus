@@ -1,6 +1,6 @@
 import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
-import { configs, secrets } from './config';
+import { secrets } from './config';
 import { GetOutput, Users } from './routes/types/types';
 
 const documentClient = new DocumentClient({
