@@ -13,5 +13,6 @@
     },
     "videoUploadOnPasses": false,
     "projectId": "door68",
-    "experimentalStudio": true
+    "experimentalStudio": true,
+    "chromeWebSecurity": false
 }

@@ -4,6 +4,7 @@ export const requiredFields = ({
   account,
   from,
   to,
+  previous,
 }: Partial<StatementRequest>): StatementRequest => {
   const date = new Date(Date.now());
   const dateFrom = new Date(date.getFullYear(), date.getMonth() - 1).valueOf();
@@ -13,5 +14,6 @@ export const requiredFields = ({
     account: account || 0,
     from: from || dateFrom,
     to: to || dateTo,
+    previous: !!previous,
   };
 };
