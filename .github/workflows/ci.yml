@@ -71,6 +71,8 @@ jobs:
          git pull
          npm ci
          npm run build
+         git config --global user.email "exodus-ci@exodus.com"
+         git config --global user.name "Exodus Ci"
          npm run deploy
 
       #   run: ssh test-ci 'cd exodus/frontend && git fetch && git checkout test-ci && git checkout package-lock.json && git pull && npm i && npm run build && npm run deploy'
