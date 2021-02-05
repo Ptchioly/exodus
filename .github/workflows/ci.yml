@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches: 
-      - 'main'
+      - 'test-ci'
 jobs:
   start-server:
     name: Start Server
@@ -12,7 +12,7 @@ jobs:
       - run: |
           cd ./backend
           git fetch
-          git checkout main
+          git checkout test-ci
           git pull
           npm ci
           sudo npm run start
@@ -25,7 +25,7 @@ jobs:
       - run: |
           cd ./frontend
           git fetch
-          git checkout main 
+          git checkout test-ci 
           git pull
           npm ci
           npm run dev
@@ -69,12 +69,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: cd ./frontend
-      - run: git fetch && git checkout main && git pull
+      - run: git fetch && git checkout test-ci && git pull
       - run: npm ci
       - run: npm run build
       - run: npm run deploy
 
-      #   run: ssh main 'cd exodus/frontend && git fetch && git checkout main && git checkout package-lock.json && git pull && npm i && npm run build && npm run deploy'
+      #   run: ssh test-ci 'cd exodus/frontend && git fetch && git checkout test-ci && git checkout package-lock.json && git pull && npm i && npm run build && npm run deploy'
 
   update-server:
     name: Update the Server
@@ -85,13 +85,13 @@ jobs:
         shell: bash
         run: |
           mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/main.key
-          chmod 600 ~/.ssh/main.key
+          echo "$SSH_KEY" > ~/.ssh/test-ci.key
+          chmod 600 ~/.ssh/test-ci.key
           cat >>~/.ssh/config <<END
-          Host main
+          Host test-ci
             HostName $SSH_HOST
             User $SSH_USER
-            IdentityFile ~/.ssh/main.key
+            IdentityFile ~/.ssh/test-ci.key
             StrictHostKeyChecking no
           END
         env:
@@ -101,4 +101,4 @@ jobs:
 
       - name: Restart Forever Server
         shell: bash
-        run: ssh main 'cd exodus/backend && git fetch && git checkout main && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
+        run: ssh test-ci 'cd exodus/backend && git fetch && git checkout test-ci && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
