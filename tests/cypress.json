@@ -6,13 +6,15 @@
     },
     "env": {
         "user": {
-            "phone": "123456789011",
-            "password": "Password1234"
+            "username": "123456789011",
+            "password": "Password1234",
+            "xtoken": "0000" 
         },
         "apiUrl": "https://ptchioly.github.io"
     },
     "videoUploadOnPasses": false,
     "projectId": "door68",
     "experimentalStudio": true,
-    "chromeWebSecurity": false
+    "chromeWebSecurity": false,
+    "supportFile": "cypress/support/index.ts"
 }

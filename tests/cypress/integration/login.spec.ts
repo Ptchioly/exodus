@@ -1,10 +1,11 @@
 /// <reference types="cypress" />
 
+
 describe.only('Login', () => {
   //TO DO
   // before(() => cy.registerUserIfNeeded())
   beforeEach(() => {
-    cy.visit('/')
+    cy.visit('/exodus')
   })
 
   // it('greets with Sign in', () => {
@@ -21,7 +22,7 @@ describe.only('Login', () => {
   // })
 
   // it('requires password', () => {
-  //   cy.get('[data-automation-id=phone]').type(`${Cypress.env('user').phone}{enter}`)
+  //   cy.getBySel('phone').type(`${Cypress.env('user').username}{enter}`)
   //   cy.get('.error-msg')
   //     .should('contain', 'password number can\'t be blank')
   // })
@@ -31,16 +32,17 @@ describe.only('Login', () => {
   //     invalid_password: 'invalid'
   //   }
   // }, () => {
-  //   cy.get('[data-automation-id=phone]').type(`${Cypress.env('user').phone}{enter}`)
-  //   cy.get('[data-automation-id=password]').type("invalid{enter}")
+  //   cy.getBySel('phone').type(`${Cypress.env('user').username}{enter}`)
+  //   cy.getBySel('password').type("invalid{enter}")
   //   cy.get('.error-msg')
   //     .should('contain', 'phone or password is invalid')
   // })
 
   it('displays home page on successful login', () => {
-    // cy.get('[data-automation-id=phone]').type('Cypress.env('user').phone{enter}')
-    // cy.get('[data-automation-id=password]').type('Cypress.env('user').password{enter}')
-    cy.window().should('have.property', 'top')
+    // cy.getBySel('phone').type(`Cypress.env('user').username{enter}`)
+    // cy.getBySel('password').type(`Cypress.env('user').password{enter}`)
+    // cy.task("db:getUser", "testtest");
+    cy.window().should('have.property', 'top');
   })
 
 })

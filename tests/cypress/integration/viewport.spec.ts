@@ -1,4 +1,4 @@
-// /// <reference types="cypress" />
+/// <reference types="cypress" />
 
 // const sizes = ['iphone-6', 'ipad-2', [1024, 768]] // test viewports, update with relevant ones
 
