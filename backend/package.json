@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
-    "start": "nodemon src/app.ts",
-    "server": "npx tsc && node out/app.js"
+    "compile": "npx tsc",
+    "dev": "nodemon src/app.ts",
+    "start": "npm run compile && echo hui && node out/src/app.js"
   },
   "author": "",
   "license": "ISC",
