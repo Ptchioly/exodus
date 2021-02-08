@@ -3,8 +3,8 @@ on:
   push:
     branches: 
       - 'main'
-    tags:
-      - 'v*.*.*'
+    # tags:
+    #   - 'v*.*.*'
 jobs:
   setup-and-run-ui-tests:
     name: Run UI Tests - Chrome
