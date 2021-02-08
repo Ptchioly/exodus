@@ -58,38 +58,38 @@ jobs:
         run: ssh main 'cd exodus/backend && git fetch && git checkout main && git pull && npm ci && npm run build && sudo forever stopall && sudo forever start out/app.js'
 
 
-deploy:
-    name: Deploy
-    needs: restart-server
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.1 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
-        with:
-          # persist-credentials: false
-          fetch-depth: 0
-      - name: Install and Build
-        run: |
-          cd ./frontend
-          npm ci
-          npm run build
+  deploy:
+      name: Deploy
+      needs: restart-server
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2.3.1 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+          with:
+            # persist-credentials: false
+            fetch-depth: 0
+        - name: Install and Build
+          run: |
+            cd ./frontend
+            npm ci
+            npm run build
 
-      - name: Prepare Tag
-        id: prepare_tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          TAG_NAME="${GITHUB_REF##refs/tags/}"
-          echo "::set-output name=tag_name::${TAG_NAME}"
-          echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
-  
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
-          tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
-          user_name: 'exodus[bot]'
-          user_email: 'exodus[bot]@exodus.noreply.github.com'
-          commit_message: ${{ github.event.head_commit.message }}
+        - name: Prepare Tag
+          id: prepare_tag
+          if: startsWith(github.ref, 'refs/tags/')
+          run: |
+            TAG_NAME="${GITHUB_REF##refs/tags/}"
+            echo "::set-output name=tag_name::${TAG_NAME}"
+            echo "::set-output name=deploy_tag_name::deploy-${TAG_NAME}"
+    
+        - name: Deploy
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./public
+            tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+            tag_message: 'Deployment ${{ steps.prepare_tag.outputs.tag_name }}'
+            user_name: 'exodus[bot]'
+            user_email: 'exodus[bot]@exodus.noreply.github.com'
+            commit_message: ${{ github.event.head_commit.message }}
      

@@ -110,5 +110,5 @@ dist
 .tern-port
 
 #cypress
-e2e/cypress/videos/
+tests/cypress/videos/
 .DS_Store
