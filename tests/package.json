@@ -7,7 +7,7 @@
     "cy:run": "cypress run",
     "cypress:open:mobile": "cypress open --config viewportWidth=375,viewportHeight=812",
     "cypress:run:mobile": "cypress run --config viewportWidth=375,viewportHeight=812",
-    "backend:start": "cd ../backend && npm ci && sudo npx tsc && node out/src/app.js",
+    "backend:start": "cd ../backend && npm ci && sudo npx tsc && sudo node out/src/app.js",
     "frontend:start": "cd ../frontend && npm ci && npm run dev"
   },
   "author": "",
