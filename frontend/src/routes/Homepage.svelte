@@ -43,10 +43,10 @@
 
 <main class="flex w-full flex-col items-center mx-20">
   <div class="header flex justify-between w-full px-5 mt-4 mb-40">
-    <div class="user flex">
-      <div class="settings w-4 cursor-pointer mr-4">
+    <div class="user flex items-center">
+      <!-- <div class="settings w-4 cursor-pointer mr-4">
         <img alt="settings" src="images/settings.svg" />
-      </div>
+      </div> -->
       {#if userInfo}
         <UserProfile user={userInfo} />
       {/if}
