@@ -3,6 +3,12 @@ build/
 
 #express
 backend/out/
+ssl/
+
+# Elastic Beanstalk Files
+backend/.elasticbeanstalk/*
+backend/!.elasticbeanstalk/*.cfg.yml
+backend/!.elasticbeanstalk/*.global.yml
 
 # Logs
 logs
@@ -110,5 +116,5 @@ dist
 .tern-port
 
 #cypress
-tests/cypress/videos/
+cypress/videos/
 .DS_Store
