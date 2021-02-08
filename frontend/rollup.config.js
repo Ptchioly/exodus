@@ -12,9 +12,7 @@ import replace from '@rollup/plugin-replace';
 const production = !process.env.ROLLUP_WATCH;
 
 //api host (in dev mode backend should be run locally)
-const host = production
-  ? 'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com:80'
-  : 'http://localhost';
+const host = production ? 'https://api.beeeee.es' : 'http://localhost';
 
 function serve() {
   let server;
