@@ -11,6 +11,7 @@ export const configs = {
   HTTPS_PORT: 443,
   HTTP_PORT: 8000,
   USER_TABLE: 'users',
+  STATEMENTS_TABLE: 'statements',
   MAX_AGE: 86400000,
   CURRENCY_CODE: {
     980: 'UAH',

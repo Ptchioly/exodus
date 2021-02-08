@@ -54,14 +54,14 @@ export type MonoClientInfo = {
   accounts: MonoAccount[];
 };
 
-type MonoAccount = {
+export type MonoAccount = {
   id: string;
   currencyCode: number;
-  cashbackType: string;
+  cashbackType: 'None' | 'UAH' | 'Miles';
   balance: number;
   creditLimit: number;
   maskedPan: string[];
-  type: string;
+  type: 'black' | 'white' | 'platinum' | 'iron' | 'fop' | 'yellow';
   iban: string;
 };
 
