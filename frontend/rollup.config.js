@@ -2,12 +2,12 @@ import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
+import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import tailwind from 'tailwindcss';
-import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
