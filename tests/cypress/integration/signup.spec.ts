@@ -1,16 +1,13 @@
 /// <reference types="cypress" />
 
-// describe('sign up', () => {
-//   beforeEach(() => {
-//     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws")});
-//     // we are not logged in
-//     cy.visit('/exodus')
-//   })
-
-//   it('registers new user', () => { })
+describe('sign up', () => {
+  beforeEach(() => {
+    cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws")});
+    // we are not logged in
+    cy.visit('/')
+  })
 
 //   it('does not register new user with already registered phone number', () => { })
-
 
 //   it('requires only digits in phone number', () => {
 //     cy.getBySel('phone').type('A^HJF@3F32fh{enter}')
@@ -34,4 +31,7 @@
 
 //   it('does not register new user with "password" and "confirm password" inputs mismatched', () => { })
 
-// })
+//   it('registers new user', () => { })
+
+
+})

@@ -7,6 +7,9 @@ describe.only('Login', () => {
     cy.registerUser()
   })
 
+  //user phone without region
+  const phone = Cypress.env('user').username.slice(4);
+
   beforeEach(() => {
     cy.visit('/')
   })
@@ -25,7 +28,7 @@ describe.only('Login', () => {
   // })
 
   // it('requires password', () => {
-  //   cy.getBySel('phone').type(`${Cypress.env('user').username}{enter}`)
+  //   cy.getBySel('phone').type(`${phone}{enter}`)
   //   cy.get('.error-msg')
   //     .should('contain', 'password number can\'t be blank')
   // })
