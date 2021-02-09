@@ -1,13 +1,10 @@
-<main class="flex justify-center bg-white ml-2 -mt-3">
-  <div class="mono">
-    <span
-      on:click={() => window.open('https://api.monobank.ua')}
-      class="flex rounded-lg cursor-pointer"
-    >
+<div class="flex justify-center mt-5 ml-2">
+  <div class="mono mt-4">
+    <a href="https://api.monobank.ua" class="flex rounded-lg">
       <img src="images/mono-logo.png" alt="mono" />
-    </span>
+    </a>
   </div>
-</main>
+</div>
 
 <style>
   .mono {

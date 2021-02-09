@@ -9,10 +9,9 @@
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
 
-  export let url = '';
-
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
+  let error: boolean = false;
   const currentDate = Date.now();
 
   onMount(async () => {
@@ -23,23 +22,26 @@
   const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      await getStatement(currentDate, 'previous');
-      setTimeout(async () => {
-        await getStatement(currentDate, 'current');
+      getStatement(currentDate, 'previous');
+      setTimeout(() => {
+        getStatement(currentDate, 'current');
       }, 70000);
       return;
     }
   };
 
   const handleLogout = () => {
+    error = false;
     navigationState = 'signIn';
   };
 
   const handleOpenSignUp = () => {
+    error = false;
     navigationState = 'signUp';
   };
 
   const handleOpenSignIn = () => {
+    error = false;
     navigationState = 'signIn';
   };
   $: console.log(navigationState);
@@ -50,16 +52,22 @@
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
-    <SignIn on:login={handleApiResponse} on:openSignUp={handleOpenSignUp} />
+    <SignIn
+      on:login={handleApiResponse}
+      on:openSignUp={handleOpenSignUp}
+      bind:error
+    />
   {:else if navigationState === 'signUp'}
-    <SignUp on:signUp={handleApiResponse} on:openSignIn={handleOpenSignIn} />
+    <SignUp
+      on:signUp={handleApiResponse}
+      on:openSignIn={handleOpenSignIn}
+      bind:error
+    />
   {:else}
     Loading
   {/if}
 
-  <!-- <h1 class="text-gray-500 font-extralight text-5xl">Hello,</h1>
-  <h1 class="font-black italic tracking-wide text-indigo-600 text-5xl">SOBAKA,</h1>
-  <h1 class="font-black italic tracking-wide text-5xl">SMOTRI:</h1> -->
+
 </main>
 
 <svelte:head>

@@ -9,14 +9,14 @@ describe.only('Login', () => {
     // cy.registerUser().then(res => cy.setToken(res))
   })
 
-  // it('greets with Sign in', () => {
-  //   cy.contains('h1', 'Sign In')
-  // })
+  it('displays "Sign in to Exodus" on the login page', () => {
+    cy.contains('h1', 'Sign in to Exodus')
+  })
 
-  // it('displays register page on "Join now" click', () => {
-  //   cy.contains('Join now').click()
-  //     .should('have.attr', 'href', '/signup')
-  // })
+  it('displays register page on "Join now" click', () => {
+    cy.contains('Join Now').click()
+    cy.get('h1').should('contain', 'Sign Up')
+  })
 
   // it('requires phone number', () => {
   //   cy.get('form').contains('Sign in').click()
