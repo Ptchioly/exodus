@@ -9,6 +9,7 @@ describe.only('Login', {
   before(() => {
     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
     cy.registerUser()
+    cy.clearCookies()
   })
 
 
@@ -34,6 +35,8 @@ describe.only('Login', {
   // })
 
   // it('requires password', () => {
+  //   cy.getBySel('phone-input').clear
+  //   cy.getBySel('pwd-input').clear
   //   cy.getBySel('phone').type(`${Cypress.env('phone')}{enter}`)
   //   cy.get('.error-msg')
   //     .should('contain', 'password number can\'t be blank')
@@ -51,8 +54,10 @@ describe.only('Login', {
   // });
 
   it('displays home page on successful login', () => {
-    // cy.getBySel('phone').type(`Cypress.env('user').username{enter}`)
-    // cy.getBySel('password').type(`Cypress.env('user').password{enter}`)
+    cy.getBySel('phone-input').type(`${Cypress.env('phone')}`)
+    cy.getBySel('pwd-input').type(`${Cypress.env('user').password}`)
+    // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
+    cy.getBySel('form-button').click()
     cy.window().should('have.property', 'top');
   })
 
