@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { slide, fade } from 'svelte/transition';
   import { onMount } from 'svelte';
   export let errorMessage: string;
   export let visible: boolean;

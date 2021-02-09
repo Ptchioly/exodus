@@ -26,7 +26,6 @@
       setTimeout(() => {
         getStatement(currentDate, 'current');
       }, 70000);
-      return;
     }
   };
 
@@ -66,8 +65,6 @@
   {:else}
     Loading
   {/if}
-
-
 </main>
 
 <svelte:head>

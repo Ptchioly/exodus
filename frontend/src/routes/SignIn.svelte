@@ -6,6 +6,7 @@
   import PasswordInput from '../components/PasswordInput.svelte';
   import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
   import { signIn } from '../endpointApi';
+  import { isSuccessResponse } from '../types/guards';
 
   export let error: boolean = false;
   let errorMessage: string;
@@ -18,8 +19,8 @@
   const signInButton = {
     label: 'Sign In',
     onclick: async () => {
-      const resp = (await signIn(summaryPhone, pwd)) as any;
-      if (resp.message !== undefined) {
+      const resp = await signIn(summaryPhone, pwd);
+      if (!isSuccessResponse(resp)) {
         errorMessage = resp.message;
         error = true;
       }
@@ -36,10 +37,6 @@
   // $: summaryPhone = phoneNumber;
 </script>
 
-<!-- TODO: Make template more responsive.
-     This should be done by implementing mobile design first
-     Also I think that bg-color should fill the whole space on small screens
--->
 {#if error}
   <ErrorMessage bind:visible={error} bind:errorMessage />
 {/if}
@@ -57,9 +54,6 @@
       <PasswordInput bind:value={pwd} placeholder={'Password'} />
     </div>
   </div>
-
-  <!-- <img src="images/show-password.svg" alt="show"/> -->
-  <!-- <p class="my-6 text-gray-700 font-medium text-lg">Forgot your password?</p> -->
 </LoginForm>
 
 <style global lang="postcss">

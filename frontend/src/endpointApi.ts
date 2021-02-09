@@ -18,8 +18,6 @@ export const signIn = async (
   phoneNumber: string,
   pwd: string
 ): Promise<APIResponse<{ user_id: string }>> => {
-  console.log(baseUrl);
-
   const response = await fetch(loginEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -34,6 +32,9 @@ export const signIn = async (
   if (status === 200) {
     const { user_id } = await response.json();
     return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
   }
 };
 

@@ -1,5 +1,5 @@
-<div class="flex justify-center mt-5 ml-2">
-  <div class="mono mt-4">
+<div class="flex justify-center ml-2">
+  <div class="mono mt-1">
     <a href="https://api.monobank.ua" class="flex rounded-lg">
       <img src="images/mono-logo.png" alt="mono" />
     </a>
