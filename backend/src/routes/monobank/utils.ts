@@ -41,7 +41,7 @@ export const statementUpdate = async (
           updateItem(
             configs.STATEMENTS_TABLE,
             { accountId: id },
-            { [timestamp]: data }
+            { [timestamp]: data, username: userFromDB.Item.username }
           );
       } else {
         putItem(configs.STATEMENTS_TABLE, { accountId: id, [timestamp]: data });

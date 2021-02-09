@@ -1,34 +1,32 @@
-<script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+<script>
+  import { onMount } from 'svelte';
 
-  export let title: string;
-  export let current: number;
-  export let previous: number;
-  export let limit: number;
+  export let title;
+  export let current;
+  export let previous;
+  export let limit;
   const barSize = 2000;
 
   let currentP = 0;
   let previousP = 0;
   let limitP = 0;
-  let overlap: number;
+  let overlap;
 
-  let bar: HTMLElement;
-  let limits: HTMLElement;
-
-  const dispatch = createEventDispatcher();
+  let bar;
+  let limits;
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
     bar.classList.toggle('detailed');
   };
 
+  const percentOf = (i) => (i * 100) / barSize;
+
   const countOverlap = () => {
     return limit && current > limit
-      ? ((currentP - limitP) * bar.offsetWidth) / 100
+      ? (barSize / current) * (currentP - limitP)
       : 0;
   };
-
-  const percentOf = (i) => (i * 100) / barSize;
 
   const handlePress = (e) => {
     const step = 50;
@@ -37,10 +35,6 @@
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
     }
-  };
-
-  const setLimitOnMouseUp = (limit: number) => (): void => {
-    dispatch('setLimit', { limit });
   };
 
   const move = (e) => {
@@ -66,11 +60,8 @@
     };
 
     window.addEventListener('mouseup', handleEnd);
-    window.addEventListener('mouseup', setLimitOnMouseUp(limit));
     window.addEventListener('mousemove', handleMove);
   };
-
-  window.addEventListener('resize', () => (overlap = countOverlap()));
 
   onMount(() => {
     setTimeout(() => {
@@ -91,7 +82,7 @@
     <section class="actions">
       {#if limit <= 0}
         <button class="action action--addLimit" on:click={() => (limit = 50)}>
-          <img src="images/add.svg" alt="+" />
+          <img src="/images/add.svg" alt="+" />
         </button>
       {:else}
         <input
@@ -132,8 +123,23 @@
           <div
             class="bar__over"
             class:moveable={false}
-            style={`width: ${overlap}px`}
+            style={`width: ${overlap}%`}
           />
+          <div
+            class="bar__toLimit"
+            style={`width: ${
+              (limitP - currentP) * (barSize / current)
+            }%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}
+          >
+            {#if limit && limit > current + 20}
+              <div>
+                <div
+                  class:detailed={limit - current > 99}
+                  data-value={limit - current}
+                />
+              </div>
+            {/if}
+          </div>
         </div>
       </div>
 
@@ -264,6 +270,40 @@
     transition: width 0s;
   }
 
+  .bar__toLimit {
+    display: flex;
+    align-items: center;
+  }
+
+  .bar__toLimit > div {
+    width: 100%;
+    height: 1em;
+    margin: 4px;
+    display: flex;
+    align-items: center;
+    border-left: 1px solid #2f9e9e;
+    border-right: 1px solid #2f9e9e;
+  }
+
+  .bar__toLimit > div > div {
+    width: 100%;
+    height: 0px;
+    border-top: 1px dashed #2f9e9e;
+  }
+
+  .bar__toLimit > div > div.detailed::before {
+    content: attr(data-value);
+    font-size: 0.6em;
+    color: #2f9e9e;
+    margin-left: -1.1em;
+    margin-top: -0.7em;
+    position: absolute;
+    background-color: #2f9e9e;
+    border-radius: 0.3em;
+    color: white;
+    padding: 1px 3px;
+  }
+
   .detailed > .bars > .bar--previous {
     margin-top: 0.5em;
     margin-left: -0.5em;
@@ -347,7 +387,7 @@
 
   .limit.moveable {
     cursor: default;
-    transition: margin 0.2s, left 0.001s, width 0.2s;
+    transition: margin 0.2s, left 0s, width 0.2s;
     width: 1em;
   }
 
