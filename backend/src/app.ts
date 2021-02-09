@@ -26,6 +26,8 @@ app.use(
       'http://localhost:5000',
       'https://ptchioly.github.io/exodus',
       'https://ptchioly.github.io',
+      'http://beeeee.es',
+      'https://beeeee.es',
     ],
     credentials: true,
   })
