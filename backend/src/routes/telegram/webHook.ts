@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { secrets } from '../../config';
 import fetch from 'node-fetch';
+import { endpointRespond } from '../../utils';
 
 export const telegramBot = Router().post('/telegram', async (req, res) => {
   console.log(req.body);
@@ -36,7 +37,7 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
         else console.log('OK', json.description);
       })
       .catch(console.log);
-    return;
+    return endpointRespond(res).SuccessResponse({});
   }
   if (message.contact) {
     const { contact, chat } = message;
@@ -63,7 +64,7 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
           else console.log('OK SEND', json.description);
         })
         .catch(console.log);
-      return;
+      return endpointRespond(res).SuccessResponse({});
     } else {
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
         method: 'POST',
@@ -83,5 +84,5 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
         .catch(console.log);
     }
   }
-  return;
+  return endpointRespond(res).SuccessResponse({});
 });
