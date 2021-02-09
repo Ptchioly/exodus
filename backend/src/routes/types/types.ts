@@ -9,6 +9,7 @@ export type Users = {
   password: string;
   xtoken: string;
   telegramId?: string;
+  accounts: AccountInfo[];
 };
 
 export type UserMeta = {
@@ -93,4 +94,18 @@ export type MonoStatement = {
   cashbackAmount: number;
   balance: number;
   hold: boolean;
+};
+
+export type AccountInfo = {
+  amount: number;
+  balance: number;
+  cashbackAmount: number;
+  commissionRate: number;
+  currencyCode: number;
+  description: string;
+  hold: boolean;
+  id: string;
+  mcc: number;
+  operationAmount: number;
+  time: number;
 };
