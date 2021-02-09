@@ -1,34 +1,34 @@
-# name: CI
-# on:
-#   push:
-#     branches: 
-#       - 'main'
-#     # tags:
-#     #   - 'v*.*.*'
-# jobs:
-#   setup-and-run-ui-tests:
-#     name: Run UI Tests - Chrome
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v2.3.1
-#         with:
-#           fetch-depth: 0
-#       - name: UI Tests - Chrome
-#         uses: cypress-io/github-action@v2
-#         with:
-#           config: 'baseUrl=http://localhost:5000'
-#           # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
-#           start: npm run frontend:start, npm run backend:start
-#           wait-on: 'http://localhost:5000, http://localhost:80/logout'
-#           wait-on-timeout: 120
-#           browser: chrome
-#           headless: true
-#           working-directory: tests
-#           group: 'UI - Chrome'
-#           record: true
-#         env:
-#           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+name: CI
+on:
+  push:
+    branches: 
+      - 'main'
+    # tags:
+    #   - 'v*.*.*'
+jobs:
+  setup-and-run-ui-tests:
+    name: Run UI Tests - Chrome
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+        with:
+          fetch-depth: 0
+      - name: UI Tests - Chrome
+        uses: cypress-io/github-action@v2
+        with:
+          config: 'baseUrl=http://localhost:5000'
+          # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
+          start: npm run frontend:start, npm run backend:start
+          wait-on: 'http://localhost:5000, http://localhost:8080/logout'
+          wait-on-timeout: 120
+          browser: chrome
+          headless: true
+          working-directory: tests
+          group: 'UI - Chrome'
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
 #   # restart-server:
 #   #   name: Connect with SSH and Restart Server
