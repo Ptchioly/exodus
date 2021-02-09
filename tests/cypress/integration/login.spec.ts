@@ -58,7 +58,7 @@ describe.only('Login', {
     cy.getBySel('pwd-input').type(`${Cypress.env('user').password}`)
     // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
     cy.getBySel('form-button').click()
-    cy.window().should('have.property', 'top');
+    cy.get('.cursor-pointer').should('contain', 'LOG OUT');
   })
 
 })
