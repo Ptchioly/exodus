@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { secrets } from '../../config';
+import fetch from 'node-fetch';
 
 export const logout = Router().get('/telegram', async (req, res) => {
   const { message } = req.body;

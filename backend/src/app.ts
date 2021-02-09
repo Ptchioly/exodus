@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import helmet from 'helmet';
+import fetch from 'node-fetch';
 import { configs, secrets } from './config';
 import { login } from './routes/auth/login';
 import { logout } from './routes/auth/logout';
@@ -59,5 +60,6 @@ fetch(
   .then((resp) => resp.json())
   .then((json) => {
     if (!json.ok) console.log(json.description);
+    console.log(json.description);
   })
   .catch(console.log);
