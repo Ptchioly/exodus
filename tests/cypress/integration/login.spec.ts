@@ -11,18 +11,21 @@ describe.only('Login', () => {
     cy.visit('/')
   })
 
-  it('displays "Sign in to Exodus" on the login page', () => {
-    cy.contains('h1', 'Sign in to Exodus')
-  })
-
-  it('displays register page on "Join now" click', () => {
-    cy.contains('Join Now').click()
-    cy.get('h1').should('contain', 'Sign Up')
-  })
-
-  // it('requires phone number', () => {
-  //   cy.get('form').contains('Sign in').click()
+  // it('displays "Sign in to Exodus" on the login page', () => {
+  //   cy.contains('h1', 'Sign in to Exodus')
   // })
+
+  // it('displays register page on "Join now" click', () => {
+  //   cy.contains('Join Now').click()
+  //   cy.get('h1').should('contain', 'Sign Up')
+  // })
+
+  it('requires phone number', () => {
+    cy.getBySel('country-code--input').clear
+    cy.getBySel('phone-input').clear
+    cy.getBySel('form-button').click()
+    //add asserts when frontend supports it
+  })
 
   // it('requires password', () => {
   //   cy.getBySel('phone').type(`${Cypress.env('user').username}{enter}`)
