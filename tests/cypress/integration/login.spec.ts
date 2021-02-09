@@ -5,6 +5,8 @@ describe.only('Login', () => {
   // before(() => cy.registerUser())
   beforeEach(() => {
     cy.visit('/exodus')
+    // cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
+    // cy.registerUser().then(res => cy.setToken(res))
   })
 
   // it('greets with Sign in', () => {

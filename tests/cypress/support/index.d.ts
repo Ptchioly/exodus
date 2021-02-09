@@ -1,5 +1,4 @@
 /// <reference types="cypress" />
-
 declare namespace Cypress {
 
   type UserInfo = {
@@ -7,10 +6,6 @@ declare namespace Cypress {
     password: string;
     xtoken: string;
   };
-
-  // interface ApplicationWindow {
-  // }
-
   interface Chainable {
 
     /**
@@ -35,7 +30,7 @@ declare namespace Cypress {
     // /**
     //  * Sets JWT Token
     //  */
-    setToken(token: string): void;
+    setToken(token: Response): void;
 
     // /**
     //  * Logs-in user by using API request and sets the received JWT cookie 
@@ -84,18 +79,5 @@ declare namespace Cypress {
       }
     ): Chainable<any>;
 
-    // /**
-    //  *  Cypress task for setting JWT in browser cookie
-    //  */
-
-    // task(
-    //   event: "user:setJWT",
-    //   arg: { username: string }
-    // ): void;
-
   }
 }
-
-// declare module 'nanoid' {
-//   export default function nanoid(size?: number): string;
-// }
