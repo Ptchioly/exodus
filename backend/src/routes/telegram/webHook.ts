@@ -83,5 +83,8 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
   if (message.contact) {
     return await processContact(res, message);
   }
-  return endpointRespond(res).SuccessResponse();
+  return await sendTelegramMessage(res)({
+    chat_id: message.chat.id,
+    text: `🦜 ${message.text}`,
+  });
 });
