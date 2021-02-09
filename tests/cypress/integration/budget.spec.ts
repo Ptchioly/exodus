@@ -2,12 +2,12 @@
 
 // describe('budget actions', () => {
 
-//     // TO DO
+//     //DONE _WAITING FOR TEST CREDS FROM LEV
 //     // beforeEach(() => {
 
-//     // cy.task('cleanDatabase')
-//     // cy.registerUserIfNeeded()
-//     // cy.login()
+    //    cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws")});
+//     // cy.registerUser()
+//     // cy.loginByAPI(Cypress.env("user"));
 //     // })
 
 //     it('creates a budget for category', () => {

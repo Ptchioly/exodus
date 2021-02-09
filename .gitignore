@@ -111,4 +111,7 @@ dist
 
 #cypress
 tests/cypress/videos/
+tests/cypress/screenshots/
+tests/cypress.env.json
+
 .DS_Store

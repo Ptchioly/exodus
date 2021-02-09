@@ -1,11 +1,10 @@
 /// <reference types="cypress" />
 
-
 describe.only('Login', () => {
-  //TO DO
-  // before(() => cy.registerUserIfNeeded())
+  //DONE _WAITING FOR TEST CREDS FROM LEV
+  // before(() => cy.registerUser())
   beforeEach(() => {
-    cy.visit('/')
+    cy.visit('/exodus')
   })
 
   // it('greets with Sign in', () => {
@@ -27,21 +26,20 @@ describe.only('Login', () => {
   //     .should('contain', 'password number can\'t be blank')
   // })
 
-  // it('does not work with wrong credentials', {
-  //   env: {
-  //     invalid_password: 'invalid'
-  //   }
-  // }, () => {
-  //   cy.getBySel('phone').type(`${Cypress.env('user').username}{enter}`)
-  //   cy.getBySel('password').type("invalid{enter}")
-  //   cy.get('.error-msg')
-  //     .should('contain', 'phone or password is invalid')
-  // })
+  // it("should error for an invalid user", function () {
+  //   cy.login("invalidUserName", "invalidPa$$word");
+
+  //   cy.getBySel("signin-error")
+  //     .should("be.visible")
+  //     .and("have.text", "Username or password is invalid");
+  // });
+
+  // it("should error for an invalid password for existing user", function () {
+  // });
 
   it('displays home page on successful login', () => {
     // cy.getBySel('phone').type(`Cypress.env('user').username{enter}`)
     // cy.getBySel('password').type(`Cypress.env('user').password{enter}`)
-    // cy.task("db:getUser", "testtest");
     cy.window().should('have.property', 'top');
   })
 

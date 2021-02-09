@@ -2,7 +2,7 @@
 
 // describe('sign up', () => {
 //   beforeEach(() => {
-//     // cy.task('cleanDatabase')
+//     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws")});
 //     // we are not logged in
 //     cy.visit('/exodus')
 //   })

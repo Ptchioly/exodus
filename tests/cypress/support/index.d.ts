@@ -2,24 +2,12 @@
 
 declare namespace Cypress {
 
-
   type UserInfo = {
     username: string;
     password: string;
     xtoken: string;
   };
 
-
-  type UserItem = {
-    Item: {
-      id: string;
-      key: string;
-      username: string;
-      password: string;
-      xtoken: string;
-      telegramId?: string;
-    }
-  };
   // interface ApplicationWindow {
   // }
 
@@ -40,36 +28,47 @@ declare namespace Cypress {
     getBySelLike(dataTestPrefixAttribute: string, args?: any): Chainable<Element>;
 
     // /**
-    //  * Get JWT Token
+    //  * Gets JWT Token
     //  */
-    getLoginToken(username: string, password?: string): Chainable<string>;
+    getLoginToken(username: string, password?: string): Chainable<Response>;
 
     // /**
-    //  * logs in using XHR call and sets the received JWT cookie 
+    //  * Sets JWT Token
     //  */
-    login(username?: string, password?: string): Chainable<any>;
+    setToken(token: string): void;
+
+    // /**
+    //  * Logs-in user by using API request and sets the received JWT cookie 
+    //  */
+    loginByAPI(username?: string, password?: string): Chainable<any>;
+
 
     // /**
     //  * Registers user
     //  */
-    registerUser(options?: UserInfo): Chainable<any>;
+    registerUser(options?: UserInfo): Chainable<Response>;
 
     // /**
     //  *  Cypress task for deleting user from database
     //  */
     task(
       event: "db:deleteUser",
-      arg: { user: string }
+      arg: {
+        username: string,
+        accessKeyId: string,
+        secretAccessKey: string,
+        region: string
+      }
     ): Chainable<any>;
 
     // /**
     //  *  Cypress task for creating user in database
     //  */
 
-    task(
-      event: "db:createUser",
-      arg: { user: string, password: string }
-    ): Chainable<any>;
+    // task(
+    //   event: "db:createUser",
+    //   arg: { user: string, password: string }
+    // ): Chainable<any>;
 
     // /**
     //  *  Cypress task for quering user from database
@@ -77,17 +76,22 @@ declare namespace Cypress {
 
     task(
       event: "db:getUser",
-      arg: { user: string }
-    ): Promise<UserItem>;
+      arg: {
+        username: string,
+        accessKeyId: string,
+        secretAccessKey: string,
+        region: string
+      }
+    ): Chainable<any>;
 
     // /**
     //  *  Cypress task for setting JWT in browser cookie
     //  */
 
-    task(
-      event: "user:setJWT",
-      arg: { username: string }
-    ): void;
+    // task(
+    //   event: "user:setJWT",
+    //   arg: { username: string }
+    // ): void;
 
   }
 }
