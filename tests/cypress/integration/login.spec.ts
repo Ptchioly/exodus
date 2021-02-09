@@ -1,14 +1,17 @@
 /// <reference types="cypress" />
 
-describe.only('Login', () => {
+describe.only('Login', {
+  env: {
+    phone: Cypress.env('user').username.slice(4) //user phone without region
+  }
+}, () => {
   //DONE _WAITING FOR TEST CREDS FROM LEV with valid XTOKEN
   before(() => {
     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
     cy.registerUser()
   })
 
-  //user phone without region
-  const phone = Cypress.env('user').username.slice(4);
+
 
   beforeEach(() => {
     cy.visit('/')
@@ -28,7 +31,7 @@ describe.only('Login', () => {
   // })
 
   // it('requires password', () => {
-  //   cy.getBySel('phone').type(`${phone}{enter}`)
+  //   cy.getBySel('phone').type(`${Cypress.env('phone')}{enter}`)
   //   cy.get('.error-msg')
   //     .should('contain', 'password number can\'t be blank')
   // })
