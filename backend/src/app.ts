@@ -13,6 +13,7 @@ import { personalInfo } from './routes/monobank/personal';
 import { statement } from './routes/monobank/statement';
 import { deleteUser } from './routes/settings/deleteUser';
 import { updateInfo } from './routes/settings/updateInfo';
+import { telegramBot } from './routes/telegram/webHook';
 import { logging } from './utils';
 
 export const app = express();
@@ -49,6 +50,7 @@ app.use(personalInfo);
 app.use(authentication);
 app.use(updateInfo);
 app.use(deleteUser);
+app.use(telegramBot);
 app.get('/', defaultRoute);
 
 app.listen(configs.HTTP_PORT, () =>

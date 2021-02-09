@@ -3,12 +3,13 @@ import { secrets } from '../../config';
 import fetch from 'node-fetch';
 import { endpointRespond } from '../../utils';
 
-export const logout = Router().post('/telegram', async (req, res) => {
+export const telegramBot = Router().post('/telegram', async (req, res) => {
   console.log('INFO', req.body);
   const { message } = req.body;
   // check mess
   if (message.text === '/start') {
     fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
+      method: 'POST',
       body: JSON.stringify({
         chat_id: message.chat.id,
         text: 'Send me a contact 🐝',
@@ -43,6 +44,7 @@ export const logout = Router().post('/telegram', async (req, res) => {
       //     "user_id": 274403022
       //   }
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
+        method: 'POST',
         body: JSON.stringify({
           chat_id: message.chat.id,
           text: 'Contact saved 🦄',
@@ -56,6 +58,7 @@ export const logout = Router().post('/telegram', async (req, res) => {
       return endpointRespond(res).SuccessResponse({});
     } else {
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
+        method: 'POST',
         body: JSON.stringify({
           chat_id: message.chat.id,
           text: "It's not your contact 👺",
