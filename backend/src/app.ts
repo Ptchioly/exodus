@@ -23,7 +23,11 @@ const defaultRoute = (req: Request, res: Response): void => {
 
 app.use(
   cors({
-    origin: ['http://localhost:5000', 'https://ptchioly.github.io/exodus'],
+    origin: [
+      'http://localhost:5000',
+      'https://ptchioly.github.io/exodus',
+      'https://ptchioly.github.io',
+    ],
     credentials: true,
   })
 );
