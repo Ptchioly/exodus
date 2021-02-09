@@ -9,28 +9,31 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
   // check mess
   if (message.text === '/start') {
     console.log('text -> ', message.text);
-    fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: message.chat.id,
-        text: 'Send me a contact 🐝',
-        reply_markup: {
-          keyboard: [
-            [
-              {
-                text: 'My contact 🖕🏼',
-                request_contact: true,
-              },
-            ],
-          ],
-          one_time_keyboard: true,
-          resize_keyboard: true,
+    await fetch(
+      `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      }),
-    })
+        body: JSON.stringify({
+          chat_id: message.chat.id,
+          text: 'Send me a contact 🐝',
+          reply_markup: {
+            keyboard: [
+              [
+                {
+                  text: 'My contact 🖕🏼',
+                  request_contact: true,
+                },
+              ],
+            ],
+            one_time_keyboard: true,
+            resize_keyboard: true,
+          },
+        }),
+      }
+    )
       .then((resp) => resp.json())
       .then((json) => {
         if (!json.ok) console.log('NOT OK', json.description);
@@ -48,16 +51,19 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
       //     "first_name": "Глеб",
       //     "user_id": 274403022
       //   }
-      fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: message.chat.id,
-          text: 'Contact saved 🦄',
-        }),
-      })
+      await fetch(
+        `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: message.chat.id,
+            text: 'Contact saved 🦄',
+          }),
+        }
+      )
         .then((resp) => resp.json())
         .then((json) => {
           if (!json.ok) console.log('NOT OK SEND', json.description);
@@ -66,16 +72,19 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
         .catch(console.log);
       return endpointRespond(res).SuccessResponse({});
     } else {
-      fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: message.chat.id,
-          text: "It's not your contact 👺",
-        }),
-      })
+      await fetch(
+        `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: message.chat.id,
+            text: "It's not your contact 👺",
+          }),
+        }
+      )
         .then((resp) => resp.json())
         .then((json) => {
           if (!json.ok) console.log('NOT OK SEND2', json.description);

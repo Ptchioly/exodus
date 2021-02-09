@@ -19,7 +19,11 @@ import { logging } from './utils';
 export const app = express();
 
 const defaultRoute = (req: Request, res: Response): void => {
-  res.status(200).send('Lets beee 🐝🐝🐝🐝');
+  res
+    .status(200)
+    .send(
+      `<div style="margin-top: 120px; width: 100%; text-align: center; font-size: 10em; display: block;">🐝 🐝 🐝 🐝 🐝</div>`
+    );
 };
 
 app.use(
