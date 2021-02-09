@@ -26,7 +26,7 @@ export const getItem = async (
 
 export const putItem = async (
   table: string,
-  keyData: Users
+  keyData: Users | any
 ): Promise<PutItemOutput | AWSError> => {
   const params = {
     TableName: table,

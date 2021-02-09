@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 
 export const hook = Router();
@@ -57,6 +58,11 @@ hook.get('/hook', async (req: any, res) => {
   if (!req.body) return respond.FailureResponse('Empty body.'); // dunno if it's necessary
 
   const { account, statementItem } = (req.body as StatementItems).data;
+
+  const updateUserResponse = await putItem('statements', {
+    account,
+    statementItem,
+  });
 
   // searching by account and push statementItem to others
 
