@@ -10,7 +10,10 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
     console.log('text -> ', message.text);
     fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
       method: 'POST',
-      body: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         chat_id: message.chat.id,
         text: 'Send me a contact 🐝',
         reply_markup: {
@@ -25,7 +28,7 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
           one_time_keyboard: true,
           resize_keyboard: true,
         },
-      } as any,
+      }),
     })
       .then((resp) => resp.json())
       .then((json) => {
@@ -46,6 +49,9 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
       //   }
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           chat_id: message.chat.id,
           text: 'Contact saved 🦄',
@@ -61,6 +67,9 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
     } else {
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           chat_id: message.chat.id,
           text: "It's not your contact 👺",
