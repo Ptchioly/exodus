@@ -2,6 +2,7 @@ import { configs, secrets } from '../../config';
 import { getItem, updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { isFailure } from '../types/guards';
+import fetch from 'node-fetch';
 
 const telegramURL = `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}`;
 
