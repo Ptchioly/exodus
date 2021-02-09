@@ -6,7 +6,7 @@ describe.only('Login', () => {
   beforeEach(() => {
     cy.visit('/exodus')
     // cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
-    // cy.registerUser().then(res => cy.setToken(res))
+    
   })
 
   it('displays "Sign in to Exodus" on the login page', () => {
