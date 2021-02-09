@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { secrets } from '../../config';
 import fetch from 'node-fetch';
+import { endpointRespond } from '../../utils';
 
 export const logout = Router().get('/telegram', async (req, res) => {
+  console.log('INFO', req.body);
   const { message } = req.body;
   // check mess
   if (message.text === '/start') {
@@ -29,7 +31,7 @@ export const logout = Router().get('/telegram', async (req, res) => {
         if (!json.ok) console.log(json.description);
       })
       .catch(console.log);
-    return;
+    return endpointRespond(res).SuccessResponse({});
   }
   if (message.contact) {
     const { contact, chat } = message;
@@ -51,7 +53,7 @@ export const logout = Router().get('/telegram', async (req, res) => {
           if (!json.ok) console.log(json.description);
         })
         .catch(console.log);
-      return;
+      return endpointRespond(res).SuccessResponse({});
     } else {
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
         body: JSON.stringify({
@@ -66,5 +68,5 @@ export const logout = Router().get('/telegram', async (req, res) => {
         .catch(console.log);
     }
   }
-  return;
+  return endpointRespond(res).SuccessResponse({});
 });
