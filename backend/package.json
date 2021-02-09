@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "npx tsc",
     "dev": "nodemon src/app.ts",
-    "start": "npm run compile && echo hui && node out/src/app.js"
+    "start": "npm run compile && node out/src/app.js"
   },
   "author": "",
   "license": "ISC",

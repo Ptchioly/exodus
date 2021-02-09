@@ -7,7 +7,6 @@
   "scripts": {
     "deploy": "gh-pages -d public",
     "build": "rollup -c",
-    "autobuild": "rollup -c -w",
     "dev": "rollup -c -w",
     "start": "sirv public",
     "start:dev": "sirv public -s --dev",
