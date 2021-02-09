@@ -1,97 +1,86 @@
 import { Router } from 'express';
-import { secrets } from '../../config';
+import { configs, secrets } from '../../config';
 import fetch from 'node-fetch';
 import { endpointRespond } from '../../utils';
+import { getItem, updateItem } from '../../dynamoAPI';
+import { isFailure } from '../types/guards';
+
+const telegramURL = `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}`;
+
+export const startTelegramBody = (message: any) => ({
+  chat_id: message.chat.id,
+  text: 'Send me a contact to receive statements and limit alerts. 🐝',
+  reply_markup: {
+    keyboard: [
+      [
+        {
+          text: 'Okay, that is my contact! 🤷',
+          request_contact: true,
+        },
+      ],
+    ],
+    one_time_keyboard: true,
+    resize_keyboard: true,
+  },
+});
+
+export const sendTelegramMessage = (res: any) => async (body: any) => {
+  await fetch(`${telegramURL}/sendMessage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+    .then((resp) => resp.json())
+    .then((json) => {
+      if (!json.ok) console.log('Error on start;', json.description);
+    })
+    .catch(console.log);
+  return endpointRespond(res).SuccessResponse();
+};
+
+const processContact = async (
+  res: any,
+  { contact: { user_id, phone_number, first_name }, chat: { id } }: any
+) => {
+  const sendMessage = sendTelegramMessage(res);
+  if (user_id === id) {
+    const username = phone_number.slice(1);
+    const userResponse = await getItem(configs.USER_TABLE, { username });
+    if (isFailure(userResponse))
+      return await sendMessage({
+        chat_id: id,
+        text:
+          'You are not registered in exodus, visit https://www.beeeee.es! 🙅',
+      });
+    if (userResponse.Item.telegramId) {
+      return await sendMessage({
+        chat_id: id,
+        text: `${first_name}, you already subscribed! 🤙`,
+      });
+    }
+    await updateItem(configs.USER_TABLE, { username }, { telegramId: user_id });
+    return await sendMessage({
+      chat_id: id,
+      text: 'You subscribed! 🦄',
+    });
+  } else {
+    return await sendMessage({
+      chat_id: id,
+      text: "It's not your contact!! 👺",
+    });
+  }
+};
 
 export const telegramBot = Router().post('/telegram', async (req, res) => {
-  console.log(req.body);
   const { message } = req.body;
-  // check mess
+  if (!message) return endpointRespond(res).SuccessResponse();
   if (message.text === '/start') {
-    console.log('text -> ', message.text);
-    await fetch(
-      `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id: message.chat.id,
-          text: 'Send me a contact 🐝',
-          reply_markup: {
-            keyboard: [
-              [
-                {
-                  text: 'My contact 🖕🏼',
-                  request_contact: true,
-                },
-              ],
-            ],
-            one_time_keyboard: true,
-            resize_keyboard: true,
-          },
-        }),
-      }
-    )
-      .then((resp) => resp.json())
-      .then((json) => {
-        if (!json.ok) console.log('NOT OK', json.description);
-        else console.log('OK', json.description);
-      })
-      .catch(console.log);
-    return endpointRespond(res).SuccessResponse({});
+    return await sendTelegramMessage(res)(startTelegramBody(message));
   }
   if (message.contact) {
-    const { contact, chat } = message;
-    if (contact.user_id === chat.id) {
-      // save to bd
-      //   "contact": {
-      //     "phone_number": "+380730631835",
-      //     "first_name": "Глеб",
-      //     "user_id": 274403022
-      //   }
-      await fetch(
-        `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id: message.chat.id,
-            text: 'Contact saved 🦄',
-          }),
-        }
-      )
-        .then((resp) => resp.json())
-        .then((json) => {
-          if (!json.ok) console.log('NOT OK SEND', json.description);
-          else console.log('OK SEND', json.description);
-        })
-        .catch(console.log);
-      return endpointRespond(res).SuccessResponse({});
-    } else {
-      await fetch(
-        `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id: message.chat.id,
-            text: "It's not your contact 👺",
-          }),
-        }
-      )
-        .then((resp) => resp.json())
-        .then((json) => {
-          if (!json.ok) console.log('NOT OK SEND2', json.description);
-          else console.log('OK SEND2', json.description);
-        })
-        .catch(console.log);
-    }
+    return await processContact(res, message);
   }
-  return endpointRespond(res).SuccessResponse({});
+  return endpointRespond(res).SuccessResponse();
 });
