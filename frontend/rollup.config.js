@@ -12,7 +12,7 @@ import tailwind from 'tailwindcss';
 const production = !process.env.ROLLUP_WATCH;
 
 //api host (in dev mode backend should be run locally)
-const host = production ? 'https://api.beeeee.es' : 'http://localhost:8080';
+const host = production ? 'https://api.beeeee.es' : 'http://localhost:8000';
 
 function serve() {
   let server;

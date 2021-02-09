@@ -23,9 +23,9 @@
   const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      await getStatement(currentDate, 'previous');
-      setTimeout(async () => {
-        await getStatement(currentDate, 'current');
+      getStatement(currentDate, 'previous');
+      setTimeout(() => {
+        getStatement(currentDate, 'current');
       }, 70000);
       return;
     }
@@ -57,9 +57,7 @@
     Loading
   {/if}
 
-  <!-- <h1 class="text-gray-500 font-extralight text-5xl">Hello,</h1>
-  <h1 class="font-black italic tracking-wide text-indigo-600 text-5xl">SOBAKA,</h1>
-  <h1 class="font-black italic tracking-wide text-5xl">SMOTRI:</h1> -->
+
 </main>
 
 <svelte:head>
