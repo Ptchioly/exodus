@@ -1,5 +1,4 @@
 require('dotenv').config();
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
@@ -18,7 +17,7 @@ import { logging } from './utils';
 export const app = express();
 
 const defaultRoute = (req: Request, res: Response): void => {
-  res.status(200);
+  res.status(200).send('Lets beee 🐝🐝🐝🐝');
 };
 
 app.use(
@@ -32,8 +31,8 @@ app.use(
   })
 );
 app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cookieParser());
 
 app.use(logging);
