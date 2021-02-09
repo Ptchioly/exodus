@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { secrets } from '../../config';
 import fetch from 'node-fetch';
-import { endpointRespond } from '../../utils';
 
 export const telegramBot = Router().post('/telegram', async (req, res) => {
-  console.log('INFO', req.body);
+  console.log(req.body);
   const { message } = req.body;
   // check mess
   if (message.text === '/start') {
+    console.log('text -> ', message.text);
     fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
       method: 'POST',
-      body: JSON.stringify({
+      body: {
         chat_id: message.chat.id,
         text: 'Send me a contact 🐝',
         reply_markup: {
@@ -25,14 +25,15 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
           one_time_keyboard: true,
           resize_keyboard: true,
         },
-      }),
+      } as any,
     })
       .then((resp) => resp.json())
       .then((json) => {
-        if (!json.ok) console.log(json.description);
+        if (!json.ok) console.log('NOT OK', json.description);
+        else console.log('OK', json.description);
       })
       .catch(console.log);
-    return endpointRespond(res).SuccessResponse({});
+    return;
   }
   if (message.contact) {
     const { contact, chat } = message;
@@ -52,10 +53,11 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
       })
         .then((resp) => resp.json())
         .then((json) => {
-          if (!json.ok) console.log(json.description);
+          if (!json.ok) console.log('NOT OK SEND', json.description);
+          else console.log('OK SEND', json.description);
         })
         .catch(console.log);
-      return endpointRespond(res).SuccessResponse({});
+      return;
     } else {
       fetch(`https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/sendMessage`, {
         method: 'POST',
@@ -66,10 +68,11 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
       })
         .then((resp) => resp.json())
         .then((json) => {
-          if (!json.ok) console.log(json.description);
+          if (!json.ok) console.log('NOT OK SEND2', json.description);
+          else console.log('OK SEND2', json.description);
         })
         .catch(console.log);
     }
   }
-  return endpointRespond(res).SuccessResponse({});
+  return;
 });
