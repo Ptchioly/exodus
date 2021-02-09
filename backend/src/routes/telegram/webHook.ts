@@ -46,7 +46,8 @@ const processContact = async (
 ) => {
   const sendMessage = sendTelegramMessage(res);
   if (user_id === id) {
-    const username = phone_number.slice(1);
+    // Is there always will be phone? Maybe hidden?
+    const [username] = /(380\d{9})/.exec(phone_number) as RegExpExecArray;
     const userResponse = await getItem(configs.USER_TABLE, { username });
     if (isFailure(userResponse))
       return await sendMessage({
