@@ -9,6 +9,7 @@ export type Users = {
   password: string;
   xtoken: string;
   telegramId?: string;
+  accounts: AccountInfo[];
 };
 
 export type UserMeta = {
@@ -54,14 +55,14 @@ export type MonoClientInfo = {
   accounts: MonoAccount[];
 };
 
-type MonoAccount = {
+export type MonoAccount = {
   id: string;
   currencyCode: number;
-  cashbackType: string;
+  cashbackType: 'None' | 'UAH' | 'Miles';
   balance: number;
   creditLimit: number;
   maskedPan: string[];
-  type: string;
+  type: 'black' | 'white' | 'platinum' | 'iron' | 'fop' | 'yellow';
   iban: string;
 };
 
@@ -93,4 +94,18 @@ export type MonoStatement = {
   cashbackAmount: number;
   balance: number;
   hold: boolean;
+};
+
+export type AccountInfo = {
+  amount: number;
+  balance: number;
+  cashbackAmount: number;
+  commissionRate: number;
+  currencyCode: number;
+  description: string;
+  hold: boolean;
+  id: string;
+  mcc: number;
+  operationAmount: number;
+  time: number;
 };

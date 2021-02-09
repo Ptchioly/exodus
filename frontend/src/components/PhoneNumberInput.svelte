@@ -13,16 +13,16 @@
 
 <input
   type="text"
-  class="sobaka-input code w-1/5"
+  class="login-input code w-1/5"
   data-automation-id="country-code--input"
   required
   bind:value={countryCode}
 />
 <input
-  class="sobaka-input tel w-4/5"
+  class="login-input tel w-4/5"
   type="text"
   data-automation-id="phone-input"
-  placeholder="XXXX-XXX-XXX"
+  placeholder="XX-XXX-XXXX"
   required
   bind:value
   on:input={handleInput}

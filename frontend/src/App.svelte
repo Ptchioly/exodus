@@ -4,38 +4,43 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { isAuthenticated } from './endpointApi';
+  import { getStatement, isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
 
-  export let url = '';
-
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
+  let error: boolean = false;
+  const currentDate = Date.now();
 
   onMount(async () => {
     authorized = await isAuthenticated();
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleApiResponse = ({ detail }: CustomEvent<APIResponse>) => {
+  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      return;
+      getStatement(currentDate, 'previous');
+      setTimeout(() => {
+        getStatement(currentDate, 'current');
+      }, 70000);
     }
-    alert(detail.message);
   };
 
   const handleLogout = () => {
+    error = false;
     navigationState = 'signIn';
   };
 
   const handleOpenSignUp = () => {
+    error = false;
     navigationState = 'signUp';
   };
 
   const handleOpenSignIn = () => {
+    error = false;
     navigationState = 'signIn';
   };
   $: console.log(navigationState);
@@ -46,9 +51,17 @@
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
-    <SignIn on:login={handleApiResponse} on:openSignUp={handleOpenSignUp} />
+    <SignIn
+      on:login={handleApiResponse}
+      on:openSignUp={handleOpenSignUp}
+      bind:error
+    />
   {:else if navigationState === 'signUp'}
-    <SignUp on:signUp={handleApiResponse} on:openSignIn={handleOpenSignIn} />
+    <SignUp
+      on:signUp={handleApiResponse}
+      on:openSignIn={handleOpenSignIn}
+      bind:error
+    />
   {:else}
     Loading
   {/if}
@@ -92,5 +105,21 @@
 
   :global(*:focus) {
     outline: none;
+  }
+  .container {
+    max-width: 900px;
+    padding: 0 15px;
+    margin: 0 auto;
+  }
+  main {
+    text-align: center;
+    padding: 1em;
+    margin: 0 auto;
+  }
+  h1 {
+    color: #ff3e00;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
   }
 </style>
