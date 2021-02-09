@@ -2,11 +2,13 @@
 
 describe.only('Login', () => {
   //DONE _WAITING FOR TEST CREDS FROM LEV
-  // before(() => cy.registerUser())
+  before(() => {
+    // cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
+    // cy.registerUser()
+  })
+
   beforeEach(() => {
     cy.visit('/exodus')
-    // cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
-    
   })
 
   it('displays "Sign in to Exodus" on the login page', () => {
