@@ -91,7 +91,7 @@
     <section class="actions">
       {#if limit <= 0}
         <button class="action action--addLimit" on:click={() => (limit = 50)}>
-          <img src="/images/add.svg" alt="+" />
+          <img src="images/add.svg" alt="+" />
         </button>
       {:else}
         <input
