@@ -3,7 +3,7 @@ import { secrets } from '../../config';
 import fetch from 'node-fetch';
 import { endpointRespond } from '../../utils';
 
-export const logout = Router().get('/telegram', async (req, res) => {
+export const logout = Router().post('/telegram', async (req, res) => {
   console.log('INFO', req.body);
   const { message } = req.body;
   // check mess
