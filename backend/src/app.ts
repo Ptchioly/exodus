@@ -28,6 +28,8 @@ app.use(
       'https://ptchioly.github.io',
       'http://beeeee.es',
       'https://beeeee.es',
+      'http://www.beeeee.es',
+      'https://www.beeeee.es',
     ],
     credentials: true,
   })
