@@ -2,10 +2,13 @@
   import { createEventDispatcher } from 'svelte';
 
   import LoginForm from '../components/LoginForm.svelte';
+  import ErrorMessage from '../components/ErrorMessage.svelte';
   import PasswordInput from '../components/PasswordInput.svelte';
   import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
   import { signIn } from '../endpointApi';
 
+  export let error: boolean = false;
+  let errorMessage: string;
   let phoneNumber: string;
   let countryCode: string = '380';
   let pwd: string;
@@ -15,7 +18,11 @@
   const signInButton = {
     label: 'Sign In',
     onclick: async () => {
-      const resp = await signIn(summaryPhone, pwd);
+      const resp = (await signIn(summaryPhone, pwd)) as any;
+      if (resp.message !== undefined) {
+        errorMessage = resp.message;
+        error = true;
+      }
       dispatch('login', resp);
     },
   };
@@ -33,6 +40,10 @@
      This should be done by implementing mobile design first
      Also I think that bg-color should fill the whole space on small screens
 -->
+{#if error}
+  <ErrorMessage bind:visible={error} bind:errorMessage />
+{/if}
+
 <LoginForm
   title="Sign in to Exodus"
   linkButton={signUpButton}
@@ -52,18 +63,18 @@
 </LoginForm>
 
 <style global lang="postcss">
-  .sobaka-input {
+  .login-input {
     @apply w-3/4 text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
   }
-  .sobaka-input:focus {
+  .login-input:focus {
     @apply border-gray-400 border-2;
   }
 
-  .sobaka-input.code {
+  .login-input.code {
     @apply w-1/5 mr-2 text-center pl-0;
   }
 
-  .sobaka-input.tel {
+  .login-input.tel {
     @apply w-4/5;
   }
 

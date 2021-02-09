@@ -9,10 +9,9 @@
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
 
-  export let url = '';
-
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
+  let error: boolean = false;
   const currentDate = Date.now();
 
   onMount(async () => {
@@ -32,14 +31,17 @@
   };
 
   const handleLogout = () => {
+    error = false;
     navigationState = 'signIn';
   };
 
   const handleOpenSignUp = () => {
+    error = false;
     navigationState = 'signUp';
   };
 
   const handleOpenSignIn = () => {
+    error = false;
     navigationState = 'signIn';
   };
   $: console.log(navigationState);
@@ -50,9 +52,17 @@
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
-    <SignIn on:login={handleApiResponse} on:openSignUp={handleOpenSignUp} />
+    <SignIn
+      on:login={handleApiResponse}
+      on:openSignUp={handleOpenSignUp}
+      bind:error
+    />
   {:else if navigationState === 'signUp'}
-    <SignUp on:signUp={handleApiResponse} on:openSignIn={handleOpenSignIn} />
+    <SignUp
+      on:signUp={handleApiResponse}
+      on:openSignIn={handleOpenSignIn}
+      bind:error
+    />
   {:else}
     Loading
   {/if}
