@@ -19,14 +19,15 @@ Cypress.Commands.add('getLoginToken', (user = Cypress.env('user')) => {
     })
 })
 
-Cypress.Commands.add('setToken', (token) => {
-  return cy.setCookie('jwt', token.match(/jwt=([^;]+)/)[1], { expiry: configs.MAX_AGE })
+Cypress.Commands.add('setToken', (response) => {
+  const token = response.headers['set-cookie'][0].match(/jwt=([^;]+)/)[1];
+  return cy.setCookie('jwt', token, { expiry: configs.MAX_AGE })
 })
 
 // -- a custom command to login using XHR call and set the received cookie --
 // log in with default user 
 Cypress.Commands.add('loginByAPI', (user = Cypress.env('user')) => {
-  return cy.getLoginToken(user).then(res => cy.setToken(res.headers['set-cookie'][0]))
+  return cy.getLoginToken(user).then(res => cy.setToken(res))
 })
 
 

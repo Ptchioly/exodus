@@ -6,8 +6,7 @@
 //     // beforeEach(() => {
 
     //    cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws")});
-//     // cy.registerUser()
-//     // cy.loginByAPI(Cypress.env("user"));
+    // cy.registerUser().then(res => cy.setToken(res))
 //     // })
 
 //     it('creates a budget for category', () => {

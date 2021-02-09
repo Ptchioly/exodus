@@ -1,12 +1,11 @@
 /// <reference types="cypress" />
 
 // describe('logout', () => {
-//     //TO DO
+//     DONE _WAITING FOR TEST CREDS FROM LEV
 //     // beforeEach(() => {
-//     // cy.task('cleanDatabase')
-//     // cy.registerUserIfNeeded()
-//     // cy.login()
-//     // })
+//     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
+    // cy.registerUser().then(res => cy.setToken(res))
+  // })
 
 //     it('clears the session and logs out', () => { })
 
