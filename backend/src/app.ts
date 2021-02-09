@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import helmet from 'helmet';
-import { configs } from './config';
+import { configs, secrets } from './config';
 import { login } from './routes/auth/login';
 import { logout } from './routes/auth/logout';
 import { signup } from './routes/auth/signup';
@@ -53,3 +53,11 @@ app.get('/', defaultRoute);
 app.listen(configs.HTTP_PORT, () =>
   console.log(`Listen on port ${configs.HTTP_PORT}`)
 );
+fetch(
+  `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/setWebhook?url=https://api.beeeee.es/telegram`
+)
+  .then((resp) => resp.json())
+  .then((json) => {
+    if (!json.ok) console.log(json.description);
+  })
+  .catch(console.log);
