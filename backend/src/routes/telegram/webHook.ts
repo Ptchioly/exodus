@@ -49,7 +49,7 @@ const processContact = async (
     // Is there always will be phone? Maybe hidden?
     const [username] = /(380\d{9})/.exec(phone_number) as RegExpExecArray;
     const userResponse = await getItem(configs.USER_TABLE, { username });
-    if (isFailure(userResponse))
+    if (isFailure(userResponse) || !userResponse.Item)
       return await sendMessage({
         chat_id: id,
         text:
