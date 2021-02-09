@@ -2,7 +2,7 @@
   <div class="mono mt-4">
     <a href="https://api.monobank.ua" class="flex rounded-lg">
       <img src="images/mono-logo.png" alt="mono" />
-    </span>
+    </a>
   </div>
 </div>
 
