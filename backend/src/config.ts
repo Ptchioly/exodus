@@ -7,19 +7,9 @@ export const secrets = {
 };
 
 export const configs = {
-  PORT: '80',
+  HTTP_PORT: 8080,
   USER_TABLE: 'users',
   MAX_AGE: 86400000,
-  DYNAMO_OPTS: {
-    table: 'sessions',
-    AWSConfigJSON: {
-      accessKeyId: secrets.ACCESS_KEY,
-      secretAccessKey: secrets.SECRET_ACCESS_KEY,
-      region: secrets.REGION,
-    },
-    readCapacityUnits: 1,
-    writeCapacityUnits: 1,
-  },
   CURRENCY_CODE: {
     980: 'UAH',
     985: 'PLN',

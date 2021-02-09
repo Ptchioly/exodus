@@ -40,7 +40,7 @@
 >
   <div class="flex flex-col justify-center w-full">
     <div class="phone flex justify-center w-3/4 self-center">
-      <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
+      <PhoneNumberInput bind:countryCode bind:value={phoneNumber} />
     </div>
     <div class="flex items-center justify-center w-full self-center">
       <PasswordInput bind:value={pwd} placeholder={'Password'} />

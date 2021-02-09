@@ -2,19 +2,17 @@ import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
+import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import tailwind from 'tailwindcss';
-import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
 //api host (in dev mode backend should be run locally)
-const host = production
-  ? 'http://ec2-18-195-116-110.eu-central-1.compute.amazonaws.com:80'
-  : 'http://localhost';
+const host = production ? 'https://api.beeeee.es' : 'http://localhost:8080';
 
 function serve() {
   let server;

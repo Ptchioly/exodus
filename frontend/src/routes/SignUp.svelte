@@ -20,9 +20,7 @@
   const singUpButton = {
     label: 'Sign Up',
     onclick: async () => {
-      console.log('AAAAA');
       pwdCheck = checkPwd(pwd, confirmPwd);
-      console.log('onclick: => pwdCheck', pwdCheck);
       if (pwdCheck) {
         const resp = await signUp(phoneNumber, pwd, token);
 
@@ -63,15 +61,15 @@
     </div>
 
     <div class="flex items-center w-full justify-center">
-      <div class="w-3/4 flex">
+      <div class="w-3/4 flex mt-5 h-10">
         <input
-          class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 pl-2 mt-8"
+          class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 px-2"
           type="text"
           placeholder="Monobank token"
           required
           bind:value={token}
         />
-        <div class=""><MonoLogo /></div>
+        <div class="items-center"><MonoLogo /></div>
       </div>
     </div>
   </div>
