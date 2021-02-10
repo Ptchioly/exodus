@@ -11,6 +11,7 @@
   onMount(async () => {
     const resp = await getUserInfo();
     if (isSuccessResponse(resp)) userInfo = resp.data;
+    console.log('onMount => userInfo', userInfo);
   });
 
   const handleSetLimit = async () => {};
@@ -51,15 +52,15 @@
       </div>
       <div class="user flex items-center" />
       <div class="logout ml-6 user flex items-center">
-        {#if userInfo}
-          <UserProfile
-            user={userInfo}
-            on:logout={async () => {
-              await logout();
-              dispatch('logout', {});
-            }}
-          />
-        {/if}
+        <!-- {#if userInfo} -->
+        <UserProfile
+          user={userInfo}
+          on:logout={async () => {
+            await logout();
+            dispatch('logout', {});
+          }}
+        />
+        <!-- {/if} -->
       </div>
     </div>
   </div>

@@ -4,10 +4,11 @@
   import Settings from './Settings.svelte';
 
   export let user: UserInfo;
-  const { name } = user;
+  $: name = user ? user.name : 'Unknown User';
   const dispath = createEventDispatcher();
   let isOpen: boolean = false;
-  const [first, last] = name.split(' ');
+  console.log('Name', name);
+  $: [first, last] = name.split(' ');
 </script>
 
 <div>
