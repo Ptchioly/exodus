@@ -36,10 +36,14 @@
   <div class="grid grid-cols-2 col-auto mt-9 pb-5 lg:pb-10">
     <p>{linkButton.prefix}</p>
     <!-- <Link to={linkButton.href}> -->
-    <p class="cursor-pointer" on:click={linkButton.onclick}>
+    <p
+      class="cursor-pointer"
+      data-automation-id="link-button"
+      on:click={linkButton.onclick}
+    >
       {linkButton.label}
     </p>
-    <!-- </Link> -->
+
   </div>
 </div>
 
