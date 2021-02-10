@@ -9,8 +9,9 @@
   let userInfo: UserInfo;
   const dispatch = createEventDispatcher();
   onMount(async () => {
-    const resp = await getUserInfo();
-    if (isSuccessResponse(resp)) userInfo = resp.data;
+    const resp = { data: { name: 'Максим Цуркан' } }; //await getUserInfo();
+    // if (isSuccessResponse(resp))
+    userInfo = resp.data as any;
   });
 
   const handleSetLimit = async () => {};
@@ -41,15 +42,7 @@
 </script>
 
 <main class="flex w-full flex-col items-center mx-20">
-  <div class="header flex justify-between w-full px-5 mt-4 mb-40">
-    <div class="user flex items-center">
-      <!-- <div class="settings w-4 cursor-pointer mr-4">
-        <img alt="settings" src="images/settings.svg" />
-      </div> -->
-      {#if userInfo}
-        <UserProfile user={userInfo} />
-      {/if}
-    </div>
+  <div class="header flex justify-end w-full px-5 mt-4 mb-40">
     <div class="flex w-1/8">
       <div
         class="telega h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
@@ -57,16 +50,17 @@
       >
         <img src="images/tg.png" />
       </div>
-      <div class="logout ml-6">
-        <div
-          class="cursor-pointer bg-coolGreen-default rounded-3xl h-8 w-28 text-sm flex px-5 justify-center items-center text-white"
-          on:click={async () => {
-            await logout();
-            dispatch('logout', {});
-          }}
-        >
-          LOG OUT
-        </div>
+      <div class="user flex items-center" />
+      <div class="logout ml-6 user flex items-center">
+        {#if userInfo}
+          <UserProfile
+            user={userInfo}
+            on:logout={async () => {
+              await logout();
+              dispatch('logout', {});
+            }}
+          />
+        {/if}
       </div>
     </div>
   </div>
