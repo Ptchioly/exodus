@@ -19,7 +19,7 @@ describe.only('Login', {
   })
 
   it('displays "Sign in to Exodus" on the login page', () => {
-    cy.contains('h1', 'Sign in to Exodus')
+    cy.contains('h1', 'Sign in to Exodus').should('be.visible')
   })
 
   it('displays register page on "Join now" click', () => {
@@ -59,6 +59,7 @@ describe.only('Login', {
     // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
     cy.getBySel('form-button').click()
     cy.get('.cursor-pointer').should('contain', 'LOG OUT');
+    cy.getCookie('jwt').should('have.property', 'value');
   })
 
 })
