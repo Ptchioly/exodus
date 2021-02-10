@@ -40,7 +40,7 @@
         return accum;
       }
       const merged = {
-        name: el.category,
+        category: el.category,
         previous: el.moneySpent,
         current: sobaka.moneySpent,
         limit: 2000,
@@ -99,11 +99,11 @@
   </div>
   <section class="container">
     <!-- <RawCharts /> -->
-    {#if data2 !== undefined}
-      {#each data2 as bar}
+    {#if data1 !== undefined}
+      {#each data1 as bar}
         <StackedBar
-          title={bar.name}
-          current={bar.current}
+          title={bar.category}
+          current={bar.previous}
           previous={bar.previous}
           limit={bar.limit}
           on:setLimit={handleSetLimit}

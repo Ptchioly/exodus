@@ -5,7 +5,7 @@
   export let current;
   export let previous;
   export let limit;
-  const barSize = 2000;
+  const barSize = 4000;
 
   let currentP = 0;
   let previousP = 0;
@@ -24,7 +24,7 @@
 
   const countOverlap = () => {
     return limit && current > limit
-      ? (barSize / current) * (currentP - limitP)
+      ? (barSize / current) * (percentOf(current) - limitP)
       : 0;
   };
 
@@ -41,7 +41,7 @@
     const node = e.target;
     node.classList.add('moveable');
     const overlap = bar.querySelector('.bar__over');
-    overlap.classList.add('moveable');
+    overlap && overlap.classList.add('moveable');
 
     const handleMove = (e) => {
       const limitsRect = limits.getBoundingClientRect();
@@ -55,7 +55,7 @@
 
     const handleEnd = (e) => {
       node.classList.remove('moveable');
-      overlap.classList.remove('moveable');
+      overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
     };
 
@@ -112,35 +112,37 @@
       <div class="bars">
         <div
           class="bar bar--previous"
-          data-value={`$${previous}`}
+          data-value={`₴${previous}`}
           style={`width: ${previousP}%`}
         />
-        <div
-          class="bar bar--current"
-          style={`width: ${currentP}%`}
-          data-value={`$${current}`}
-        >
+        {#if current > 0}
           <div
-            class="bar__over"
-            class:moveable={false}
-            style={`width: ${overlap}%`}
-          />
-          <div
-            class="bar__toLimit"
-            style={`width: ${
-              (limitP - currentP) * (barSize / current)
-            }%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}
+            class="bar bar--current"
+            style={`width: ${currentP}%`}
+            data-value={`₴${current}`}
           >
-            {#if limit && limit > current + 20}
-              <div>
-                <div
-                  class:detailed={limit - current > 99}
-                  data-value={limit - current}
-                />
-              </div>
-            {/if}
+            <div
+              class="bar__over"
+              class:moveable={false}
+              style={`width: ${overlap}%`}
+            />
+            <div
+              class="bar__toLimit"
+              style={`width: ${
+                (limitP - currentP) * (barSize / current)
+              }%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}
+            >
+              {#if limit && limit > current + 20}
+                <div>
+                  <div
+                    class:detailed={limit - current > 99}
+                    data-value={limit - current}
+                  />
+                </div>
+              {/if}
+            </div>
           </div>
-        </div>
+        {/if}
       </div>
 
       <div class="limits" bind:this={limits}>
@@ -252,7 +254,7 @@
 
   .bar {
     height: 2em;
-    min-width: 5em;
+    min-width: 1em;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
