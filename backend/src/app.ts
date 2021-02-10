@@ -3,7 +3,8 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import helmet from 'helmet';
-import { configs } from './config';
+import fetch from 'node-fetch';
+import { configs, secrets } from './config';
 import { login } from './routes/auth/login';
 import { logout } from './routes/auth/logout';
 import { signup } from './routes/auth/signup';
@@ -12,12 +13,17 @@ import { personalInfo } from './routes/monobank/personal';
 import { statement } from './routes/monobank/statement';
 import { deleteUser } from './routes/settings/deleteUser';
 import { updateInfo } from './routes/settings/updateInfo';
+import { telegramBot } from './routes/telegram/webHook';
 import { logging } from './utils';
 
 export const app = express();
 
 const defaultRoute = (req: Request, res: Response): void => {
-  res.status(200).send('Lets beee 🐝🐝🐝🐝');
+  res
+    .status(200)
+    .send(
+      `<div style="margin-top: 120px; width: 100%; text-align: center; font-size: 10em; display: block;">🐝 🐝 🐝 🐝 🐝</div>`
+    );
 };
 
 app.use(
@@ -48,8 +54,18 @@ app.use(personalInfo);
 app.use(authentication);
 app.use(updateInfo);
 app.use(deleteUser);
+app.use(telegramBot);
 app.get('/', defaultRoute);
 
 app.listen(configs.HTTP_PORT, () =>
   console.log(`Listen on port ${configs.HTTP_PORT}`)
 );
+fetch(
+  `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}/setWebhook?url=https://api.beeeee.es/telegram`
+)
+  .then((resp) => resp.json())
+  .then((json) => {
+    if (!json.ok) console.log(json.description);
+    console.log(json.description);
+  })
+  .catch(console.log);

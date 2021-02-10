@@ -4,6 +4,7 @@ export const secrets = {
   SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
   REGION: process.env.AWS_REGION,
   SESSION_TOKEN: process.env.SESSION_TOKEN,
+  TELEGRAM_BOT_ID: process.env.TELEGRAM_BOT_ID,
 };
 
 export const configs = {

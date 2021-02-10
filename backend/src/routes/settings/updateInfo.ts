@@ -42,5 +42,5 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Failed to update user info');
 
-  return respond.SuccessResponse({});
+  return respond.SuccessResponse();
 });

@@ -3,13 +3,14 @@
 
 describe.only('Login', {
   env: {
-    phone: Cypress.env('user').username.slice(4) //user phone without region
+    phone: Cypress.env('user').username.slice(3) //user phone without region
   }
 }, () => {
   //DONE _WAITING FOR TEST CREDS FROM LEV with valid XTOKEN
   before(() => {
     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
     cy.registerUser()
+    cy.clearCookies()
   })
 
 
@@ -19,7 +20,7 @@ describe.only('Login', {
   })
 
   it('displays "Sign in to Exodus" on the login page', () => {
-    cy.contains('h1', 'Sign in to Exodus')
+    cy.contains('h1', 'Sign in to Exodus').should('be.visible')
   })
 
   it('displays register page on "Join now" click', () => {
@@ -28,10 +29,15 @@ describe.only('Login', {
   })
 
   // it('requires phone number', () => {
-  //   cy.get('form').contains('Sign in').click()
+  //   cy.getBySel('country-code--input').clear
+  //   cy.getBySel('phone-input').clear
+  //   cy.getBySel('form-button').click()
+  //   //add asserts when frontend supports it
   // })
 
   // it('requires password', () => {
+  //   cy.getBySel('phone-input').clear
+  //   cy.getBySel('pwd-input').clear
   //   cy.getBySel('phone').type(`${Cypress.env('phone')}{enter}`)
   //   cy.get('.error-msg')
   //     .should('contain', 'password number can\'t be blank')
@@ -49,9 +55,12 @@ describe.only('Login', {
   // });
 
   it('displays home page on successful login', () => {
-    // cy.getBySel('phone').type(`Cypress.env('user').username{enter}`)
-    // cy.getBySel('password').type(`Cypress.env('user').password{enter}`)
-    cy.window().should('have.property', 'top');
+    cy.getBySel('phone-input').type(`${Cypress.env('phone')}`)
+    cy.getBySel('pwd-input').type(`${Cypress.env('user').password}`)
+    // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
+    cy.getBySel('form-button').click()
+    cy.get('.cursor-pointer').should('contain', 'LOG OUT');
+    cy.getCookie('jwt').should('have.property', 'value');
   })
 
 })
