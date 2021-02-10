@@ -15,7 +15,7 @@ login.post('/login', async (req, res) => {
   if (!exist(req.body, username, password))
     return respond.FailureResponse('Required fields are empty');
 
-  const validationVerdict = validateUserInfo(username, password);
+  const validationVerdict = validateUserInfo(req.body);
 
   if (validationVerdict !== 'OK')
     return respond.FailureResponse(validationVerdict);

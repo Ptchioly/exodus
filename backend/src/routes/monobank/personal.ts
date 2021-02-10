@@ -21,8 +21,7 @@ personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
     username,
   });
 
-  // check if name, accounts... exist in db then do
-  if (!isFailure(userFromDB)) {
+  if (!isFailure(userFromDB) && userFromDB.Item) {
     const { name, webHookUrl, accounts } = await fetch(requests.personal(), {
       headers: {
         'X-Token': userFromDB.Item.xtoken,
