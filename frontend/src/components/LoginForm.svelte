@@ -25,7 +25,7 @@
       <slot />
     </div>
     <button
-      type="button"
+      type="submit"
       data-automation-id="form-button"
       on:click|preventDefault={actionButton.onclick}
       class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl focus:outline-none hover:shadow-lg hover:bg-coolGreen-dark active:bg-coolGreen-darkest active:shadow-xl"
@@ -39,7 +39,6 @@
     <p class="cursor-pointer" on:click={linkButton.onclick}>
       {linkButton.label}
     </p>
-    <!-- </Link> -->
   </div>
 </div>
 
