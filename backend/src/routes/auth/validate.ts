@@ -53,6 +53,6 @@ export const validateUserInfo = ({
   if (!isValidPassword(password))
     return 'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.';
 
-  if (!isValidToken(xtoken)) return "Unknown 'X-Token'";
+  if (xtoken && !isValidToken(xtoken)) return "Unknown 'X-Token'";
   return 'OK';
 };
