@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+/// <reference path="../support/index.d.ts" />
 
 // describe('logout', () => {
 //     DONE _WAITING FOR TEST CREDS FROM LEV
