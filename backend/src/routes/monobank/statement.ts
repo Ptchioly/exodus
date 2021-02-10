@@ -22,6 +22,13 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   });
 
   if (!isFailure(userFromDB)) {
+    const statement = (await getItem(configs.STATEMENTS_TABLE, {
+      accountId: userFromDB.Item.accounts[0],
+    })) as any;
+    if (!isFailure(statement) && statement.Item[from] !== undefined) {
+      const dataToUI = categorize(statement.Item[from]);
+      return respond.SuccessResponse(dataToUI);
+    }
     const data = await fetch(requests.statement(account, from, to), {
       headers: {
         'X-Token': userFromDB.Item.xtoken,

@@ -1,7 +1,7 @@
 import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from './config';
-import { GetOutput, Users } from './routes/types/types';
+import { GetOutput } from './routes/types/types';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,

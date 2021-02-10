@@ -4,10 +4,11 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { getStatement, isAuthenticated } from './endpointApi';
+  import { getStatement, getUserInfo, isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
+  import Loading from './routes/Loading.svelte';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
@@ -21,14 +22,20 @@
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+  const handleSignIn = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
-      navigationState = 'home';
+      await getUserInfo();
       previous = await getStatement(currentDate, 'previous');
+      navigationState = 'waiting';
       setTimeout(async () => {
         current = await getStatement(currentDate, 'current');
+        navigationState = 'home';
       }, 70000);
     }
+  };
+
+  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+    if (isSuccessResponse(detail)) navigationState = 'home';
   };
 
   const handleLogout = () => {
@@ -51,11 +58,7 @@
 <TailwindCss />
 <main class="font-main h-screen text-center flex content-center">
   {#if navigationState === 'home'}
-    <Homepage
-      on:logout={handleLogout}
-      currentMonth={current}
-      previousMonth={previous}
-    />
+    <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
     <SignIn
       on:login={handleApiResponse}
@@ -64,10 +67,12 @@
     />
   {:else if navigationState === 'signUp'}
     <SignUp
-      on:signUp={handleApiResponse}
+      on:signUp={handleSignIn}
       on:openSignIn={handleOpenSignIn}
       bind:error
     />
+  {:else if navigationState === 'waiting'}
+    <Loading />
   {:else}
     Loading
   {/if}
