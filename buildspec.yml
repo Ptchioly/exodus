@@ -6,6 +6,10 @@ phases:
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
+      - ls -a
+      - chmod +x scripts/build.sh
+      - chmod +x scripts/pre_build.sh
+      - chmod +x scripts/deploy.sh
       - scripts/pre_build.sh
   build:
     commands:
