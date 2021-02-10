@@ -1,13 +1,8 @@
 #!/bin/bash
-ls -a
-pwd
+cd /home/ec2-user/exodus/
 cd backend
 npm i
 npm run build
-# ls -a
-# pwd
-# cd ../frontend
-# ls -a
-# pwd
-# npm i
-# npm run build
+cd ../frontend
+npm i
+npm run build

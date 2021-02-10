@@ -8,9 +8,9 @@ permissions:
     owner: ec2-user
     group: ec2-user
 hooks:
-  # BeforeInstall:
-  #   - location: scripts/build.sh
-  #     runas: ec2-user
+  BeforeInstall:
+    - location: scripts/build.sh
+      runas: ec2-user
   BeforeInstall:
     - location: scripts/cleanup.sh
       runas: ec2-user

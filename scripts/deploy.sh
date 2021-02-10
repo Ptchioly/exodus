@@ -1,6 +1,5 @@
 #!/bin/bash
-ls -a
-pwd
+cd /home/ec2-user/exodus/
 cd backend
 npm run deploy
 cd ../frontend
