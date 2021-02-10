@@ -9,9 +9,8 @@
   let userInfo: UserInfo;
   const dispatch = createEventDispatcher();
   onMount(async () => {
-    const resp = { data: { name: 'Максим Цуркан' } }; //await getUserInfo();
-    // if (isSuccessResponse(resp))
-    userInfo = resp.data as any;
+    const resp = await getUserInfo();
+    if (isSuccessResponse(resp)) userInfo = resp.data;
   });
 
   const handleSetLimit = async () => {};
