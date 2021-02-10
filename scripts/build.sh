@@ -1,4 +1,6 @@
 #!/bin/bash
+ls -a
+pwd
 cd backend
 npm i
 npm run build
