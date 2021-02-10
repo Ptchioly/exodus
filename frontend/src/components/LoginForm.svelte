@@ -3,11 +3,13 @@
   export let actionButton: {
     label: string;
     onclick: () => any;
+    dataAut: string;
   };
   export let linkButton: {
     label: string;
     onclick: () => any;
     prefix: string;
+    dataAut: string;
   };
 </script>
 
@@ -25,8 +27,8 @@
       <slot />
     </div>
     <button
-      type="submit"
-      data-automation-id="form-button"
+      type="button"
+      data-automation-id={actionButton.dataAut}
       on:click|preventDefault={actionButton.onclick}
       class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl focus:outline-none hover:shadow-lg hover:bg-coolGreen-dark active:bg-coolGreen-darkest active:shadow-xl"
       >{actionButton.label}</button
@@ -35,11 +37,10 @@
 
   <div class="grid grid-cols-2 col-auto mt-9 pb-5 lg:pb-10">
     <p>{linkButton.prefix}</p>
-    <!-- <Link to={linkButton.href}> -->
     <p
       class="cursor-pointer"
-      data-automation-id="link-button"
       on:click={linkButton.onclick}
+      data-automation-id={linkButton.dataAut}
     >
       {linkButton.label}
     </p>
