@@ -42,7 +42,7 @@
   const isSmallEnough = (elem) => {
     if (elem) {
         const barRect = bar.getBoundingClientRect()
-        return (currentP * barRect.width / 100) < 50;
+        return (currentP * barRect.width / 100) < 60;
     }
   }
 
