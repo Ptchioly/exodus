@@ -29,15 +29,13 @@ const defineCategory = (payments: MonoStatements): Payment[] => {
   });
 };
 
-export const categorize = (
-  payments: MonoStatements,
-  previousMonth = false
-): LimitCategory[] => {
-  const field = previousMonth ? 'previousMonth' : 'currentMonth';
+export const categorize = (payments: MonoStatements): LimitCategory[] => {
+  const field = 'moneySpent';
   const categoryObj = defineCategory(payments).reduce(
     (acc: any, { categoryId, amount }) => {
-      if (acc[categoryId] === undefined) acc[categoryId] = amount;
-      else acc[categoryId] = acc[categoryId] + amount;
+      const rounded = Math.floor(amount);
+      if (acc[categoryId] === undefined) acc[categoryId] = rounded;
+      else acc[categoryId] = acc[categoryId] + rounded;
 
       return acc;
     },

@@ -132,5 +132,5 @@ export const getStatement = async (
       from,
       to,
     }),
-  }).then((res) => res.json);
+  }).then((res) => res.json().then((body) => body));
 };

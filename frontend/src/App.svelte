@@ -13,6 +13,8 @@
   let authorized: boolean | undefined;
   let error: boolean = false;
   const currentDate = Date.now();
+  let previous;
+  let current;
 
   onMount(async () => {
     authorized = await isAuthenticated();
@@ -22,9 +24,9 @@
   const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      getStatement(currentDate, 'previous');
-      setTimeout(() => {
-        getStatement(currentDate, 'current');
+      previous = await getStatement(currentDate, 'previous');
+      setTimeout(async () => {
+        current = await getStatement(currentDate, 'current');
       }, 70000);
     }
   };
@@ -49,7 +51,11 @@
 <TailwindCss />
 <main class="font-main h-screen text-center flex content-center">
   {#if navigationState === 'home'}
-    <Homepage on:logout={handleLogout} />
+    <Homepage
+      on:logout={handleLogout}
+      currentMonth={current}
+      previousMonth={previous}
+    />
   {:else if navigationState === 'signIn'}
     <SignIn
       on:login={handleApiResponse}

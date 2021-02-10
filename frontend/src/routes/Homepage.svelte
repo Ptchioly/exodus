@@ -4,8 +4,13 @@
   import { getUserInfo, logout } from '../endpointApi';
   import type { UserInfo } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
-  import RawCharts from '../charts/RawCharts.svelte';
   import StackedBar from '../charts/StackedBar.svelte';
+
+  export let previousMonth: any[];
+  export let currentMonth: any[];
+
+  let data1;
+  let data2;
 
   let userInfo: UserInfo;
   const dispatch = createEventDispatcher();
@@ -15,6 +20,35 @@
   });
 
   const handleSetLimit = async () => {};
+
+  $: if (previousMonth !== undefined) {
+    data1 = previousMonth.map((el) => {
+      return { category: el.category, previous: el.moneySpent, limit: 2000 };
+    });
+  }
+
+  $: if (currentMonth !== undefined && data1 !== undefined) {
+    data2 = mergeData(data1, currentMonth);
+  }
+
+  const mergeData = (initialData, currentMonth) => {
+    return initialData.reduce((accum, el) => {
+      const sobaka = currentMonth.find((curr) => curr.category === el.category);
+      if (sobaka === undefined) {
+        el.current = 0;
+        accum.push(el);
+        return accum;
+      }
+      const merged = {
+        name: el.category,
+        previous: el.moneySpent,
+        current: sobaka.moneySpent,
+        limit: 2000,
+      };
+      accum.push(merged);
+      return accum;
+    }, []);
+  };
 
   const data = [
     {
@@ -65,14 +99,16 @@
   </div>
   <section class="container">
     <!-- <RawCharts /> -->
-    {#each data as bar}
-      <StackedBar
-        title={bar.name}
-        current={bar.currMonth}
-        previous={bar.prevMonth}
-        limit={bar.limit}
-        on:setLimit={handleSetLimit}
-      />
-    {/each}
+    {#if data2 !== undefined}
+      {#each data2 as bar}
+        <StackedBar
+          title={bar.name}
+          current={bar.current}
+          previous={bar.previous}
+          limit={bar.limit}
+          on:setLimit={handleSetLimit}
+        />
+      {/each}
+    {/if}
   </section>
 </main>
