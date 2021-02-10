@@ -11,7 +11,7 @@ hooks:
   BeforeInstall:
     - location: scripts/build.sh
       runas: ec2-user
-  BeforeInstall:
+  AfterInstall:
     - location: scripts/cleanup.sh
       runas: ec2-user
   # ApplicationStop:
