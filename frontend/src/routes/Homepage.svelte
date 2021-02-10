@@ -9,8 +9,23 @@
   export let previousMonth: any[];
   export let currentMonth: any[];
 
+  let currentMaxValue = 0;
+
   let data1;
   let data2;
+
+
+  const getMaxValue = (el: any) => {
+    console.log(el);
+    if (el == undefined) return;
+    if (el.current && el.current > currentMaxValue) {
+      currentMaxValue = el.current;
+    } else if (el.limit && el.limit > currentMaxValue)  {
+      currentMaxValue = el.limit;
+    } else if (el.previous && el.previous > currentMaxValue) {
+      currentMaxValue = el.previous;
+    }
+  }
 
   let userInfo: UserInfo;
   const dispatch = createEventDispatcher();
@@ -24,11 +39,12 @@
   $: if (previousMonth !== undefined) {
     data1 = previousMonth.map((el) => {
       return { category: el.category, previous: el.moneySpent, limit: 2000 };
-    });
+    }).sort((a, b) => b.previous - a.previous)
+    data1.forEach(getMaxValue);
   }
 
   $: if (currentMonth !== undefined && data1 !== undefined) {
-    data2 = mergeData(data1, currentMonth);
+    data2 = mergeData(data1, currentMonth).sort((a, b) => b.current - a.current);
   }
 
   const mergeData = (initialData, currentMonth) => {
@@ -101,13 +117,16 @@
     <!-- <RawCharts /> -->
     {#if data1 !== undefined}
       {#each data1 as bar}
+        {#if (bar.current && bar.current <= 4000 ) || (bar.previous && bar.previous <= 4000 ) }
         <StackedBar
           title={bar.category}
           current={bar.previous}
           previous={bar.previous}
           limit={bar.limit}
+          maxValue={Math.ceil(currentMaxValue / 100 * 1.4) * 100}
           on:setLimit={handleSetLimit}
         />
+        {/if}
       {/each}
     {/if}
   </section>

@@ -5,37 +5,46 @@
   export let current;
   export let previous;
   export let limit;
-  const barSize = 4000;
+  export let maxValue = 4000;
 
   let currentP = 0;
   let previousP = 0;
   let limitP = 0;
   let overlap;
+  let smol = false;
 
   let bar;
   let limits;
+  let currentElement;
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
     bar.classList.toggle('detailed');
   };
 
-  const percentOf = (i) => (i * 100) / barSize;
+  const percentOf = (i) => (i * 100) / maxValue;
 
   const countOverlap = () => {
     return limit && current > limit
-      ? (barSize / current) * (percentOf(current) - limitP)
+      ? (maxValue / current) * (percentOf(current) - limitP)
       : 0;
   };
 
   const handlePress = (e) => {
     const step = 50;
-    if (e.key === 'ArrowUp' && limit + step <= barSize) {
+    if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
     }
   };
+
+  const isSmallEnough = (elem) => {
+    if (elem) {
+        const barRect = bar.getBoundingClientRect()
+        return (currentP * barRect.width / 100) < 50;
+    }
+  }
 
   const move = (e) => {
     const node = e.target;
@@ -49,7 +58,7 @@
         ((e.clientX - limitsRect.left) * 100) / limitsRect.width
       );
       if (movePercent >= 0 && movePercent <= 100) {
-        limit = Math.round((movePercent * barSize) / 100);
+        limit = Math.round((movePercent * maxValue) / 100);
       }
     };
 
@@ -68,6 +77,7 @@
       currentP = percentOf(current);
       previousP = percentOf(previous);
       limitP = percentOf(limit);
+      smol = isSmallEnough(currentElement);
     }, 20);
   });
 
@@ -112,14 +122,16 @@
       <div class="bars">
         <div
           class="bar bar--previous"
-          data-value={`₴${previous}`}
+          data-value={`₴ ${previous}`}
           style={`width: ${previousP}%`}
         />
         {#if current > 0}
           <div
             class="bar bar--current"
             style={`width: ${currentP}%`}
-            data-value={`₴${current}`}
+            data-value={`₴ ${current}`}
+            bind:this={currentElement}
+            data-hiddenValue={smol}
           >
             <div
               class="bar__over"
@@ -129,8 +141,8 @@
             <div
               class="bar__toLimit"
               style={`width: ${
-                (limitP - currentP) * (barSize / current)
-              }%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}
+                percentOf((limit - current) * (maxValue / current))
+              }%; margin-right: -${(limitP - currentP) * (maxValue / current)}%`}
             >
               {#if limit && limit > current + 20}
                 <div>
@@ -165,6 +177,7 @@
     flex-direction: row;
     padding: 0.75em 0;
     user-select: none;
+    -webkit-user-select: none;
   }
 
   .top,
@@ -217,8 +230,7 @@
     background-color: #e7f4ec;
     text-align: center;
     border-radius: 8px;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
+    font-size: .75em;
   }
 
   .title {
@@ -231,7 +243,6 @@
   }
 
   .title__name {
-    /* text-transform: uppercase; */
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -254,7 +265,6 @@
 
   .bar {
     height: 2em;
-    min-width: 1em;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
@@ -295,10 +305,10 @@
 
   .bar__toLimit > div > div.detailed::before {
     content: attr(data-value);
-    font-size: 0.6em;
+    font-size: 0.5em;
     color: #2f9e9e;
     margin-left: -1.1em;
-    margin-top: -0.7em;
+    margin-top: -0.8em;
     position: absolute;
     background-color: #2f9e9e;
     border-radius: 0.3em;
@@ -323,11 +333,11 @@
   }
 
   .detailed > .bars > .bar--previous::after {
-    content: 'previous: ' attr(data-value);
+    content: attr(data-value);
     position: absolute;
-    font-weight: bold;
-    margin-top: -1em;
-    font-family: 'Courier New', Courier, monospace;
+    margin-top: -1.1em;
+    font-size: .85em;
+
   }
 
   .bar--previous {
@@ -341,19 +351,41 @@
     margin-top: -2em;
     display: flex;
     box-sizing: border-box;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    color: #a6d6d1;
+    color: #d4e7e5;
     transition: margin 0.2s, width 0.7s;
   }
 
   .bar--current::after {
     content: attr(data-value);
     position: absolute;
+    height: 2.30em;
+    display: flex;
+    align-items: center;
+    padding-right: 0.75em;
+    font-size: .85em;
+  }
+
+  .bar--current[data-hiddenValue='true']::after {
+    content: attr(data-value);
+    position: absolute;
     height: 2em;
     display: flex;
     align-items: center;
     padding-right: 0.75em;
+    visibility: hidden;
+  }
+
+  .bottom:hover > .bar__container > .bars > .bar--current[data-hiddenValue='true']::after {
+    visibility: visible;
+    height: 2.33em;
+    padding: 0 0.75em;
+    background-color: #20aeae;
+    color: #eee;
+    border-radius: 8px;
+    margin: -.35em .0em 0 0;
+    border-bottom-right-radius: 0;
+    transition: all .2s;
+    z-index: 100;
   }
 
   .limits {
@@ -367,7 +399,6 @@
     background-color: #ec0808;
     position: relative;
     border-radius: 2px;
-    top: -1px;
     border: 1px solid #ec0808;
     border-top: 1px solid #ec0808;
     border-bottom: 1px solid #ec0808;
@@ -397,10 +428,10 @@
     content: attr(data-value);
     position: absolute;
     color: #ec0808;
-    font-family: 'Courier New', Courier, monospace;
+
     font-weight: bold;
-    font-size: 0.8em;
-    margin-top: -1em;
+    font-size: 0.75em;
+    margin-top: -1.2em;
     margin-left: -8px;
   }
 
