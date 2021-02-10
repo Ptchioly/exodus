@@ -4,7 +4,6 @@
   import { getUserInfo, logout } from '../endpointApi';
   import type { UserInfo } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
-  import RawCharts from '../charts/RawCharts.svelte';
   import StackedBar from '../charts/StackedBar.svelte';
 
   let userInfo: UserInfo;
@@ -51,15 +50,23 @@
         <UserProfile user={userInfo} />
       {/if}
     </div>
-    <div class="logout ">
+    <div class="flex w-1/8">
       <div
-        class="cursor-pointer bg-coolGreen-default rounded-3xl h-8 w-18 text-sm flex px-3 justify-center items-center text-white"
-        on:click={async () => {
-          await logout();
-          dispatch('logout', {});
-        }}
+        class="telega h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
+        on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
       >
-        LOG OUT
+        <img src="images/tg.png" />
+      </div>
+      <div class="logout ml-6">
+        <div
+          class="cursor-pointer bg-coolGreen-default rounded-3xl h-8 w-28 text-sm flex px-5 justify-center items-center text-white"
+          on:click={async () => {
+            await logout();
+            dispatch('logout', {});
+          }}
+        >
+          LOG OUT
+        </div>
       </div>
     </div>
   </div>
