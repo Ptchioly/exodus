@@ -7,10 +7,8 @@
 </div>
 
 <style>
-  .mono {
+  img {
+    height: 2em;
     width: 2em;
-  }
-  span:hover {
-    box-shadow: 0 0 0 2px #e7e7e7;
   }
 </style>

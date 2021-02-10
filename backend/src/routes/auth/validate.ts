@@ -1,9 +1,10 @@
 import { NextFunction, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
+import fetch from 'node-fetch';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
 import { requests } from '../monobank/endpoints';
-import { isValidUsername, isValidPassword } from './utils';
+import { isValidPassword, isValidUsername } from './utils';
 
 export const authenticateToken = (
   req: any,
