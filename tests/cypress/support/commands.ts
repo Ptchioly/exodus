@@ -27,7 +27,7 @@ Cypress.Commands.add('setToken', (response) => {
 // -- a custom command to login using XHR call and set the received cookie --
 // log in with default user 
 Cypress.Commands.add('loginByAPI', (user = Cypress.env('user')) => {
-  return cy.getLoginToken(user).then(res => cy.setToken(res))
+  return cy.getLoginToken(user)
 })
 
 
