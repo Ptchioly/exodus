@@ -9,13 +9,13 @@ describe.only('Login', {
   before(() => {
     cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
     cy.registerUser()
-    cy.clearCookies()
   })
 
 
 
-  beforeEach(() => {
-    cy.visit('/')
+    beforeEach(() => {
+      cy.clearCookies()
+      cy.visit('/')
   })
 
   it('displays "Sign in to Exodus" on the login page', () => {
