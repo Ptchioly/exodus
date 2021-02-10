@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo rm -r /home/ec2-user/exodus
+sudo rm -r -f /home/ec2-user/exodus
