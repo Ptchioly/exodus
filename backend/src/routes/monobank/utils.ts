@@ -29,23 +29,37 @@ const checkMonth = (timestamp: number): boolean => {
 export const statementUpdate = async (
   userFromDB: GetOutput,
   timestamp: number,
-  data: any[]
+  data: any[],
+  processedData: any[]
 ): Promise<void> => {
   const accounts = userFromDB.Item.accounts;
   accounts.forEach(async (id) => {
     await getItem(configs.STATEMENTS_TABLE, {
       accountId: id,
     }).then((dbItem) => {
+      const newObject = { rawData: data, processedData };
       if (Object.keys(dbItem).length > 0) {
         if (!checkMonth(timestamp))
           updateItem(
             configs.STATEMENTS_TABLE,
             { accountId: id },
-            { [timestamp]: data, username: userFromDB.Item.username }
+            { [timestamp]: newObject, username: userFromDB.Item.username }
           );
-      } else {
-        putItem(configs.STATEMENTS_TABLE, { accountId: id, [timestamp]: data });
-      }
+      } else
+        putItem(configs.STATEMENTS_TABLE, {
+          accountId: id,
+          [timestamp]: newObject,
+          username: userFromDB.Item.username,
+        });
     });
   });
 };
+
+// export const updateLimit = async (
+//   userId: string,
+//   timestamp: number,
+//   id: number,
+//   value: number
+// ): Promise<void> => {
+//   putItem(configs.STATEMENTS_TABLE);
+// };

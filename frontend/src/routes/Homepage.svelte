@@ -16,12 +16,12 @@
     if (el == undefined) return;
     if (el.current && el.current > currentMaxValue) {
       currentMaxValue = el.current;
-    } else if (el.limit && el.limit > currentMaxValue)  {
+    } else if (el.limit && el.limit > currentMaxValue) {
       currentMaxValue = el.limit;
     } else if (el.previous && el.previous > currentMaxValue) {
       currentMaxValue = el.previous;
     }
-  }
+  };
 
   let currentDate = Date.now();
   let userInfo: UserInfo;
@@ -34,7 +34,9 @@
     previousMonth = await getStatement(currentDate, 'previous');
     currentMonth = await getStatement(currentDate, 'current');
     const sobaka = previousMonth.filter((el) => el.category !== 'Другое');
-    data = mergeData(sobaka, currentMonth).sort((a, b) => a.current && b.current ? b.current - a.current : b.previous - a.previous);
+    data = mergeData(sobaka, currentMonth).sort((a, b) =>
+      a.current && b.current ? b.current - a.current : b.previous - a.previous
+    );
     data.forEach(getMaxValue);
   });
 
@@ -98,7 +100,7 @@
           current={bar.previous}
           previous={bar.previous}
           limit={bar.limit}
-          maxValue={Math.ceil(currentMaxValue / 100 * 1.4) * 100}
+          maxValue={Math.ceil((currentMaxValue / 100) * 1.4) * 100}
           on:setLimit={handleSetLimit}
         />
       {/each}
