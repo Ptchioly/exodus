@@ -2,6 +2,7 @@ import { NextFunction, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
+import { requests } from '../monobank/endpoints';
 import { isValidUsername, isValidPassword } from './utils';
 
 export const authenticateToken = (
@@ -32,13 +33,26 @@ export const authentication = Router().get(
   (req: any, res) => endpointRespond(res).SuccessResponse({})
 );
 
-export const validateUserInfo = (
-  username: string,
-  password: string
-): string => {
+const isValidToken = async (token: string) => {
+  const data = await fetch(requests.personal(), {
+    headers: {
+      'X-Token': token,
+    },
+  }).then((el) => el.json());
+  if (data.errorDescription) return false;
+  return true;
+};
+
+export const validateUserInfo = ({
+  username,
+  password,
+  xtoken,
+}: any): string => {
   if (!isValidUsername(username)) return 'Phone number is not valid.';
 
   if (!isValidPassword(password))
     return 'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.';
+
+  if (!isValidToken(xtoken)) return "Unknown 'X-Token'";
   return 'OK';
 };
