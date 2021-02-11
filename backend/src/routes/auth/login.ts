@@ -35,7 +35,10 @@ login.post('/login', async (req, res) => {
   if (password !== decrypted)
     return respond.FailureResponse('Incorrect password.');
 
-  const token = generateAccessToken(userResponse.Item.username);
+  const token = generateAccessToken(
+    userResponse.Item.username,
+    userResponse.Item.xtoken
+  );
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
   return respond.SuccessResponse({ user_id: userResponse.Item.id });

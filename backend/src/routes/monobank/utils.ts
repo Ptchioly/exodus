@@ -7,7 +7,7 @@ export const requiredFields = ({
   from,
   to,
   previous,
-}: Partial<StatementRequest>): StatementRequest => {
+}: StatementRequest): StatementRequest => {
   const date = new Date(Date.now());
   const currentMonth = date.getMonth();
   const currentYear = date.getFullYear();
@@ -15,9 +15,9 @@ export const requiredFields = ({
   const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
   const dateFrom = new Date(yearCheck, previousMonth).valueOf();
   return {
-    account: account || 0,
+    account,
     from: from || dateFrom,
-    to: to,
+    to,
     previous: !!previous,
   };
 };

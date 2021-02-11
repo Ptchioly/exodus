@@ -12,6 +12,7 @@ export const signup = Router();
 signup.post('/signup', async (req, res) => {
   const respond = endpointRespond(res);
   const { username, password, xtoken } = req.body;
+
   if (!exist(req.body, username, password, xtoken))
     return respond.FailureResponse('Required fields are empty');
 
@@ -45,7 +46,7 @@ signup.post('/signup', async (req, res) => {
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
 
-  const token = generateAccessToken(username);
+  const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
   return respond.SuccessResponse({ user_id: id });
