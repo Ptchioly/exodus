@@ -98,18 +98,17 @@ export const statementUpdate = async (
     });
     const newObject = { rawData: data, processedData };
 
-    const out =
-      Object.keys(dbItem).length > 0
-        ? await updateItem(
-            configs.STATEMENTS_TABLE,
-            { accountId: id },
-            { [timestamp]: newObject, username: userFromDB.Item.username }
-          )
-        : await putItem(configs.STATEMENTS_TABLE, {
-            accountId: id,
-            [timestamp]: newObject,
-            username: userFromDB.Item.username,
-          });
+    Object.keys(dbItem).length > 0
+      ? await updateItem(
+          configs.STATEMENTS_TABLE,
+          { accountId: id },
+          { [timestamp]: newObject, username: userFromDB.Item.username }
+        )
+      : await putItem(configs.STATEMENTS_TABLE, {
+          accountId: id,
+          [timestamp]: newObject,
+          username: userFromDB.Item.username,
+        });
   });
 };
 

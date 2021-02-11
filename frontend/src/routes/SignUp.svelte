@@ -89,7 +89,7 @@
           data-automation-d="xtoken-input"
           bind:value={token}
         />
-        <div class="items-center"><MonoLogo /></div>
+        <div class="items-center w-1/6"><MonoLogo /></div>
       </div>
     </div>
   </div>

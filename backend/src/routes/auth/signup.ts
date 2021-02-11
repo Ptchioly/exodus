@@ -39,7 +39,7 @@ signup.post('/signup', async (req, res) => {
   const key = nanoid(21);
   const encryptedPassword = encrypt(password, key);
 
-  const updateUserResponse = await putItem(configs.USER_TABLE, {
+  const user = {
     id: data.clientId,
     key,
     username,
@@ -47,7 +47,9 @@ signup.post('/signup', async (req, res) => {
     xtoken,
     name: data.name,
     accounts: getAccounts(data.accounts),
-  });
+  };
+
+  const updateUserResponse = await putItem(configs.USER_TABLE, user);
 
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
@@ -55,10 +57,9 @@ signup.post('/signup', async (req, res) => {
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
-  const newUser = await getItem(configs.USER_TABLE, {
-    username,
+  await syncStatements({
+    Item: user as any,
   });
-  if (!isFailure(newUser)) await syncStatements(newUser);
 
   return respond.SuccessResponse();
 });
