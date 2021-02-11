@@ -48,5 +48,5 @@ jobs:
         run: |
             git checkout deploy
             git pull
-            git merge staging -m "Auto-merge staging to deploy"
+            git merge --no-ff staging -m "Auto-merge staging to deploy"
             git push
