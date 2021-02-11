@@ -29,13 +29,7 @@
 
   const handleSignIn = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
-      await getUserInfo();
-      previous = await getStatement(currentDate, 'previous');
-      navigationState = 'waiting';
-      setTimeout(async () => {
-        current = await getStatement(currentDate, 'current');
-        navigationState = 'home';
-      }, 70000);
+      navigationState = 'home';
     }
   };
 

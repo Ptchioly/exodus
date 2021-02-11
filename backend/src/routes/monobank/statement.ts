@@ -4,14 +4,12 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
-import { getStatements } from './endpoints';
-import { categorize } from './paymentsProcessing';
-import { requiredFields, statementUpdate } from './utils';
+import { requiredFields } from './utils';
 
 export const statement = Router();
 
 statement.post('/statement', authenticateToken, async (req: any, res) => {
-  const { username, xtoken } = req.user.data;
+  const { username } = req.user.data;
   const respond = endpointRespond(res);
 
   const fields = requiredFields(req.body);
@@ -21,10 +19,25 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   });
 
   if (!isFailure(userFromDB)) {
-    const data = await getStatements(fields, xtoken);
-    const dataToUI = categorize(data);
-    const newData = statementUpdate(userFromDB, fields.from, data, dataToUI);
-    return respond.SuccessResponse(newData);
+    const statement = await getItem(configs.STATEMENTS_TABLE, {
+      accountId: userFromDB.Item.accounts[0],
+    });
+    if (isFailure(statement)) return respond.FailureResponse(statement.message);
+    if (
+      !isFailure(statement) &&
+      (statement.Item as any)[fields.from]?.processedData !== undefined
+    ) {
+      console.log('JUST STATEMENT');
+      return respond.SuccessResponse(
+        (statement.Item as any)[fields.from].processedData
+      );
+    }
+
+    console.log('NOTJING STATEMENT');
+    return respond.FailureResponse(
+      'Data is not available. Wait for a 60s.',
+      404
+    );
   }
   return respond.FailureResponse('Failed to get statement');
 });

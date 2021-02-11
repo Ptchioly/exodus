@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { configs } from '../../config';
 import { getItem, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
+import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
 import { encrypt, getAccounts } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
@@ -49,6 +50,11 @@ signup.post('/signup', async (req, res) => {
 
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
+
+  const newUser = await getItem(configs.USER_TABLE, {
+    username,
+  });
+  if (!isFailure(newUser)) await syncStatements(newUser);
 
   return respond.SuccessResponse({ user_id: id });
 });
