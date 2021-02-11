@@ -7,7 +7,7 @@ import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
 import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
-import { requiredFields, statementUpdate } from './utils';
+import { requiredFields } from './utils';
 
 export const statement = Router();
 
@@ -28,7 +28,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
       },
     }).then((el) => el.json());
     const dataToUI = categorize(data);
-    statementUpdate(userFromDB, from, data);
+    // statementUpdate(userFromDB, from, data);
     return respond.SuccessResponse(dataToUI);
   }
   return respond.FailureResponse('Failed to get statement');
