@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { nanoid } from 'nanoid';
 import { configs } from '../../config';
-import { getItem, putItem } from '../../dynamoAPI';
+import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
@@ -25,18 +25,22 @@ signup.post('/signup', async (req, res) => {
     username,
   });
 
-  if (isFailure(userResponse))
-    return respond.FailureResponse('Unable to get user.');
+  if (isFailure(userResponse) || userResponse.Item)
+    return respond.FailureResponse('User already exist.');
 
-  if (userResponse.Item)
-    return respond.FailureResponse('User already exist', 409);
+  const tokenResponse = await getTokens(configs.USER_TABLE);
 
-  const id = nanoid(7); // magic id
-  const key = nanoid(21); // magic key
+  if (!tokenResponse.Items)
+    return respond.FailureResponse('Unexpected error from db.');
+
+  if (tokenResponse.Items.some((e: any) => e.xtoken === xtoken))
+    return respond.FailureResponse('Monobank token is already registered.');
+
+  const key = nanoid(21);
   const encryptedPassword = encrypt(password, key);
 
   const updateUserResponse = await putItem(configs.USER_TABLE, {
-    id,
+    id: data.clientId,
     key,
     username,
     password: encryptedPassword,
@@ -56,5 +60,5 @@ signup.post('/signup', async (req, res) => {
   });
   if (!isFailure(newUser)) await syncStatements(newUser);
 
-  return respond.SuccessResponse({ user_id: id });
+  return respond.SuccessResponse();
 });

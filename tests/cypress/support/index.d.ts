@@ -1,17 +1,26 @@
 /// <reference types="cypress" />
+
+type ApiHost = "http://localhost:8080" | "https://api.beeeee.es";
 declare namespace Cypress {
 
   type UserSignupInfo = {
     username: string;
     password: string;
     xtoken: string;
+    // [propName: string]: any;
   };
 
   type UserLoginInfo = {
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
   };
-  interface Chainable {
+  interface Chainable<Subject = any> {
+
+    // This types out our Cypress.env("key") calls better
+    env(key: 'apiUrl'): ApiHost | undefined;
+    env(key: 'username'): string | undefined;
+    env(key: 'password'): string | undefined;
+    env(key: 'xtoken'): string | undefined;
 
     /**
     * Custom command to select DOM element by data-automation-id attribute.
@@ -27,11 +36,16 @@ declare namespace Cypress {
 
     getBySelLike(dataIdPrefixAttribute: string, args?: any): Chainable<Element>;
 
-     // /**
+    // /**
     //  * Logs-in user by using API request and sets the received JWT cookie 
     //  */
     loginByAPI(options?: UserLoginInfo): Chainable<any>;
-
+    
+    // /**
+    //  * Logs user in manually via app UI
+    //  */
+    manualLogin(options?: UserLoginInfo): void;
+    
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */
