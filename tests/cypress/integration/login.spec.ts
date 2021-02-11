@@ -3,6 +3,8 @@
 
 describe.only('Login', () => {
   before(function() {
+    cy.log(Cypress.env('username'))
+    cy.log(Cypress.env('password'))
     // cy.deleteMyUserIfExists()
     // cy.registerUser()
   })

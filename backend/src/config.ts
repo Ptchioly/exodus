@@ -1,3 +1,6 @@
+import { resolve } from 'path';
+require('dotenv').config({ path: resolve('../../.env') });
+
 export const secrets = {
   SECRET_SESSION: process.env.SECRET_SESSION,
   ACCESS_KEY: process.env.AWS_ACCESS_KEY,

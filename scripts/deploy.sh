@@ -1,7 +1,5 @@
 #!/bin/bash
-source /home/ec2-user/.bash_profile
-cd /home/ec2-user
-cd backend
+cd /home/ec2-user/exodus/backend
 npm run deploy
 cd ../frontend
 npm run deploy
