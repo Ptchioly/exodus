@@ -4,7 +4,6 @@
   import { getUserInfo, logout } from '../endpointApi';
   import type { UserInfo } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
-  import RawCharts from '../charts/RawCharts.svelte';
   import StackedBar from '../charts/StackedBar.svelte';
 
   let userInfo: UserInfo;
@@ -12,6 +11,7 @@
   onMount(async () => {
     const resp = await getUserInfo();
     if (isSuccessResponse(resp)) userInfo = resp.data;
+    console.log('onMount => userInfo', userInfo);
   });
 
   const handleSetLimit = async () => {};
@@ -41,38 +41,39 @@
   ];
 </script>
 
-<main class="flex w-full flex-col items-center mx-20">
-  <div class="header flex justify-between w-full px-5 mt-4 mb-40">
-    <div class="user flex items-center">
-      <!-- <div class="settings w-4 cursor-pointer mr-4">
-        <img alt="settings" src="images/settings.svg" />
-      </div> -->
-      {#if userInfo}
-        <UserProfile user={userInfo} />
-      {/if}
-    </div>
-    <div class="logout ">
-      <div
-        class="cursor-pointer bg-coolGreen-default rounded-3xl h-8 w-18 text-sm flex px-3 justify-center items-center text-white"
-        on:click={async () => {
-          await logout();
-          dispatch('logout', {});
-        }}
-      >
-        LOG OUT
+{#if userInfo}
+  <main class="flex w-full flex-col items-center mx-20">
+    <div class="header flex justify-end w-full px-5 mt-4 mb-40">
+      <div class="flex w-1/8">
+        <div
+          class="telega h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
+          on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
+        >
+          <img src="images/tg.png" />
+        </div>
+        <div class="user flex items-center" />
+        <div class="logout ml-6 user flex items-center">
+          <UserProfile
+            user={userInfo}
+            on:logout={async () => {
+              await logout();
+              dispatch('logout', {});
+            }}
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <section class="container">
-    <!-- <RawCharts /> -->
-    {#each data as bar}
-      <StackedBar
-        title={bar.name}
-        current={bar.currMonth}
-        previous={bar.prevMonth}
-        limit={bar.limit}
-        on:setLimit={handleSetLimit}
-      />
-    {/each}
-  </section>
-</main>
+    <section class="container">
+      <!-- <RawCharts /> -->
+      {#each data as bar}
+        <StackedBar
+          title={bar.name}
+          current={bar.currMonth}
+          previous={bar.prevMonth}
+          limit={bar.limit}
+          on:setLimit={handleSetLimit}
+        />
+      {/each}
+    </section>
+  </main>
+{/if}

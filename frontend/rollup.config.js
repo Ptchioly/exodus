@@ -10,9 +10,13 @@ import css from 'rollup-plugin-css-only';
 import tailwind from 'tailwindcss';
 
 const production = !process.env.ROLLUP_WATCH;
+const staging = process.argv.reverse()[0] === '--staging';
 
 //api host (in dev mode backend should be run locally)
-const host = production ? 'https://api.beeeee.es' : 'http://localhost:8080';
+let host = 'http://localhost:8080';
+
+if (production) host = 'https://api.beeeee.es';
+if (staging) host = 'https://staging-api.beeeee.es';
 
 function serve() {
   let server;

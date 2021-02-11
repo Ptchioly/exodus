@@ -24,6 +24,7 @@
   };
 
   const singUpButton = {
+    dataAut: 'signup-button',
     label: 'Sign Up',
     onclick: async () => {
       pwdCheck = checkPwd(pwd, confirmPwd);
@@ -46,6 +47,7 @@
   };
 
   const signInButton = {
+    dataAut: 'link-signin-button',
     prefix: 'Have an account?',
     label: 'Sign In',
     onclick: () => dispatch('openSignIn', {}),

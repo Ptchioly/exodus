@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 export const endpointRespond = (res: Response) => ({
-  SuccessResponse: (data: any, status = 200): void => {
+  SuccessResponse: (data = {}, status = 200): void => {
     res.status(status).json(data).end();
   },
   FailureResponse: (message = 'Bad request.', status = 400): void => {

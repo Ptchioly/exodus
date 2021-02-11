@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+/// <reference path="../support/index.d.ts" />
 
 // const sizes = ['iphone-6', 'ipad-2', [1024, 768]] // test viewports, update with relevant ones
 

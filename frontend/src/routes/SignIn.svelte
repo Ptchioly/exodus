@@ -26,11 +26,13 @@
       }
       dispatch('login', resp);
     },
+    dataAut: 'signin-button',
   };
   const signUpButton = {
     prefix: 'New to Exodus?',
     label: 'Join Now',
     onclick: () => dispatch('openSignUp', {}),
+    dataAut: 'link-signup-button',
   };
 
   $: summaryPhone = countryCode + phoneNumber;
