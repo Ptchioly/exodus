@@ -45,13 +45,12 @@ describe.only('Login', {
     cy.getBySel('error-message').should('contain', 'Required fields are empty')
   })
 
-  // it("should error for an invalid user", function () {
-  //   cy.login("invalidUserName", "invalidPa$$word");
-
-  //   cy.getBySel("signin-error")
-  //     .should("be.visible")
-  //     .and("have.text", "Username or password is invalid");
-  // });
+  it("should error for an invalid user", function () {
+    cy.login("invalidUserName", "invalidPa$$word");
+    cy.getBySel("signin-error")
+      .should("be.visible")
+      .and("have.text", "Username or password is invalid");
+  });
 
   // it("should error for an invalid password for existing user", function () {
   // });
@@ -62,7 +61,7 @@ describe.only('Login', {
     // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
     cy.getBySel('form-button').click()
     cy.get('.cursor-pointer').should('contain', 'LOG OUT');
-    cy.getCookie('jwt').should('have.property', 'value');
+    cy.getCookie('jwt').should('have.property', 'value')
   })
 
 })

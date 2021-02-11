@@ -18,6 +18,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           config: 'baseUrl=http://localhost:5000'
+          env: 'password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080'
           # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
           start: npm run frontend:start, npm run backend:start
           wait-on: 'http://localhost:5000, http://localhost:8080/logout'
@@ -25,10 +26,11 @@ jobs:
           browser: chrome
           headless: true
           working-directory: tests
-        #   group: 'UI - Chrome'
-        #   record: true
-        # env:
-        #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          group: 'UI - Chrome'
+          record: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
 #   # restart-server:
 #   #   name: Connect with SSH and Restart Server

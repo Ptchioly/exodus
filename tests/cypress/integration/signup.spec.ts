@@ -3,7 +3,7 @@
 
 describe('sign up', () => {
   beforeEach(() => {
-    cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws")});
+    cy.deleteMyUserIfExists()
     // we are not logged in
     cy.visit('/')
   })

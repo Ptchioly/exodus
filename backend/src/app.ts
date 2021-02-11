@@ -30,12 +30,11 @@ app.use(
   cors({
     origin: [
       'http://localhost:5000',
-      'https://ptchioly.github.io/exodus',
-      'https://ptchioly.github.io',
       'http://beeeee.es',
       'https://beeeee.es',
       'http://www.beeeee.es',
       'https://www.beeeee.es',
+      'https://staging.beeeee.es',
     ],
     credentials: true,
   })
