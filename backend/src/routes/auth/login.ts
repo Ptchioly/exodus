@@ -13,7 +13,7 @@ login.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   if (!exist(req.body, username, password))
-    return respond.FailureResponse('Required fields are empty');
+    return respond.FailureResponse('Required fields are empty.');
 
   const { message } = await validateUserInfo(req.body);
 
@@ -24,10 +24,10 @@ login.post('/login', async (req, res) => {
   });
 
   if (isFailure(userResponse))
-    return respond.FailureResponse('Unable to get user');
+    return respond.FailureResponse('Unable to get user. Contact support.');
 
   const user = userResponse.Item;
-  if (!user) return respond.FailureResponse('Unauthorized user.');
+  if (!user) return respond.FailureResponse('User does not exist.');
 
   const decrypted = decrypt(user.password, user.key);
 
