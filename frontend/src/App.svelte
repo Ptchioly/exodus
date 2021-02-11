@@ -4,7 +4,12 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { getStatement, getUserInfo, isAuthenticated } from './endpointApi';
+  import {
+    getStatement,
+    getUserInfo,
+    isAuthenticated,
+    updateLimit,
+  } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';

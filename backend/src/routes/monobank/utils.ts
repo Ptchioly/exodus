@@ -1,5 +1,6 @@
 import { configs } from '../../config';
 import { getItem, putItem, updateItem } from '../../dynamoAPI';
+import { isFailure } from '../types/guards';
 import { GetOutput, StatementRequest } from '../types/types';
 
 export const requiredFields = ({
@@ -58,9 +59,29 @@ export const statementUpdate = async (
 export const updateLimit = async (
   userId: string,
   timestamp: number,
-  id: number,
+  category: string,
   value: number
 ): Promise<void> => {
-  const key = { [userId]: { [timestamp]: { id } } };
-  updateItem(configs.STATEMENTS_TABLE, key, { limit: value });
+  const key = { accountId: userId };
+  const sobaka = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
+  if (!isFailure(sobaka)) {
+    const newData = sobaka.Item[timestamp].processedData.reduce(
+      (accum: any, el: any) => {
+        if (el.category === category) el.limit = value;
+        accum.push(el);
+        return accum;
+      },
+      []
+    );
+    updateItem(
+      configs.STATEMENTS_TABLE,
+      { accountId: userId },
+      {
+        [timestamp]: {
+          processedData: newData,
+          rawData: sobaka.Item[timestamp].rawData,
+        },
+      }
+    );
+  } else console.log('error');
 };

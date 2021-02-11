@@ -54,7 +54,7 @@
           category: oldData.category,
           previous: oldData.moneySpent,
           current: 0,
-          limit: 2000,
+          limit: oldData.limit || 0,
         });
         return accum;
       }
@@ -62,7 +62,7 @@
         category: oldData.category,
         previous: oldData.moneySpent,
         current: newData.moneySpent,
-        limit: 2000,
+        limit: newData.limit || 0,
       };
       accum.push(merged);
       return accum;
@@ -98,7 +98,7 @@
         {#each data as bar}
           <StackedBar
             title={bar.category}
-            current={bar.previous}
+            current={bar.current}
             previous={bar.previous}
             limit={bar.limit}
             maxValue={Math.ceil((currentMaxValue / 100) * 1.4) * 100}

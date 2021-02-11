@@ -6,23 +6,24 @@ import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
 import { updateLimit } from './utils';
 
-export const statement = Router();
+export const limit = Router();
 
-statement.post('/limit', authenticateToken, async (req: any, res) => {
-  const username = req.user.data;
-
-  const userFromDB = await getItem(configs.USER_TABLE, {
-    username,
-  });
+limit.post('/limit', authenticateToken, async (req: any, res) => {
+  const { username } = req.user.data;
   const respond = endpointRespond(res);
 
-  const { id, value = 0 } = req.body;
-  if (id === undefined)
-    return respond.FailureResponse('Failed to get statement');
+  const userFromDB = await getItem(configs.USER_TABLE, { username });
+
+  const { category, value } = req.body;
 
   if (!isFailure(userFromDB)) {
     const accountId = userFromDB.Item.accounts[0] as any;
-    updateLimit(accountId, new Date(Date.now()).valueOf(), id, value);
+    await updateLimit(
+      accountId,
+      new Date(2021, new Date(Date.now()).getMonth()).valueOf(),
+      category,
+      value
+    );
     return respond.SuccessResponse('Limit was set');
   }
   return respond.FailureResponse('Failed to get statement');

@@ -23,8 +23,8 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   if (!isFailure(userFromDB)) {
     const data = await getStatements(fields, xtoken);
     const dataToUI = categorize(data);
-    statementUpdate(userFromDB, fields.from, data, dataToUI);
-    return respond.SuccessResponse(dataToUI);
+    const newData = statementUpdate(userFromDB, fields.from, data, dataToUI);
+    return respond.SuccessResponse(newData);
   }
   return respond.FailureResponse('Failed to get statement');
 });

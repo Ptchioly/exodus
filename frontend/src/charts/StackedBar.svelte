@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
+  import { updateLimit } from '../endpointApi';
 
   export let title;
   export let current;
@@ -12,6 +13,7 @@
   let limitP = 0;
   let overlap;
   let smol = false;
+  let timeoutId;
 
   let bar;
   let limits;
@@ -39,12 +41,19 @@
     }
   };
 
+  const handleLimitSet = async (value) => {
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      updateLimit(title, value);
+    }, 5000);
+  };
+
   const isSmallEnough = (elem) => {
     if (elem) {
-        const barRect = bar.getBoundingClientRect()
-        return (currentP * barRect.width / 100) < 60;
+      const barRect = bar.getBoundingClientRect();
+      return (currentP * barRect.width) / 100 < 60;
     }
-  }
+  };
 
   const move = (e) => {
     const node = e.target;
@@ -141,9 +150,11 @@
             />
             <div
               class="bar__toLimit"
-              style={`width: ${
-                percentOf((limit - current) * (maxValue / current))
-              }%; margin-right: -${(limitP - currentP) * (maxValue / current)}%`}
+              style={`width: ${percentOf(
+                (limit - current) * (maxValue / current)
+              )}%; margin-right: -${
+                (limitP - currentP) * (maxValue / current)
+              }%`}
             >
               {#if limit && limit > current + 20}
                 <div>
@@ -162,6 +173,7 @@
         <div
           class="limit limit--red"
           on:mousedown={move}
+          on:mouseup={() => handleLimitSet(limit)}
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
@@ -232,7 +244,7 @@
     background-color: #e7f4ec;
     text-align: center;
     border-radius: 8px;
-    font-size: .75em;
+    font-size: 0.75em;
   }
 
   .title {
@@ -338,8 +350,7 @@
     content: attr(data-value);
     position: absolute;
     margin-top: -1.1em;
-    font-size: .85em;
-
+    font-size: 0.85em;
   }
 
   .bar--previous {
@@ -360,11 +371,11 @@
   .bar--current::after {
     content: attr(data-value);
     position: absolute;
-    height: 2.30em;
+    height: 2.3em;
     display: flex;
     align-items: center;
     padding-right: 0.75em;
-    font-size: .85em;
+    font-size: 0.85em;
   }
 
   .bar--current[data-hiddenValue='true']::after {
@@ -377,16 +388,19 @@
     visibility: hidden;
   }
 
-  .bottom:hover > .bar__container > .bars > .bar--current[data-hiddenValue='true']::after {
+  .bottom:hover
+    > .bar__container
+    > .bars
+    > .bar--current[data-hiddenValue='true']::after {
     visibility: visible;
     height: 2.33em;
     padding: 0 0.75em;
     background-color: #20aeae;
     color: #eee;
     border-radius: 8px;
-    margin: -.35em .0em 0 0;
+    margin: -0.35em 0em 0 0;
     border-bottom-right-radius: 0;
-    transition: all .2s;
+    transition: all 0.2s;
     z-index: 100;
   }
 
