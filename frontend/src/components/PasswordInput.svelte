@@ -2,6 +2,7 @@
   import type { Validator } from '../types/Layout';
 
   export let value: string;
+  export let dataAut = 'pwd-input';
   export let placeholder: string;
   export let isValid: boolean = false;
   export let validator: Validator | undefined;
@@ -26,7 +27,7 @@
   <input
     class="login-input mt-5"
     type="password"
-    data-automation-id="pwd-input"
+    data-automation-id={dataAut}
     {placeholder}
     bind:value
     on:input={handleInput}

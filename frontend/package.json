@@ -6,11 +6,13 @@
   "homepage": "https://beeeee.es/",
   "scripts": {
     "build": "rollup -c",
+    "build:staging": "rollup -c --staging",
+    "deploy": "aws s3 cp public/ s3://beeeee.es/ --recursive --no-verify-ssl",
+    "deploy:staging": "aws s3 cp public/ s3://staging.beeeee.es/ --recursive --no-verify-ssl",
     "dev": "rollup -c -w",
     "start": "sirv public",
     "start:dev": "sirv public -s --dev",
-    "validate": "svelte-check",
-    "deploy": "aws s3 cp public/ s3://beeeee.es/ --recursive --no-verify-ssl"
+    "validate": "svelte-check"
   },
   "author": "",
   "license": "ISC",

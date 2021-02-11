@@ -7,7 +7,7 @@ export const requiredFields = ({
   from,
   to,
   previous,
-}: Partial<StatementRequest>): StatementRequest => {
+}: StatementRequest): StatementRequest => {
   const date = new Date(Date.now());
   const currentMonth = date.getMonth();
   const currentYear = date.getFullYear();
@@ -15,51 +15,37 @@ export const requiredFields = ({
   const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
   const dateFrom = new Date(yearCheck, previousMonth).valueOf();
   return {
-    account: account || 0,
+    account,
     from: from || dateFrom,
-    to: to,
+    to,
     previous: !!previous,
   };
 };
 
-const checkMonth = (timestamp: number): boolean => {
-  return timestamp < new Date(new Date(Date.now()).getMonth()).valueOf();
-};
+// const checkMonth = (timestamp: number): boolean => {
+//   return timestamp < new Date(new Date(Date.now()).getMonth()).valueOf();
+// };
 
-export const statementUpdate = async (
-  userFromDB: GetOutput,
-  timestamp: number,
-  data: any[],
-  processedData: any[]
-): Promise<void> => {
-  const accounts = userFromDB.Item.accounts;
-  accounts.forEach(async (id) => {
-    await getItem(configs.STATEMENTS_TABLE, {
-      accountId: id,
-    }).then((dbItem) => {
-      const newObject = { rawData: data, processedData };
-      if (Object.keys(dbItem).length > 0) {
-        if (!checkMonth(timestamp))
-          updateItem(
-            configs.STATEMENTS_TABLE,
-            { accountId: id },
-            { [timestamp]: newObject, username: userFromDB.Item.username }
-          );
-      } else
-        putItem(configs.STATEMENTS_TABLE, {
-          accountId: id,
-          [timestamp]: newObject,
-          username: userFromDB.Item.username,
-        });
-    });
-  });
-};
-
-// export const updateLimit = async (
-//   userId: string,
+// export const statementUpdate = async (
+//   userFromDB: GetOutput,
 //   timestamp: number,
-//   id: number,
-//   value: number
+//   data: any[]
 // ): Promise<void> => {
-//   putItem(configs.STATEMENTS_TABLE);
+//   const accounts = userFromDB.Item.accounts;
+//   accounts.forEach(async (id) => {
+//     await getItem(configs.STATEMENTS_TABLE, {
+//       accountId: id,
+//     }).then((dbItem) => {
+//       if (Object.keys(dbItem).length > 0) {
+//         if (!checkMonth(timestamp))
+//           updateItem(
+//             configs.STATEMENTS_TABLE,
+//             { accountId: id },
+//             { [timestamp]: data, username: userFromDB.Item.username }
+//           );
+//       } else {
+//         putItem(configs.STATEMENTS_TABLE, { accountId: id, [timestamp]: data });
+//       }
+//     });
+//   });
 // };

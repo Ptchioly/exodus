@@ -18,5 +18,5 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
     return respond.FailureResponse('Failed to delete user');
   }
 
-  return respond.SuccessResponse({});
+  return respond.SuccessResponse();
 });

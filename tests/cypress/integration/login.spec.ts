@@ -1,25 +1,24 @@
 /// <reference types="cypress" />
+/// <reference path="../support/index.d.ts" />
 
 describe.only('Login', {
   env: {
-    phone: Cypress.env('user').username.slice(3) //user phone without region
+    phone: Cypress.env('username').slice(3) //user phone without region
   }
 }, () => {
-  //DONE _WAITING FOR TEST CREDS FROM LEV with valid XTOKEN
-  before(() => {
-    cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
+  before(function() {
+    cy.log(Cypress.env('username'))
+    cy.log(Cypress.env('password'))
+    cy.deleteMyUserIfExists()
     cy.registerUser()
-    cy.clearCookies()
   })
-
-
 
   beforeEach(() => {
     cy.visit('/')
   })
 
   it('displays "Sign in to Exodus" on the login page', () => {
-    cy.contains('h1', 'Sign in to Exodus')
+    cy.contains('h1', 'Sign in to Exodus').should('be.visible')
   })
 
   it('displays register page on "Join now" click', () => {
@@ -59,6 +58,7 @@ describe.only('Login', {
     // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
     cy.getBySel('form-button').click()
     cy.get('.cursor-pointer').should('contain', 'LOG OUT');
+    cy.getCookie('jwt').should('have.property', 'value');
   })
 
 })

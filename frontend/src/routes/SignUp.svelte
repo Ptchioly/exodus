@@ -24,6 +24,7 @@
   };
 
   const singUpButton = {
+    dataAut: 'signup-button',
     label: 'Sign Up',
     onclick: async () => {
       pwdCheck = checkPwd(pwd, confirmPwd);
@@ -46,6 +47,7 @@
   };
 
   const signInButton = {
+    dataAut: 'link-signin-button',
     prefix: 'Have an account?',
     label: 'Sign In',
     onclick: () => dispatch('openSignIn', {}),
@@ -70,7 +72,11 @@
       <PasswordInput placeholder="Password" bind:value={pwd} />
     </div>
     <div class="flex items-center justify-center w-full relative">
-      <PasswordInput placeholder="Confirm Password" bind:value={confirmPwd} />
+      <PasswordInput
+        placeholder="Confirm Password"
+        bind:value={confirmPwd}
+        dataAut="confirm-pwd-input"
+      />
     </div>
 
     <div class="flex items-center w-full justify-center">
@@ -80,6 +86,7 @@
           type="text"
           placeholder="Monobank token"
           required
+          data-automation-d="xtoken-input"
           bind:value={token}
         />
         <div class="items-center"><MonoLogo /></div>
