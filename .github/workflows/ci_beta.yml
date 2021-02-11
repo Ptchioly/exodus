@@ -27,7 +27,7 @@ jobs:
         run: |
             cd backend
             npm i
-            npm run build:staging
+            npm run build
             cd ../frontend
             npm i
             npm run build:staging
@@ -59,7 +59,7 @@ jobs:
         run: |
             cd backend
             npm i
-            npm run build:staging
+            npm run build
             cd ../frontend
             npm i
             npm run build:staging
