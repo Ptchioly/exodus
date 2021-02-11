@@ -5,8 +5,8 @@ describe.only('Login', () => {
   before(function() {
     cy.log(Cypress.env('username'))
     cy.log(Cypress.env('password'))
-    // cy.deleteMyUserIfExists()
-    // cy.registerUser()
+    cy.deleteMyUserIfExists()
+    cy.registerUser()
   })
 
 
@@ -55,12 +55,9 @@ describe.only('Login', () => {
       .and("have.text", "Username or password is invalid");
   });
 
-  // it("should error for an invalid password for existing user", function () {
-  // });
-
     it('displays home page on successful login', () => {
     cy.manualLogin()
-    cy.get('.cursor-pointer').should('contain', 'LOG OUT'); // fix assert when top right menu button has data-automation-id
+    cy.getBySel('menu-button').should('be.visible');
     cy.getCookie('jwt').should('have.property', 'value')
   })
 

@@ -39,7 +39,7 @@ declare namespace Cypress {
     // /**
     //  * Trim country code off the phone
     //  */
-    trimUsername(username?: string): Chainable<string>;
+    trimUsername(username?: string): string;
 
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account

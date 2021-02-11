@@ -56,7 +56,7 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }).its('body.user_id').should('exist')
 })
 
-Cypress.Commands.add('trimUsername', (username = Cypress.env('username')) => Cypress.env('username').slice(3)) //user phone without region)
+const trimUsername = (username = Cypress.env('username')) => username.slice(3); //user phone without region)
 
 Cypress.Commands.add('manualLogin', (user = {}) => {
   const defaults = {
@@ -64,8 +64,7 @@ Cypress.Commands.add('manualLogin', (user = {}) => {
     password: Cypress.env('password'),
   }
   const userInfo = Cypress._.defaults({}, user, defaults)
-  // cy.log(cy.trimUsername())
-  cy.getBySel('phone-input').type(userInfo.username.slice(3))
+  cy.getBySel('phone-input').type(trimUsername(userInfo.username))
   cy.getBySel('pwd-input').type(userInfo.password)
   // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
   cy.getBySel('signin-button').click()
