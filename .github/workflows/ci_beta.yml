@@ -3,7 +3,7 @@ name: ci_beta
 on:
   push:
     branches:
-      - testingCICodeDeploy
+      - beta
 
 jobs:
   setup-and-run-ui-tests:
