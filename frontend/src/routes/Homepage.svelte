@@ -15,17 +15,6 @@
   const emptyArray = (current: any[]) => {
     return currentMonth.map((c) => ({ ...c, moneySpent: 0 }));
   };
-  const getMaxValue = (el: any) => {
-    console.log(el);
-    if (el == undefined) return;
-    if (el.current && el.current > currentMaxValue) {
-      currentMaxValue = el.current;
-    } else if (el.limit && el.limit > currentMaxValue) {
-      currentMaxValue = el.limit;
-    } else if (el.previous && el.previous > currentMaxValue) {
-      currentMaxValue = el.previous;
-    }
-  };
 
   let currentDate = Date.now();
   let data: any[];
@@ -59,30 +48,29 @@
     }
   });
 
-  const handleSetLimit = async () => {};
-
   const mergeData = (previousMonth, currentMonth): any[] => {
     return previousMonth.reduce((accum, oldData) => {
-      const newData = currentMonth.find(
-        (curr) => curr.category === oldData.category
-      );
-      if (newData === undefined) {
-        oldData.current = 0;
-        accum.push({
+      if (oldData.category !== 'Другое') {
+        const newData = currentMonth.find(
+          (curr) => curr.category === oldData.category
+        );
+        if (newData === undefined) {
+          accum.push({
+            category: oldData.category,
+            previous: oldData.moneySpent,
+            current: 0,
+            limit: oldData.limit || 0,
+          });
+          return accum;
+        }
+        const merged = {
           category: oldData.category,
           previous: oldData.moneySpent,
-          current: 0,
-          limit: oldData.limit || 0,
-        });
-        return accum;
+          current: newData.moneySpent,
+          limit: newData.limit || 0,
+        };
+        accum.push(merged);
       }
-      const merged = {
-        category: oldData.category,
-        previous: oldData.moneySpent,
-        current: newData.moneySpent,
-        limit: newData.limit || 0,
-      };
-      accum.push(merged);
       return accum;
     }, []);
   };
@@ -119,7 +107,6 @@
             current={bar.current}
             previous={bar.previous}
             limit={bar.limit}
-            on:setLimit={handleSetLimit}
           />
         {/each}
       {/if}

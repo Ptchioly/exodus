@@ -121,9 +121,9 @@ export const updateLimit = async (
   value: number
 ): Promise<void> => {
   const key = { accountId: userId };
-  const sobaka = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
-  if (!isFailure(sobaka)) {
-    const newData = sobaka.Item[timestamp].processedData.reduce(
+  const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
+  if (!isFailure(statements)) {
+    const newData = statements.Item[timestamp].processedData.reduce(
       (accum: any, el: any) => {
         if (el.category === category) el.limit = value;
         accum.push(el);
@@ -137,7 +137,7 @@ export const updateLimit = async (
       {
         [timestamp]: {
           processedData: newData,
-          rawData: sobaka.Item[timestamp].rawData,
+          rawData: statements.Item[timestamp].rawData,
         },
       }
     );
