@@ -12,7 +12,7 @@ import { requiredFields, statementUpdate } from './utils';
 export const statement = Router();
 
 statement.post('/statement', authenticateToken, async (req: any, res) => {
-  const username = req.user.data;
+  const { username, xtoken } = req.user.data;
   const respond = endpointRespond(res);
 
   const { account, from, to } = requiredFields(req.body);
@@ -24,7 +24,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   if (!isFailure(userFromDB)) {
     const data = await fetch(requests.statement(account, from, to), {
       headers: {
-        'X-Token': userFromDB.Item.xtoken,
+        'X-Token': xtoken,
       },
     }).then((el) => el.json());
     const dataToUI = categorize(data);

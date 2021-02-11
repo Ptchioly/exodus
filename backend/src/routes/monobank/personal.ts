@@ -14,7 +14,7 @@ const getAccounts = (accounts: MonoAccount[]): string[] =>
   accounts.filter((acc) => acc.balance !== 0).map((acc) => acc.id);
 
 personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
-  const username = req.user.data;
+  const { username, xtoken } = req.user.data;
   const respond = endpointRespond(res);
 
   const userFromDB = await getItem(configs.USER_TABLE, {
@@ -24,7 +24,7 @@ personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
   if (!isFailure(userFromDB) && userFromDB.Item) {
     const { name, webHookUrl, accounts } = await fetch(requests.personal(), {
       headers: {
-        'X-Token': userFromDB.Item.xtoken,
+        'X-Token': xtoken,
       },
     }).then((el) => el.json());
     const accountIds = getAccounts(accounts);

@@ -23,8 +23,8 @@ export const authenticateToken = (
   });
 };
 
-export const generateAccessToken = (username: string): string =>
-  jwt.sign({ data: username }, secrets.SESSION_TOKEN as string, {
+export const generateAccessToken = (username: string, xtoken: string): string =>
+  jwt.sign({ data: { username, xtoken } }, secrets.SESSION_TOKEN as string, {
     expiresIn: '1d',
   });
 
