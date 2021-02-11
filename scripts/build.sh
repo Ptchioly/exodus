@@ -1,7 +1,20 @@
 #!/bin/bash
-cd /home/ec2-user/exodus/backend
-npm i
-npm run build
-cd ../frontend
-npm i
-npm run build
+branch=$(git branch --show-current)
+
+cd /home/ec2-user/exodus
+if [[ "$branch" == "deploy" ]];
+then
+    cd backend
+    npm i
+    npm run build
+    cd ../frontend
+    npm i
+    npm run build
+else
+    cd backend
+    npm i
+    npm run build:staging
+    cd ../frontend
+    npm i
+    npm run build:staging
+fi
