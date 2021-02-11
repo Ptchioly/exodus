@@ -1,4 +1,5 @@
 import { AES, enc } from 'crypto-js';
+import { MonoAccount } from '../types/types';
 
 export const encrypt = (password: string, key: string): string =>
   AES.encrypt(password, key).toString();
@@ -23,3 +24,6 @@ export const isValidUsername = (username: string): boolean =>
   username.length === 12 &&
   Number(username) !== NaN &&
   reTwelweNumbers.test(username);
+
+export const getAccounts = (accounts: MonoAccount[]): string[] =>
+  accounts.filter((acc) => acc.balance !== 0).map((acc) => acc.id);

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
-import { requests } from '../monobank/endpoints';
+import { getClientInfo, requests } from '../monobank/endpoints';
 import { isValidPassword, isValidUsername } from './utils';
 
 export const authenticateToken = (
@@ -41,19 +41,31 @@ const isValidToken = async (token: string): Promise<boolean> => {
     },
   }).then((el) => el.json());
   if (data.errorDescription) return false;
-  return true;
+  return data;
 };
 
-export const validateUserInfo = ({
+const formVerdict = (message: string, data?: any) => {
+  return { message, data };
+};
+
+export const validateUserInfo = async ({
   username,
   password,
   xtoken,
-}: any): string => {
-  if (!isValidUsername(username)) return 'Phone number is not valid.';
+}: any): Promise<any> => {
+  if (!isValidUsername(username))
+    return formVerdict('Phone number is not valid.');
 
   if (!isValidPassword(password))
-    return 'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.';
+    return formVerdict(
+      'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
+    );
 
-  if (xtoken && !isValidToken(xtoken)) return "Unknown 'X-Token'";
-  return 'OK';
+  if (xtoken) {
+    const validateToken = await getClientInfo(xtoken);
+    return validateToken.errorDescription
+      ? formVerdict("Unknown 'X-Token'")
+      : formVerdict('OK', validateToken);
+  }
+  return formVerdict('OK');
 };
