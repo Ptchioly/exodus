@@ -3,7 +3,7 @@ import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
-import { isFailure } from '../types/guards';
+import { hasKey, isFailure } from '../types/guards';
 import { getStatements } from './endpoints';
 import { categorize } from './paymentsProcessing';
 import { requiredFields } from './utils';
@@ -27,12 +27,11 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
     if (isFailure(statement)) return respond.FailureResponse(statement.message);
     if (
       !isFailure(statement) &&
-      (statement.Item as any)[fields.from]?.processedData !== undefined
+      hasKey(statement.Item, fields.from) &&
+      statement.Item[fields.from].processedData
     ) {
       console.log('JUST STATEMENT');
-      return respond.SuccessResponse(
-        (statement.Item as any)[fields.from].processedData
-      );
+      return respond.SuccessResponse(statement.Item[fields.from].processedData);
     }
 
     console.log('NOTJING STATEMENT');

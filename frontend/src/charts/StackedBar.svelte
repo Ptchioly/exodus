@@ -4,6 +4,7 @@
   export let title;
   export let current;
   export let previous;
+  $: console.log('previous', previous);
   export let limit;
   export let maxValue = 4000;
 
@@ -16,6 +17,9 @@
   let bar;
   let limits;
   let currentElement;
+
+  //hot fix from Max; previousP doesnt sync when previous updates
+  $: previousP = percentOf(previous);
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
@@ -41,10 +45,10 @@
 
   const isSmallEnough = (elem) => {
     if (elem) {
-        const barRect = bar.getBoundingClientRect()
-        return (currentP * barRect.width / 100) < 60;
+      const barRect = bar.getBoundingClientRect();
+      return (currentP * barRect.width) / 100 < 60;
     }
-  }
+  };
 
   const move = (e) => {
     const node = e.target;
@@ -76,6 +80,7 @@
     setTimeout(() => {
       currentP = percentOf(current);
       previousP = percentOf(previous);
+      console.log('Chart mount');
       limitP = percentOf(limit);
       smol = isSmallEnough(currentElement);
     }, 20);
@@ -141,9 +146,11 @@
             />
             <div
               class="bar__toLimit"
-              style={`width: ${
-                percentOf((limit - current) * (maxValue / current))
-              }%; margin-right: -${(limitP - currentP) * (maxValue / current)}%`}
+              style={`width: ${percentOf(
+                (limit - current) * (maxValue / current)
+              )}%; margin-right: -${
+                (limitP - currentP) * (maxValue / current)
+              }%`}
             >
               {#if limit && limit > current + 20}
                 <div>
@@ -232,7 +239,7 @@
     background-color: #e7f4ec;
     text-align: center;
     border-radius: 8px;
-    font-size: .75em;
+    font-size: 0.75em;
   }
 
   .title {
@@ -338,8 +345,7 @@
     content: attr(data-value);
     position: absolute;
     margin-top: -1.1em;
-    font-size: .85em;
-
+    font-size: 0.85em;
   }
 
   .bar--previous {
@@ -360,11 +366,11 @@
   .bar--current::after {
     content: attr(data-value);
     position: absolute;
-    height: 2.30em;
+    height: 2.3em;
     display: flex;
     align-items: center;
     padding-right: 0.75em;
-    font-size: .85em;
+    font-size: 0.85em;
   }
 
   .bar--current[data-hiddenValue='true']::after {
@@ -377,16 +383,19 @@
     visibility: hidden;
   }
 
-  .bottom:hover > .bar__container > .bars > .bar--current[data-hiddenValue='true']::after {
+  .bottom:hover
+    > .bar__container
+    > .bars
+    > .bar--current[data-hiddenValue='true']::after {
     visibility: visible;
     height: 2.33em;
     padding: 0 0.75em;
     background-color: #20aeae;
     color: #eee;
     border-radius: 8px;
-    margin: -.35em .0em 0 0;
+    margin: -0.35em 0em 0 0;
     border-bottom-right-radius: 0;
-    transition: all .2s;
+    transition: all 0.2s;
     z-index: 100;
   }
 

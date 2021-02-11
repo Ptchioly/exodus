@@ -25,9 +25,6 @@ export const requiredFields = ({
   };
 };
 
-// const checkMonth = (timestamp: number): boolean => {
-//   return timestamp < new Date(new Date(Date.now()).getMonth()).valueOf();
-// };
 const startMounth = (variant: 'prev' | 'cur' | 'next'): Date => {
   const date = new Date();
   switch (variant) {
@@ -58,7 +55,7 @@ const fetchStatement = async (
   return { data, categorizedData };
 };
 
-export const syncStatements = async (user: GetOutput) => {
+export const syncStatements = async (user: GetOutput): Promise<void> => {
   const account = 0; //stubbb
   const start = startMounth('prev').getTime();
   const finish = startMounth('cur').getTime();
@@ -95,7 +92,6 @@ export const statementUpdate = async (
 ): Promise<void> => {
   const accounts = userFromDB.Item.accounts;
   accounts.forEach(async (id) => {
-    // const id = 0; //stub since accounts undefined
     const dbItem = await getItem(configs.STATEMENTS_TABLE, {
       accountId: id,
     });
@@ -115,27 +111,3 @@ export const statementUpdate = async (
           });
   });
 };
-
-// export const statementUpdate = async (
-//   userFromDB: GetOutput,
-//   timestamp: number,
-//   data: any[]
-// ): Promise<void> => {
-//   const accounts = userFromDB.Item.accounts;
-//   accounts.forEach(async (id) => {
-//     await getItem(configs.STATEMENTS_TABLE, {
-//       accountId: id,
-//     }).then((dbItem) => {
-//       if (Object.keys(dbItem).length > 0) {
-//         if (!checkMonth(timestamp))
-//           updateItem(
-//             configs.STATEMENTS_TABLE,
-//             { accountId: id },
-//             { [timestamp]: data, username: userFromDB.Item.username }
-//           );
-//       } else {
-//         putItem(configs.STATEMENTS_TABLE, { accountId: id, [timestamp]: data });
-//       }
-//     });
-//   });
-// };
