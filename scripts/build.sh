@@ -1,20 +1,18 @@
 #!/bin/bash
-branch=$(git branch --show-current)
-
 cd /home/ec2-user/exodus
-if [[ "$branch" == "deploy" ]];
+if [[ "$APPLICATION_NAME" == "staging-update" ]];
 then
     cd backend
     npm i
     npm run build
     cd ../frontend
     npm i
-    npm run build
+    npm run build:staging
 else
     cd backend
     npm i
     npm run build
     cd ../frontend
     npm i
-    npm run build:staging
+    npm run build
 fi

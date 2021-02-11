@@ -1,4 +1,4 @@
-name: CI/CD
+name: ci_beta
 
 on:
   push:
@@ -16,22 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Initialize Node.js
-      - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      # Install project dependencies, test and build
-      - name: Install dependencies
-        run: |
-            cd backend
-            npm i
-            npm run build
-            cd ../frontend
-            npm i
-            npm run build:staging
-
   deploy:
     name: CD Pipeline
     runs-on: ubuntu-latest
@@ -47,23 +31,6 @@ jobs:
     needs: buildAndTest
     steps:
       - uses: actions/checkout@v2
-
-      # Initialize Node.js
-      - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      # Install project dependencies and build
-      - name: Install dependencies
-        run: |
-            cd backend
-            npm i
-            npm run build
-            cd ../frontend
-            npm i
-            npm run build:staging
-
       # Install AWS CLI 2
       - name: Install AWS CLI 2
         run: |
