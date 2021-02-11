@@ -1,9 +1,8 @@
 import { NextFunction, Response, Router } from 'express';
 import jwt from 'jsonwebtoken';
-import fetch from 'node-fetch';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
-import { getClientInfo, requests } from '../monobank/endpoints';
+import { getClientInfo } from '../monobank/endpoints';
 import { isValidPassword, isValidUsername } from './utils';
 
 export const authenticateToken = (
@@ -33,16 +32,6 @@ export const generateAccessToken = (username: string, xtoken: string): string =>
   jwt.sign({ data: { username, xtoken } }, secrets.SESSION_TOKEN as string, {
     expiresIn: '1d',
   });
-
-const isValidToken = async (token: string): Promise<boolean> => {
-  const data = await fetch(requests.personal(), {
-    headers: {
-      'X-Token': token,
-    },
-  }).then((el) => el.json());
-  if (data.errorDescription) return false;
-  return data;
-};
 
 const formVerdict = (message: string, data?: any) => {
   return { message, data };
