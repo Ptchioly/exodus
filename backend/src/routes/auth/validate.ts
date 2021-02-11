@@ -10,7 +10,7 @@ export const authenticateToken = (
   req: any,
   res: Response,
   next: NextFunction
-) => {
+): any => {
   const token = req.cookies.jwt;
   if (!token)
     return endpointRespond(res).FailureResponse('No token provided.', 401);
@@ -23,18 +23,18 @@ export const authenticateToken = (
   });
 };
 
-export const generateAccessToken = (username: string, xtoken: string): string =>
-  jwt.sign({ data: { username, xtoken } }, secrets.SESSION_TOKEN as string, {
-    expiresIn: '1d',
-  });
-
 export const authentication = Router().get(
   '/authentication',
   authenticateToken,
   (req: any, res) => endpointRespond(res).SuccessResponse({})
 );
 
-const isValidToken = async (token: string) => {
+export const generateAccessToken = (username: string, xtoken: string): string =>
+  jwt.sign({ data: { username, xtoken } }, secrets.SESSION_TOKEN as string, {
+    expiresIn: '1d',
+  });
+
+const isValidToken = async (token: string): Promise<boolean> => {
   const data = await fetch(requests.personal(), {
     headers: {
       'X-Token': token,

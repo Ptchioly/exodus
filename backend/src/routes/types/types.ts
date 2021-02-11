@@ -5,6 +5,7 @@ export type GetOutput = {
 export type Users = {
   id: string;
   key: string;
+  name: string;
   username: string;
   password: string;
   xtoken: string;
@@ -17,7 +18,7 @@ export type UserMeta = {
 };
 
 export type StatementRequest = {
-  account: 0 | string;
+  account: string;
   from: number;
   to?: number;
   previous: boolean;
