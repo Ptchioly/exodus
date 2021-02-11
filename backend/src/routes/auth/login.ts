@@ -40,5 +40,5 @@ login.post('/login', async (req, res) => {
   );
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
-  return respond.SuccessResponse({ user_id: userResponse.Item.id });
+  return respond.SuccessResponse();
 });
