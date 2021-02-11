@@ -28,20 +28,22 @@ describe.only('Login', {
     cy.get('h1').should('contain', 'Sign Up')
   })
 
-  // it('requires phone number', () => {
-  //   cy.getBySel('country-code--input').clear
-  //   cy.getBySel('phone-input').clear
-  //   cy.getBySel('form-button').click()
-  //   //add asserts when frontend supports it
-  // })
+  it('requires phone number', () => {
+    cy.getBySel('country-code--input').clear
+    cy.getBySel('phone-input').clear
+    cy.getBySel('form-button').click()
+    cy.getBySel('error-message').should('contain', 'Required fields are empty')
+    //add asserts when frontend supports it
+  })
 
-  // it('requires password', () => {
-  //   cy.getBySel('phone-input').clear
-  //   cy.getBySel('pwd-input').clear
-  //   cy.getBySel('phone').type(`${Cypress.env('phone')}{enter}`)
-  //   cy.get('.error-msg')
-  //     .should('contain', 'password number can\'t be blank')
-  // })
+  it('requires password', () => {
+    cy.getBySel('phone-input').clear
+    cy.getBySel('pwd-input').clear
+    cy.getBySel('phone').type(`${Cypress.env('phone')}{enter}`)
+    // cy.get('.error-msg')
+    //   .should('contain', 'password number can\'t be blank')
+    cy.getBySel('error-message').should('contain', 'Required fields are empty')
+  })
 
   // it("should error for an invalid user", function () {
   //   cy.login("invalidUserName", "invalidPa$$word");
