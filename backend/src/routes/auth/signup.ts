@@ -4,7 +4,7 @@ import { configs } from '../../config';
 import { getItem, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
-import { encrypt } from './utils';
+import { encrypt, getAccounts } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
 export const signup = Router();
@@ -12,13 +12,13 @@ export const signup = Router();
 signup.post('/signup', async (req, res) => {
   const respond = endpointRespond(res);
   const { username, password, xtoken } = req.body;
+
   if (!exist(req.body, username, password, xtoken))
     return respond.FailureResponse('Required fields are empty');
 
-  const validationVerdict = validateUserInfo(username, password);
+  const { message, data } = await validateUserInfo(req.body);
 
-  if (validationVerdict !== 'OK')
-    return respond.FailureResponse(validationVerdict);
+  if (message !== 'OK') return respond.FailureResponse(message);
 
   const userResponse = await getItem(configs.USER_TABLE, {
     username,
@@ -40,12 +40,14 @@ signup.post('/signup', async (req, res) => {
     username,
     password: encryptedPassword,
     xtoken,
+    name: data.name,
+    accounts: getAccounts(data.accounts),
   });
 
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
 
-  const token = generateAccessToken(username);
+  const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
   return respond.SuccessResponse({ user_id: id });

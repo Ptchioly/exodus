@@ -7,7 +7,7 @@ export const requiredFields = ({
   from,
   to,
   previous,
-}: Partial<StatementRequest>): StatementRequest => {
+}: StatementRequest): StatementRequest => {
   const date = new Date(Date.now());
   const currentMonth = date.getMonth();
   const currentYear = date.getFullYear();
@@ -15,9 +15,9 @@ export const requiredFields = ({
   const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
   const dateFrom = new Date(yearCheck, previousMonth).valueOf();
   return {
-    account: account || 0,
+    account,
     from: from || dateFrom,
-    to: to,
+    to,
     previous: !!previous,
   };
 };
@@ -55,11 +55,12 @@ export const statementUpdate = async (
   });
 };
 
-// export const updateLimit = async (
-//   userId: string,
-//   timestamp: number,
-//   id: number,
-//   value: number
-// ): Promise<void> => {
-//   putItem(configs.STATEMENTS_TABLE);
-// };
+export const updateLimit = async (
+  userId: string,
+  timestamp: number,
+  id: number,
+  value: number
+): Promise<void> => {
+  const key = { [userId]: { [timestamp]: { id } } };
+  updateItem(configs.STATEMENTS_TABLE, key, { limit: value });
+};

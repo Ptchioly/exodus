@@ -100,6 +100,7 @@
           bind:value={limit}
           on:keydown={handlePress}
           pattern="\d+"
+          data-automation-id="limit-input"
           class="action action--setLimit"
         />
       {/if}
@@ -164,6 +165,7 @@
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
+          data-automation-id="limit-setter"
           style={`left: ${limitP}%`}
         />
       </div>
