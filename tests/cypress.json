@@ -1,5 +1,8 @@
 {
     "baseUrl": "https://beeeee.es",
+    "env": {
+        "apiUrl": "https://api.beeeee.es"
+    },
     "retries": {
         "runMode": 1,
         "openMode": 0
@@ -8,5 +11,6 @@
     "projectId": "door68",
     "experimentalStudio": true,
     "chromeWebSecurity": false,
+    "fixturesFolder": false,
     "supportFile": "cypress/support/index.ts"
 }
