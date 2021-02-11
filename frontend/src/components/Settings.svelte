@@ -13,7 +13,11 @@
 >
   <div class="p-2 pb-2 bg-gray-100 w-full flex items-start">{name}</div>
   <div class="p-2 pt-2">Account settings</div>
-  <div class="p-2 cursor-pointer" on:click={() => dispatch('logout', {})}>
+  <div
+    data-automation-id="logout"
+    class="p-2 cursor-pointer"
+    on:click={() => dispatch('logout', {})}
+  >
     Logout
   </div>
 </main>
