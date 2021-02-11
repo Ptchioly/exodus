@@ -21,10 +21,25 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   });
 
   if (!isFailure(userFromDB)) {
-    const data = await getStatements(fields, xtoken);
-    const dataToUI = categorize(data);
-    // statementUpdate(userFromDB, fields.from, data);
-    return respond.SuccessResponse(dataToUI);
+    const statement = await getItem(configs.STATEMENTS_TABLE, {
+      accountId: userFromDB.Item.accounts[0],
+    });
+    if (isFailure(statement)) return respond.FailureResponse(statement.message);
+    if (
+      !isFailure(statement) &&
+      (statement.Item as any)[fields.from]?.processedData !== undefined
+    ) {
+      console.log('JUST STATEMENT');
+      return respond.SuccessResponse(
+        (statement.Item as any)[fields.from].processedData
+      );
+    }
+
+    console.log('NOTJING STATEMENT');
+    return respond.FailureResponse(
+      'Data is not available. Wait for a 60s.',
+      404
+    );
   }
   return respond.FailureResponse('Failed to get statement');
 });

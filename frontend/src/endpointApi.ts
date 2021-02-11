@@ -118,9 +118,9 @@ const getDateRange = (
 export const getStatement = async (
   date: number,
   month: 'previous' | 'current'
-): Promise<any> => {
+): Promise<APIResponse> => {
   const { from, to } = getDateRange(date, month);
-  return await fetch(statementsEndpoint, {
+  const response = await fetch(statementsEndpoint, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
@@ -132,5 +132,12 @@ export const getStatement = async (
       from,
       to,
     }),
-  }).then((res) => res.json().then((body) => body));
+  });
+
+  const resp: APIResponse = response.ok
+    ? { data: await response.json(), status: 200 }
+    : { status: response.status, message: await response.text() };
+
+  console.log('Final statemnt resp', resp);
+  return resp;
 };
