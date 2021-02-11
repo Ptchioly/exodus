@@ -3,15 +3,13 @@
 
 describe.only('Login', {
   env: {
-    phone: Cypress.env('user').username.slice(3) //user phone without region
+    phone: Cypress.env('username').slice(3) //user phone without region
   }
 }, () => {
-  //DONE _WAITING FOR TEST CREDS FROM LEV with valid XTOKEN
-  before(() => {
-    cy.task("db:deleteUser", { username: Cypress.env("user").username, ...Cypress.env("aws") });
+  before(function() {
+    // cy.deleteMyUserIfExists()
     cy.registerUser()
   })
-
 
 
     beforeEach(() => {
