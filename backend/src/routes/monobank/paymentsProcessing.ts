@@ -30,7 +30,6 @@ const defineCategory = (payments: MonoStatements): Payment[] => {
 };
 
 export const categorize = (payments: MonoStatements): LimitCategory[] => {
-  const field = 'moneySpent';
   const categoryObj = defineCategory(payments).reduce(
     (acc: any, { categoryId, amount }) => {
       const rounded = Math.floor(amount);
@@ -47,7 +46,7 @@ export const categorize = (payments: MonoStatements): LimitCategory[] => {
       const { category } = categories.find(({ id }) => +e === id) as Category;
       return {
         category,
-        [field]: categoryObj[e],
+        moneySpent: categoryObj[e],
         id: +e,
       };
     }

@@ -6,6 +6,7 @@ const authEndpoint = baseUrl.concat('/authentication');
 const signupEndpoint = baseUrl.concat('/signup');
 const logoutEndpoint = baseUrl.concat('/logout');
 const statementsEndpoint = baseUrl.concat('/statement');
+const limitsEndpoint = baseUrl.concat('/limit');
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -140,4 +141,15 @@ export const getStatement = async (
 
   console.log('Final statemnt resp', resp);
   return resp;
+};
+
+export const updateLimit = async (category, value) => {
+  await fetch(limitsEndpoint, {
+    ...defaultInit,
+    method: 'POST',
+    body: JSON.stringify({
+      category,
+      value,
+    }),
+  });
 };

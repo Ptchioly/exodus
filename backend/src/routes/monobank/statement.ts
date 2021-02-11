@@ -4,14 +4,12 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { hasKey, isFailure } from '../types/guards';
-import { getStatements } from './endpoints';
-import { categorize } from './paymentsProcessing';
 import { requiredFields } from './utils';
 
 export const statement = Router();
 
 statement.post('/statement', authenticateToken, async (req: any, res) => {
-  const { username, xtoken } = req.user.data;
+  const { username } = req.user.data;
   const respond = endpointRespond(res);
 
   const fields = requiredFields(req.body);

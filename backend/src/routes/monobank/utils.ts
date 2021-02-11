@@ -1,5 +1,6 @@
 import { configs } from '../../config';
 import { getItem, putItem, updateItem } from '../../dynamoAPI';
+import { isFailure } from '../types/guards';
 import { GetOutput, LimitCategory, StatementRequest } from '../types/types';
 import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
@@ -25,7 +26,7 @@ export const requiredFields = ({
   };
 };
 
-const startMounth = (variant: 'prev' | 'cur' | 'next'): Date => {
+const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
   const date = new Date();
   switch (variant) {
     case 'prev':
@@ -57,12 +58,12 @@ const fetchStatement = async (
 
 export const syncStatements = async (user: GetOutput): Promise<void> => {
   const account = 0; //stubbb
-  const start = startMounth('prev').getTime();
-  const finish = startMounth('cur').getTime();
+  const start = startMonth('prev').getTime();
+  const finish = startMonth('cur').getTime();
   const prevMounthTime = { start, finish };
   const currentMounthTime = {
     start: finish,
-    finish: startMounth('next').getTime(),
+    finish: startMonth('next').getTime(),
   };
   const { data, categorizedData } = await fetchStatement(
     account,
@@ -110,4 +111,34 @@ export const statementUpdate = async (
             username: userFromDB.Item.username,
           });
   });
+};
+
+export const updateLimit = async (
+  userId: string,
+  timestamp: number,
+  category: string,
+  value: number
+): Promise<void> => {
+  const key = { accountId: userId };
+  const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
+  if (!isFailure(statements)) {
+    const newData = statements.Item[timestamp].processedData.reduce(
+      (accum: any, el: any) => {
+        if (el.category === category) el.limit = value;
+        accum.push(el);
+        return accum;
+      },
+      []
+    );
+    updateItem(
+      configs.STATEMENTS_TABLE,
+      { accountId: userId },
+      {
+        [timestamp]: {
+          processedData: newData,
+          rawData: statements.Item[timestamp].rawData,
+        },
+      }
+    );
+  } else console.log('error');
 };

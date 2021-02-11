@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
+  import { updateLimit } from '../endpointApi';
 
   export let title;
   export let current;
@@ -13,6 +14,7 @@
   let limitP = 0;
   let overlap;
   let smol = false;
+  let timeoutId;
 
   let bar;
   let limits;
@@ -41,6 +43,13 @@
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
     }
+  };
+
+  const handleLimitSet = async (value) => {
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      updateLimit(title, value);
+    }, 5000);
   };
 
   const isSmallEnough = (elem) => {
@@ -169,6 +178,7 @@
         <div
           class="limit limit--red"
           on:mousedown={move}
+          on:mouseup={() => handleLimitSet(limit)}
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
