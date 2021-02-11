@@ -41,39 +41,39 @@
   ];
 </script>
 
-<main class="flex w-full flex-col items-center mx-20">
-  <div class="header flex justify-end w-full px-5 mt-4 mb-40">
-    <div class="flex w-1/8">
-      <div
-        class="telega h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
-        on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
-      >
-        <img src="images/tg.png" />
-      </div>
-      <div class="user flex items-center" />
-      <div class="logout ml-6 user flex items-center">
-        <!-- {#if userInfo} -->
-        <UserProfile
-          user={userInfo}
-          on:logout={async () => {
-            await logout();
-            dispatch('logout', {});
-          }}
-        />
-        <!-- {/if} -->
+{#if userInfo}
+  <main class="flex w-full flex-col items-center mx-20">
+    <div class="header flex justify-end w-full px-5 mt-4 mb-40">
+      <div class="flex w-1/8">
+        <div
+          class="telega h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
+          on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
+        >
+          <img src="images/tg.png" />
+        </div>
+        <div class="user flex items-center" />
+        <div class="logout ml-6 user flex items-center">
+          <UserProfile
+            user={userInfo}
+            on:logout={async () => {
+              await logout();
+              dispatch('logout', {});
+            }}
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <section class="container">
-    <!-- <RawCharts /> -->
-    {#each data as bar}
-      <StackedBar
-        title={bar.name}
-        current={bar.currMonth}
-        previous={bar.prevMonth}
-        limit={bar.limit}
-        on:setLimit={handleSetLimit}
-      />
-    {/each}
-  </section>
-</main>
+    <section class="container">
+      <!-- <RawCharts /> -->
+      {#each data as bar}
+        <StackedBar
+          title={bar.name}
+          current={bar.currMonth}
+          previous={bar.prevMonth}
+          limit={bar.limit}
+          on:setLimit={handleSetLimit}
+        />
+      {/each}
+    </section>
+  </main>
+{/if}

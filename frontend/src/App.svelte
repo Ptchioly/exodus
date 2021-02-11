@@ -22,10 +22,10 @@
   const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      getStatement(currentDate, 'previous');
-      setTimeout(() => {
-        getStatement(currentDate, 'current');
-      }, 70000);
+      // getStatement(currentDate, 'previous');
+      // setTimeout(() => {
+      //   getStatement(currentDate, 'current');
+      // }, 70000);
     }
   };
 

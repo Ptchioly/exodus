@@ -4,7 +4,7 @@
   import Settings from './Settings.svelte';
 
   export let user: UserInfo;
-  $: name = user ? user.name : 'Unknown User';
+  $: name = user.name;
   const dispath = createEventDispatcher();
   let isOpen: boolean = false;
   console.log('Name', name);
