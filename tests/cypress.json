@@ -1,7 +1,8 @@
 {
     "baseUrl": "https://beeeee.es",
     "env": {
-        "apiUrl": "https://api.beeeee.es"
+        "apiUrl": "https://api.beeeee.es",
+        "username": "380933510338"
     },
     "retries": {
         "runMode": 1,

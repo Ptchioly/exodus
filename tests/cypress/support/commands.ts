@@ -11,18 +11,18 @@ Cypress.Commands.add("getBySelLike", (selector, ...args) => {
   return cy.get(`[data-automation-id*=${selector}]`, ...args);
 });
 
-Cypress.Commands.add('loginByAPI', (user = Cypress.env('user')) => {
+Cypress.Commands.add('loginByAPI', (user = { username: Cypress.env('username'), password: Cypress.env('password') })  => {
   return cy.request({
     method: 'POST',
     url: `${Cypress.env("apiUrl")}/login`,
     body: {
-      ...Cypress._.pick(user, ['username', 'password'])
+      ...user
     },
     failOnStatusCode: false
   })
 })
 
-Cypress.Commands.add('deleteMyUserIfExists', (user = Cypress.env('user')) =>
+Cypress.Commands.add('deleteMyUserIfExists', (user = { username: Cypress.env('username'), password: Cypress.env('password') }) =>
   cy.loginByAPI(user)
     .then(() =>
       cy.getCookie('jwt').then((val) => {
@@ -32,7 +32,7 @@ Cypress.Commands.add('deleteMyUserIfExists', (user = Cypress.env('user')) =>
             url: `${Cypress.env("apiUrl")}/deleteUser`,
           })
         } else {
-          cy.log(`Unable to login to delete user ${Cypress.env('user').username}.`)
+          cy.log(`Unable to login to delete user ${Cypress.env('username')}.`)
         }
       })
     )
@@ -41,7 +41,9 @@ Cypress.Commands.add('deleteMyUserIfExists', (user = Cypress.env('user')) =>
 Cypress.Commands.add('registerUser', (options = {}) => {
   const defaults = {
     // phone, password, xtoken
-    ...Cypress.env('user')
+    username: Cypress.env('username'),
+    password: Cypress.env('password'),
+    xtoken: Cypress.env('xtoken')
   }
   const user = Cypress._.defaults({}, options, defaults)
   return cy.request({

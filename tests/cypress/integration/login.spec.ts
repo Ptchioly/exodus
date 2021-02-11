@@ -3,15 +3,13 @@
 
 describe.only('Login', {
   env: {
-    phone: Cypress.env('user').username.slice(3) //user phone without region
+    phone: Cypress.env('username').slice(3) //user phone without region
   }
 }, () => {
   before(function() {
     cy.deleteMyUserIfExists()
     cy.registerUser()
   })
-
-
 
   beforeEach(() => {
     cy.visit('/')
