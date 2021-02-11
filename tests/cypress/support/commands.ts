@@ -56,6 +56,21 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }).its('body.user_id').should('exist')
 })
 
+Cypress.Commands.add('trimUsername', (username = Cypress.env('username')) => Cypress.env('username').slice(3)) //user phone without region)
+
+Cypress.Commands.add('manualLogin', (user = {}) => {
+  const defaults = {
+    username: Cypress.env('username'),
+    password: Cypress.env('password'),
+  }
+  const userInfo = Cypress._.defaults({}, user, defaults)
+  // cy.log(cy.trimUsername())
+  cy.getBySel('phone-input').type(userInfo.username.slice(3))
+  cy.getBySel('pwd-input').type(userInfo.password)
+  // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
+  cy.getBySel('signin-button').click()
+})
+
 // Cypress.Commands.add('setToken', (response) => {
 //   const token = response.headers['set-cookie'][0].match(/jwt=([^;]+)/)[1];
 //   return cy.setCookie('jwt', token, { expiry: configs.MAX_AGE })

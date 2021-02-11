@@ -8,8 +8,8 @@ declare namespace Cypress {
   };
 
   type UserLoginInfo = {
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
   };
   interface Chainable {
 
@@ -27,10 +27,19 @@ declare namespace Cypress {
 
     getBySelLike(dataIdPrefixAttribute: string, args?: any): Chainable<Element>;
 
-     // /**
+    // /**
     //  * Logs-in user by using API request and sets the received JWT cookie 
     //  */
     loginByAPI(options?: UserLoginInfo): Chainable<any>;
+    
+    // /**
+    //  * Logs user in manually via app UI
+    //  */
+    manualLogin(options?: UserLoginInfo): void;
+    // /**
+    //  * Trim country code off the phone
+    //  */
+    trimUsername(username?: string): Chainable<string>;
 
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account

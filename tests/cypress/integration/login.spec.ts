@@ -1,14 +1,10 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-describe.only('Login', {
-  env: {
-    phone: Cypress.env('username').slice(3) //user phone without region
-  }
-}, () => {
+describe.only('Login', () => {
   before(function() {
     // cy.deleteMyUserIfExists()
-    cy.registerUser()
+    // cy.registerUser()
   })
 
 
@@ -29,23 +25,30 @@ describe.only('Login', {
   it('requires phone number', () => {
     cy.getBySel('country-code--input').clear
     cy.getBySel('phone-input').clear
-    cy.getBySel('form-button').click()
-    cy.getBySel('error-message').should('contain', 'Required fields are empty')
-    //add asserts when frontend supports it
+    cy.getBySel('signin-button').click()
+    cy.getBySel('login-error-message').should('contain', 'Required fields are empty')
   })
 
   it('requires password', () => {
     cy.getBySel('phone-input').clear
     cy.getBySel('pwd-input').clear
-    cy.getBySel('phone').type(`${Cypress.env('phone')}{enter}`)
-    // cy.get('.error-msg')
-    //   .should('contain', 'password number can\'t be blank')
-    cy.getBySel('error-message').should('contain', 'Required fields are empty')
+    cy.getBySel('phone-input').type(`${Cypress.env('phone')}`)
+    cy.getBySel('signin-button').click()
+    cy.getBySel('login-error-message')
+      .should("be.visible")
+      .and('contain', 'Required fields are empty')
   })
 
-  it("should error for an invalid user", function () {
-    cy.login("invalidUserName", "invalidPa$$word");
-    cy.getBySel("signin-error")
+  it("should error for an invalid user", () => {
+    cy.manualLogin({ username: `123456789123` })
+    cy.getBySel("login-error-message")
+      .should("be.visible")
+      .and("have.text", "Username or password is invalid");
+  });
+
+  it("should error for an invalid password for existing user", () => {
+    cy.manualLogin({ password: `Wr0ngPa$$word` })
+    cy.getBySel("login-error-message")
       .should("be.visible")
       .and("have.text", "Username or password is invalid");
   });
@@ -53,12 +56,9 @@ describe.only('Login', {
   // it("should error for an invalid password for existing user", function () {
   // });
 
-  it('displays home page on successful login', () => {
-    cy.getBySel('phone-input').type(`${Cypress.env('phone')}`)
-    cy.getBySel('pwd-input').type(`${Cypress.env('user').password}`)
-    // cy.getBySel('pwd-input').type(`${Cypress.env('user').password}{enter}`)
-    cy.getBySel('form-button').click()
-    cy.get('.cursor-pointer').should('contain', 'LOG OUT');
+    it('displays home page on successful login', () => {
+    cy.manualLogin()
+    cy.get('.cursor-pointer').should('contain', 'LOG OUT'); // fix assert when top right menu button has data-automation-id
     cy.getCookie('jwt').should('have.property', 'value')
   })
 
