@@ -45,11 +45,7 @@
   };
 
   const handleLimitSet = async (value) => {
-    console.log(value);
-    if (timeoutId !== undefined) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      updateLimit(title, value);
-    }, 3000);
+    updateLimit(title, value);
   };
 
   const isSmallEnough = (elem) => {
