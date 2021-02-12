@@ -29,6 +29,7 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('User already exist.');
 
   const tokenResponse = await getTokens(configs.USER_TABLE);
+  console.log(tokenResponse)
 
   if (!tokenResponse.Items)
     return respond.FailureResponse('Unexpected error from db.');
