@@ -2,22 +2,28 @@
 /// <reference path="../support/index.d.ts" />
 
 // describe('budget actions', () => {
-
-//     // beforeEach(() => {
-    // cy.deleteMyUserIfExists()
-    // cy.registerUser()
-//     // })
-
-//     it('creates a budget for category', () => {
+//     before(function() {
+        // cy.deleteMyUserIfExists()
+        // cy.registerUser()
 //     })
 
-//     it('edits a budget for category', () => {
-//     })
+    // beforeEach(() => {
+    //     cy.visit('/')
+    // })
 
-//     it('deletes a budget for category', () => {
-//     })
+    // it('edits limit with input', () => {
+    // })
 
-//     it('shows a budget info from previous month', () => {
-//     })
+    // it('edits limit with setter (drag and drop)', () => {
+    // })
+
+    // it('creates a budget for category', () => {
+    // })
+
+    // it('deletes a budget for category', () => {
+    // })
+
+    // it('shows a budget info from previous month', () => {
+    // })
 
 // })
