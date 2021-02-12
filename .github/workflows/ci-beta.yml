@@ -6,31 +6,31 @@ on:
       - beta
 
 jobs:
-  setup-and-run-ui-tests:
-    name: Run UI Tests - Chrome - Beta
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.1
-        with:
-          fetch-depth: 0
-      - name: UI Tests - Chrome
-        uses: cypress-io/github-action@v2
-        with:
-          config: 'baseUrl=http://localhost:5000'
-          env: 'password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080'
-          # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
-          start: npm run frontend:start, npm run backend:start
-          wait-on: 'http://localhost:5000, http://localhost:8080/'
-          wait-on-timeout: 120
-          browser: chrome
-          headless: true
-          working-directory: tests
-          # group: 'UI - Chrome - Beta'
-          # record: true
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  # setup-and-run-ui-tests:
+  #   name: Run UI Tests - Chrome - Beta
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2.3.1
+  #       with:
+  #         fetch-depth: 0
+  #     - name: UI Tests - Chrome
+  #       uses: cypress-io/github-action@v2
+  #       with:
+  #         config: 'baseUrl=http://localhost:5000'
+  #         env: 'username=${{ secrets.TEST_USERNAME }},password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080'
+  #         # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
+  #         start: npm run frontend:start, npm run backend:start
+  #         wait-on: 'http://localhost:5000, http://localhost:8080/'
+  #         wait-on-timeout: 120
+  #         browser: chrome
+  #         headless: true
+  #         working-directory: tests
+  #         # group: 'UI - Chrome - Beta'
+  #         # record: true
+  #       # env:
+  #         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
   buildAndTest:
     name: CI Pipeline
@@ -39,7 +39,7 @@ jobs:
       matrix:
         node-version: ['12.x']
 
-    needs: setup-and-run-ui-tests
+    # needs: setup-and-run-ui-tests
     steps:
       - uses: actions/checkout@v2
 

@@ -23,8 +23,10 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
       accountId: userFromDB.Item.accounts[0],
     });
     if (isFailure(statement)) return respond.FailureResponse(statement.message);
+
+    if (!statement.Item) return respond.FailureResponse('Statement is empty');
+
     if (
-      !isFailure(statement) &&
       hasKey(statement.Item, fields.from) &&
       statement.Item[fields.from].processedData
     )
@@ -35,5 +37,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
       404
     );
   }
-  return respond.FailureResponse('Failed to get statement');
+  return respond.FailureResponse(
+    'Failed to get statement. ' + userFromDB.message
+  );
 });
