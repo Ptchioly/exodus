@@ -9,6 +9,14 @@ declare namespace Cypress {
     // [propName: string]: any;
   };
 
+  type manualSignupInfo = {
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+    xtoken?: string;
+    // [propName: string]: any;
+  };
+
   type UserLoginInfo = {
     username?: string;
     password?: string;
@@ -44,7 +52,7 @@ declare namespace Cypress {
     //  */
     registerUser(options?: UserSignupInfo): Chainable<any>;
 
-    customRegisterUser(customUsername?: string, customPassword?: string, customXToken?: string): Chainable<any>;
+    manualRegisterUser(options?: manualSignupInfo): void;
 
     // /**
     //  *  logs in to get JWT with creds defined in cypress.env.json 
