@@ -1,13 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { UserInfo } from '../types/Api';
-  import Settings from './Settings.svelte';
+  import UserMenu from './UserMenu.svelte';
 
   export let user: UserInfo;
   $: name = user.name;
   const dispath = createEventDispatcher();
   let isOpen: boolean = false;
   $: [first, last] = name.split(' ');
+  export let showSettings;
 </script>
 
 <div>
@@ -23,7 +24,8 @@
       <div>{last[0]}</div>
     </div>
     {#if isOpen}
-      <Settings
+      <UserMenu
+        bind:showSettings
         {name}
         on:logout={() => {
           isOpen = false;

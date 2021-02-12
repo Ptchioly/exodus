@@ -18,6 +18,6 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
   if (isFailure(updateResponse)) {
     return respond.FailureResponse('Failed to delete user');
   }
-
+  res.clearCookie('jwt');
   return respond.SuccessResponse();
 });

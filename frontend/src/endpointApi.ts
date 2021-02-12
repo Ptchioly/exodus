@@ -7,6 +7,8 @@ const signupEndpoint = baseUrl.concat('/signup');
 const logoutEndpoint = baseUrl.concat('/logout');
 const statementsEndpoint = baseUrl.concat('/statement');
 const limitsEndpoint = baseUrl.concat('/limit');
+const updateInfoEndpoint = baseUrl.concat('/updateInfo');
+const deleteUserEndpoint = baseUrl.concat('/deleteUser');
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -150,5 +152,23 @@ export const updateLimit = async (category: string, value: number) => {
       category,
       value,
     }),
+  });
+};
+
+export const updatePassword = async (current, newPass) => {
+  return await fetch(updateInfoEndpoint, {
+    method: 'POST',
+    ...defaultInit,
+    body: JSON.stringify({
+      oldPassword: current,
+      newPassword: newPass,
+    }),
+  }).then((res) => res.json());
+};
+
+export const deleteUser = async () => {
+  return await fetch(deleteUserEndpoint, {
+    ...defaultInit,
+    method: 'DELETE',
   });
 };

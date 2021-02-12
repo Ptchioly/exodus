@@ -10,6 +10,7 @@
   } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
   import StackedBar from '../charts/StackedBar.svelte';
+  import Settings from '../components/Settings.svelte';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
@@ -18,6 +19,7 @@
   let currentDate = Date.now();
   let isEmpty: boolean;
   let currentMaxValue = 0;
+  let showSettings = false;
 
   const getMaxValue = (el: any) => {
     el.forEach((el) => {
@@ -94,6 +96,9 @@
   };
 </script>
 
+{#if showSettings}
+  <Settings />
+{/if}
 {#if userInfo}
   <main class="flex w-full flex-col items-center mx-20">
     <div class="header flex justify-end w-full px-5 mt-4 mb-40">
@@ -107,6 +112,7 @@
         <div class="user flex items-center" />
         <div class="logout ml-6 user flex items-center">
           <UserProfile
+            bind:showSettings
             user={userInfo}
             on:logout={async () => {
               await logout();

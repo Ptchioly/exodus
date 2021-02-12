@@ -11,7 +11,7 @@
 </script>
 
 <div
-  class=" mt-2 lg:mt-7 absolute text-center flex justify-center top-0 right-0 left-0"
+  class=" mt-2 lg:mt-7 absolute text-center flex justify-center top-0 right-0 left-0 z-10"
   data-automation-id="login-error-message"
 >
   <p
