@@ -43,14 +43,14 @@ describe.only('Login', () => {
     cy.manualLogin({ username: `123456789123` })
     cy.getBySel("login-error-message")
       .should("be.visible")
-      .and("have.text", "Username or password is invalid");
+      .and("have.text", "User does not exist.");
   });
 
   it("should error for an invalid password for existing user", () => {
     cy.manualLogin({ password: `Wr0ngPa$$word` })
     cy.getBySel("login-error-message")
       .should("be.visible")
-      .and("have.text", "Username or password is invalid");
+      .and("have.text", "Incorrect password.");
   });
 
     it('displays home page on successful login', () => {
