@@ -10,6 +10,7 @@ export const statement = Router();
 
 statement.post('/statement', authenticateToken, async (req: any, res) => {
   const { username } = req.user.data;
+  console.log('statement.post => username', username);
   const respond = endpointRespond(res);
 
   const fields = requiredFields(req.body);
@@ -35,5 +36,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
       404
     );
   }
-  return respond.FailureResponse('Failed to get statement');
+  return respond.FailureResponse(
+    'Failed to get statement. ' + userFromDB.message
+  );
 });
