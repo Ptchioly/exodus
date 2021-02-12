@@ -46,6 +46,11 @@
     </p>
   </div>
 </div>
+<svelte:window
+  on:keypress={({ key }) => {
+    if (key === 'Enter') actionButton.onclick();
+  }}
+/>
 
 <style>
   .signButton {
