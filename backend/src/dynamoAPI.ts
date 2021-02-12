@@ -1,7 +1,8 @@
 import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
-import { configs, secrets } from './config';
-import { GetOutput } from './routes/types/types';
+import { secrets } from './config';
+import { startMonth } from './routes/monobank/utils';
+import { GetOutput, MonoStatement } from './routes/types/types';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,
@@ -94,6 +95,62 @@ export const updateItem = async (
     Key: keyData,
     ReturnValues: 'ALL_NEW',
     ...buildUpdateParam(obj),
+  };
+
+  return await documentClient
+    .update(params)
+    .promise()
+    .catch((err) => err);
+};
+
+export const appendStatement = async (
+  table: string,
+  keyData: { accountId: string },
+  statementItem: MonoStatement,
+  keyPath?: string
+): Promise<PutItemOutput | AWSError> => {
+  const startDate = startMonth('cur').getTime();
+  const k = `#${startDate}`;
+  const params = {
+    TableName: table,
+    Key: keyData,
+    ReturnValues: 'ALL_NEW',
+    UpdateExpression: `set #${startDate}.${keyPath} = list_append(if_not_exists(#${startDate}.${keyPath}, :empty_list), :statementItem)`,
+    ExpressionAttributeNames: {
+      [k]: `${startDate}`,
+    },
+    ExpressionAttributeValues: {
+      ':statementItem': [statementItem],
+      ':empty_list': [],
+    },
+  };
+  console.log(JSON.stringify(params));
+
+  return await documentClient
+    .update(params)
+    .promise()
+    .catch((err) => err);
+};
+
+export const incrementStatemntSpendings = async (
+  table: string,
+  keyData: { accountId: string },
+  incValue: number,
+  index: number
+): Promise<PutItemOutput | AWSError> => {
+  const startDate = startMonth('cur').getTime();
+  const k = `#${startDate}`;
+  const params = {
+    TableName: table,
+    Key: keyData,
+    UpdateExpression: `set ${k}.processedData[${index}].moneySpent = ${k}.processedData[${index}].moneySpent + :val`,
+    ExpressionAttributeNames: {
+      [k]: `${startDate}`,
+    },
+    ExpressionAttributeValues: {
+      ':val': incValue,
+    },
+    ReturnValues: 'UPDATED_NEW',
   };
 
   return await documentClient

@@ -60,7 +60,7 @@ Cypress.Commands.add('registerUser', (options = {}) => {
 //  * Check home page loaded when you login or signup
 //  */
 Cypress.Commands.add('checkHomePageLoaded', () => {
-  cy.getBySel('telegram-button').should('be.visible');
+  cy.getBySel('telegram-link').should('be.visible');
   cy.getBySel('menu-button').should('be.visible');
   cy.getBySel('limit-setter').should('be.visible');
   cy.getBySel('limit-input').should('be.visible');
@@ -103,7 +103,7 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('confirm-pwd-input').type(userInfo.confirmPassword);
   cy.getBySel('xtoken-input').type(userInfo.xtoken);
   cy.getBySel('signup-button').click();
-  cy.checkHomePageLoaded();
+  // cy.checkHomePageLoaded();
 })
 
 // Cypress.Commands.add('setToken', (response) => {

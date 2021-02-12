@@ -7,6 +7,7 @@ export const requests = {
   statement: (account: 0 | string, from: number, to?: number): string =>
     endpoint(`personal/statement/${account}/${from}/${to}`),
   personal: (): string => endpoint('personal/client-info'),
+  webhook: (): string => endpoint('personal/webhook'),
 };
 
 export const getClientInfo = async (xtoken: string) =>

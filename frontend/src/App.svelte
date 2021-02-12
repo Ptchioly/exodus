@@ -77,7 +77,7 @@
 
 <!-- Probably should be placed in html tag with tailwind and using 'rem' instead of 'px' -->
 <style global lang="postcss">
-  main {
+  html {
     background-color: aliceblue;
   }
   @media only screen and (min-width: 600px) {
