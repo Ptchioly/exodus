@@ -104,7 +104,13 @@
   <div class="top">
     <section class="actions">
       {#if limit <= 0}
-        <button class="action action--addLimit" on:click={() => (limit = 50)}>
+        <button
+          class="action action--addLimit"
+          on:click={() => {
+            limit = 50;
+            handleLimitSet(limit);
+          }}
+        >
           <img src="/images/add.svg" alt="+" />
         </button>
       {:else}
