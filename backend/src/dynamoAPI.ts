@@ -77,7 +77,6 @@ const buildUpdateParam = (obj: Record<string, any>) => {
     ExpressionAttributeValues[':' + k] = obj[k];
     return `#${k} = :${k}`;
   });
-
   return {
     UpdateExpression: `SET ${keys.join(', ')}`,
     ExpressionAttributeNames,

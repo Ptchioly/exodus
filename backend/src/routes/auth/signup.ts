@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { configs } from '../../config';
 import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
+import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
 import { encrypt, getAccounts } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
@@ -38,7 +39,7 @@ signup.post('/signup', async (req, res) => {
   const key = nanoid(21);
   const encryptedPassword = encrypt(password, key);
 
-  const updateUserResponse = await putItem(configs.USER_TABLE, {
+  const user = {
     id: data.clientId,
     key,
     username,
@@ -46,13 +47,19 @@ signup.post('/signup', async (req, res) => {
     xtoken,
     name: data.name,
     accounts: getAccounts(data.accounts),
-  });
+  };
+
+  const updateUserResponse = await putItem(configs.USER_TABLE, user);
 
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
 
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
+
+  await syncStatements({
+    Item: user as any,
+  });
 
   return respond.SuccessResponse();
 });
