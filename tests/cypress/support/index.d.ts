@@ -9,6 +9,14 @@ declare namespace Cypress {
     // [propName: string]: any;
   };
 
+  type manualSignupInfo = {
+    username?: string;
+    password?: string;
+    confirmPassword?: string;
+    xtoken?: string;
+    // [propName: string]: any;
+  };
+
   type UserLoginInfo = {
     username?: string;
     password?: string;
@@ -43,13 +51,16 @@ declare namespace Cypress {
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */
     registerUser(options?: UserSignupInfo): Chainable<any>;
-   
+
+    manualRegisterUser(options?: manualSignupInfo): void;
+
     // /**
     //  *  logs in to get JWT with creds defined in cypress.env.json 
     //  *  then deletes a user from inside his own account
     //  */
     deleteMyUserIfExists(options?: UserLoginInfo): Chainable<any>;
 
+    checkHomePageLoaded(): void;
 
 
     // /**
