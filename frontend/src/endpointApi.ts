@@ -120,9 +120,8 @@ const getDateRange = (
 
 export const getStatement = async (
   date: number,
-  month: 'previous' | 'current'
+  mounth: 'previous' | 'current'
 ): Promise<APIResponse> => {
-  const { from, to } = getDateRange(date, month);
   const response = await fetch(statementsEndpoint, {
     credentials: 'include',
     headers: {
@@ -131,9 +130,7 @@ export const getStatement = async (
     },
     method: 'POST',
     body: JSON.stringify({
-      account: 0,
-      from,
-      to,
+      mounth,
     }),
   });
 

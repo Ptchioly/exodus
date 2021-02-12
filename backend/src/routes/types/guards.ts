@@ -1,7 +1,7 @@
 import { AWSError } from 'aws-sdk';
 
 export const isFailure = (response: any): response is AWSError =>
-  response.statusCode === 400;
+  response.statusCode;
 
 export const exist = (...fields: string[]): boolean =>
   fields.every((field) => !!field);
@@ -15,3 +15,5 @@ export const hasKey = <T, K extends number | string>(
 ): object is T & { [k in K]: any } => {
   return key in object;
 };
+export const isValidMounthVariant = (m: string): m is 'previous' | 'current' =>
+  m === 'previous' || m === 'current';
