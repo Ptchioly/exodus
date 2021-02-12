@@ -24,7 +24,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
     const statement = await getItem(configs.STATEMENTS_TABLE, {
       accountId: userFromDB.Item.accounts[0],
     });
-    console.log('statement.post => statement', statement);
+    console.log('statement.post => statement ', statement);
     if (isFailure(statement)) return respond.FailureResponse(statement.message);
     if (
       hasKey(statement.Item, fields.from) &&
