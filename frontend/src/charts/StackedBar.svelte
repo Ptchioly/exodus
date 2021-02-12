@@ -5,7 +5,6 @@
   export let title;
   export let current;
   export let previous;
-  $: console.log('previous', previous);
   export let limit;
   export let maxValue = 4000;
 
@@ -49,7 +48,7 @@
     if (timeoutId !== undefined) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       updateLimit(title, value);
-    }, 5000);
+    }, 3000);
   };
 
   const isSmallEnough = (elem) => {
