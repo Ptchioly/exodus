@@ -1,4 +1,4 @@
-name: ci_beta
+name: CI - Run Tests on Beta and Deploy to Staging
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   setup-and-run-ui-tests:
-    name: Run UI Tests - Chrome
+    name: Run UI Tests - Chrome - Beta
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
