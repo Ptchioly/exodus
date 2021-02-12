@@ -53,7 +53,9 @@ Cypress.Commands.add('registerUser', (options = {}) => {
       ...user
     },
     // failOnStatusCode: false
-  }).its('body.user_id').should('exist')
+  }).then((resp) => {
+    expect(resp.status).to.eq(200)
+  })
 })
 
 // /**
