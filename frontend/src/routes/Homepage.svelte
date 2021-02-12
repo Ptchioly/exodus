@@ -116,7 +116,7 @@
           <img src="images/refresh.png" alt="refresh page" />
         </div>
         <div
-          class="telega h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
+          class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl ml-6"
           data-automation-id="telegram-link"
           on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
         >
