@@ -52,7 +52,14 @@ Cypress.Commands.add('registerUser', (options = {}) => {
     body: {
       ...user
     },
+<<<<<<< HEAD
   }).then((response) => expect(response.status).to.eq(200))
+=======
+    // failOnStatusCode: false
+  }).then((resp) => {
+    expect(resp.status).to.eq(200)
+  })
+>>>>>>> beta
 })
 
 // /**

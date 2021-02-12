@@ -1,14 +1,9 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-describe('sign up', {
-  env: {
-    phone: Cypress.env('username').slice(3) //user phone without region
-  }
-}, () => {
+describe('sign up', () => {
   beforeEach(() => {
-    // cy.deleteMyUserIfExists()
-    // we are not logged in
+    cy.deleteMyUserIfExists()
     cy.visit('/')
   })
   
@@ -16,7 +11,16 @@ describe('sign up', {
     cy.manualRegisterUser();
     cy.checkHomePageLoaded();
   })
-  
+
+  it('check monobank link', () => { 
+    cy.getBySel('link-signup-button').click();
+    cy.getBySel('monobank-link').should('be.visible');
+    cy.request({
+      method: 'GET',
+      url: 'api.monobank.ua'
+      }).then(response => {expect(response.status).to.eq(200), expect(response.body).contain('id="qrcode"')})
+  })
+
 //   it('does not register new user with already registered phone number', () => { })
 
 //   it('requires only digits in phone number', () => { })
