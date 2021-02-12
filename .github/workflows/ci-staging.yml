@@ -24,11 +24,11 @@ jobs:
           browser: chrome
           headless: true
           working-directory: tests
-          # group: 'UI - Chrome - Staging'
-          # record: true
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          group: 'UI - Chrome - Staging'
+          record: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
 
   merge-staging-to-deploy:
     timeout-minutes: 2
