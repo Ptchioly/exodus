@@ -163,6 +163,16 @@ export const updatePassword = async (current, newPass) => {
   }).then((res) => res.json());
 };
 
+export const updateXToken = async (newXtoken) => {
+  return await fetch(updateInfoEndpoint, {
+    method: 'POST',
+    ...defaultInit,
+    body: JSON.stringify({
+      newXtoken,
+    }),
+  }).then((el) => el.json());
+};
+
 export const deleteUser = async () => {
   return await fetch(deleteUserEndpoint, {
     ...defaultInit,

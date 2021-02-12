@@ -97,7 +97,7 @@
 </script>
 
 {#if showSettings}
-  <Settings />
+  <Settings bind:showSettings />
 {/if}
 {#if userInfo}
   <main class="flex w-full flex-col items-center mx-20">

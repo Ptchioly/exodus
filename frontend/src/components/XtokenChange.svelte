@@ -1,9 +1,23 @@
 <script lang="ts">
+  import { updateXToken } from '../endpointApi';
+  import { isSuccessResponse } from '../types/guards';
+
+  export let error;
+  export let errorMessage;
+
   let xToken = '';
+
+  const handleXTokenChange = async (token) => {
+    const response = await updateXToken(token);
+    if (!isSuccessResponse(response)) {
+      error = true;
+      errorMessage = response.message;
+    }
+  };
 </script>
 
 <div class="flex flex-col">
-  <div class="flex flex-row mt-2">
+  <div class="flex flex-row mt-2 items-center">
     <div>X-Token</div>
     <input
       bind:value={xToken}
@@ -13,6 +27,6 @@
   </div>
   <button
     class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
-    >Send</button
+    on:click={() => handleXTokenChange(xToken)}>Send</button
   >
 </div>
