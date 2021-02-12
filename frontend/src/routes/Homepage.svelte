@@ -92,6 +92,8 @@
 
     return [...current, ...previous].filter((c) => c.id !== 15);
   };
+
+  const sorted = (d) => d.sort((a, b) => b.limit - a.limit || b.current > a.current || b.previous - a.previous)
 </script>
 
 {#if userInfo}
@@ -124,7 +126,7 @@
       {/if}
       <!-- <RawCharts /> -->
       {#if data}
-        {#each data as { previous, current, title, limit }}
+        {#each sorted(data) as { previous, current, title, limit }}
           <StackedBar {previous} {current} {title} {limit} />
         {/each}
       {/if}
