@@ -22,7 +22,7 @@ jobs:
           export AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
           export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
           export AWS_REGION=${{ secrets.AWS_REGION }}
-          npx tsc && node out/src/app.js
+          npx tsc && node out/src/app.js &
 
       - name: UI Tests - Chrome
         uses: cypress-io/github-action@v2
