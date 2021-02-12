@@ -1,6 +1,8 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  // import { onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
+  import Bars from './Bars.svelte';
+  import type { StackedBars } from '../types/charts';
 
   export let title;
   export let current;
@@ -8,32 +10,67 @@
   export let limit;
   export let maxValue = 4000;
 
-  let currentP = 0;
-  let previousP = 0;
-  let limitP = 0;
-  let overlap;
-  let smol = false;
-  let timeoutId;
+  let apiRequest: StackedBars;
 
-  let bar;
-  let limits;
-  let currentElement;
+  // let currentP = 0;
+  // let previousP = 0;
+  // let limitP = 0;
+  // let overlap;
+  // let smol = false;
+  // let timeoutId;
+
+  // let bar;
+  // let limits;
+  // let currentElement;
+
+  $: apiRequest = {
+    maxValue,
+    conf: {
+      background: '#E7F4EC',
+      detailedSpace: 70,
+    },
+    bars: [
+      {
+        value: previous,
+        limits: ['basic'],
+        background: '#A6D6D1',
+        labelPosition: 'in-left',
+        label: '$${value}'
+      },
+      {
+        value: current,
+        limits: ['basic'],
+        background: '#2F9E9E',
+        labelPosition: 'in-left',
+        label: '$${value}'
+      }
+    ],
+    limits: [
+      {
+        name: 'basic',
+        value: limit,
+        color: '#A04343',
+        visible: 'static',
+        overlapStyle: '',
+      }
+    ]
+  }
 
   //hot fix from Max; previousP doesnt sync when previous updates
-  $: previousP = percentOf(previous);
+  // $: previousP = percentOf(previous);
 
-  const detailed = (e) => {
-    if (!bar || e.target.classList.contains('limit')) return;
-    bar.classList.toggle('detailed');
-  };
+  // const detailed = (e) => {
+  //   if (!bar || e.target.classList.contains('limit')) return;
+  //   bar.classList.toggle('detailed');
+  // };
 
-  const percentOf = (i) => (i * 100) / maxValue;
+  // const percentOf = (i) => (i * 100) / maxValue;
 
-  const countOverlap = () => {
-    return limit && current > limit
-      ? (maxValue / current) * (percentOf(current) - limitP)
-      : 0;
-  };
+  // const countOverlap = () => {
+  //   return limit && current > limit
+  //     ? (maxValue / current) * (percentOf(current) - limitP)
+  //     : 0;
+  // };
 
   const handlePress = (e) => {
     const step = 50;
@@ -48,57 +85,57 @@
     updateLimit(title, value);
   };
 
-  const isSmallEnough = (elem) => {
-    if (elem) {
-      const barRect = bar.getBoundingClientRect();
-      return (currentP * barRect.width) / 100 < 60;
-    }
-  };
+  // const isSmallEnough = (elem) => {
+  //   if (elem) {
+  //     const barRect = bar.getBoundingClientRect();
+  //     return (currentP * barRect.width) / 100 < 60;
+  //   }
+  // };
 
-  const move = (e) => {
-    const node = e.target;
-    node.classList.add('moveable');
-    const overlap = bar.querySelector('.bar__over');
-    overlap && overlap.classList.add('moveable');
+  // const move = (e) => {
+  //   const node = e.target;
+  //   node.classList.add('moveable');
+  //   const overlap = bar.querySelector('.bar__over');
+  //   overlap && overlap.classList.add('moveable');
 
-    const handleMove = (e) => {
-      const limitsRect = limits.getBoundingClientRect();
-      const movePercent = Math.round(
-        ((e.clientX - limitsRect.left) * 100) / limitsRect.width
-      );
-      if (movePercent >= 0 && movePercent <= 100) {
-        limit = Math.round((movePercent * maxValue) / 100);
-      }
-    };
+  //   const handleMove = (e) => {
+  //     const limitsRect = limits.getBoundingClientRect();
+  //     const movePercent = Math.round(
+  //       ((e.clientX - limitsRect.left) * 100) / limitsRect.width
+  //     );
+  //     if (movePercent >= 0 && movePercent <= 100) {
+  //       limit = Math.round((movePercent * maxValue) / 100);
+  //     }
+  //   };
 
-    const handleEnd = (e) => {
-      node.classList.remove('moveable');
-      overlap && overlap.classList.remove('moveable');
-      window.removeEventListener('mousemove', handleMove);
-      handleLimitSet(limit);
-    };
+  //   const handleEnd = (e) => {
+  //     node.classList.remove('moveable');
+  //     overlap && overlap.classList.remove('moveable');
+  //     window.removeEventListener('mousemove', handleMove);
+  //     handleLimitSet(limit);
+  //   };
 
-    window.addEventListener('mouseup', handleEnd);
-    window.addEventListener('mousemove', handleMove);
-  };
+  //   window.addEventListener('mouseup', handleEnd);
+  //   window.addEventListener('mousemove', handleMove);
+  // };
 
-  onMount(() => {
-    setTimeout(() => {
-      currentP = percentOf(current);
-      previousP = percentOf(previous);
-      console.log('Chart mount');
-      limitP = percentOf(limit);
-      smol = isSmallEnough(currentElement);
-    }, 20);
-  });
+  // onMount(() => {
+  //   setTimeout(() => {
+  //     currentP = percentOf(current);
+  //     previousP = percentOf(previous);
+  //     console.log('Chart mount');
+  //     limitP = percentOf(limit);
+  //     smol = isSmallEnough(currentElement);
+  //   }, 20);
+  // });
 
-  $: {
-    limitP = percentOf(limit);
-    overlap = countOverlap();
-  }
+  // $: {
+  //   limitP = percentOf(limit);
+  //   overlap = countOverlap();
+  // }
 </script>
 
-<div class="wrapper">
+<div class="wrapper-s">
   <div class="top">
     <section class="actions">
       {#if limit <= 0}
@@ -131,80 +168,23 @@
   </div>
 
   <div class="bottom">
-    <section
-      class="bar__container"
-      class:detailed={false}
-      bind:this={bar}
-      on:mousedown={detailed}
-    >
-      <div class="bars">
-        <div
-          class="bar bar--previous"
-          data-value={`₴ ${previous}`}
-          style={`width: ${previousP}%`}
-        />
-        {#if current > 0}
-          <div
-            class="bar bar--current"
-            style={`width: ${currentP}%`}
-            data-value={`₴ ${current}`}
-            bind:this={currentElement}
-            data-hiddenValue={smol}
-          >
-            <div
-              class="bar__over"
-              class:moveable={false}
-              style={`width: ${overlap}%`}
-            />
-            <div
-              class="bar__toLimit"
-              style={`width: ${percentOf(
-                (limit - current) * (maxValue / current)
-              )}%; margin-right: -${
-                (limitP - currentP) * (maxValue / current)
-              }%`}
-            >
-              {#if limit && limit > current + 20}
-                <div>
-                  <div
-                    class:detailed={limit - current > 99}
-                    data-value={limit - current}
-                  />
-                </div>
-              {/if}
-            </div>
-          </div>
-        {/if}
-      </div>
-
-      <div class="limits" bind:this={limits}>
-        <div
-          class="limit limit--red"
-          on:mousedown={move}
-          class:hidden={limit <= 0}
-          class:moveable={false}
-          data-value={`${limit}`}
-          data-automation-id="limit-setter"
-          style={`left: ${limitP}%`}
-        />
-      </div>
-    </section>
+    <Bars bars={apiRequest}/>
   </div>
 </div>
 
 <style>
-  .wrapper {
+  .wrapper-s {
     display: flex;
     flex-direction: row;
     padding: 0.75em 0;
     user-select: none;
     -webkit-user-select: none;
+    justify-content: space-between;
   }
 
   .top,
   .bottom {
     display: flex;
-    flex-shrink: 0;
   }
 
   .top {
@@ -212,7 +192,9 @@
   }
 
   .bottom {
-    width: 70%;
+    width: 60%;
+    font-size: .8em;
+    display: flex;
   }
 
   .actions {
@@ -270,7 +252,7 @@
     color: #333;
   }
 
-  .bar__container {
+  /* .bar__container {
     width: 100%;
     height: 2em;
     background-color: #e7f4ec;
@@ -456,7 +438,7 @@
     font-size: 0.75em;
     margin-top: -1.2em;
     margin-left: -8px;
-  }
+  } */
 
   @media (max-width: 50em) {
     .wrapper {
