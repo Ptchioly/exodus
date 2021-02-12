@@ -36,13 +36,16 @@ declare namespace Cypress {
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */
     registerUser(options?: UserSignupInfo): Chainable<any>;
-   
+
+    customRegisterUser(customUsername?: string, customPassword?: string, customXToken?: string): Chainable<any>;
+
     // /**
     //  *  logs in to get JWT with creds defined in cypress.env.json 
     //  *  then deletes a user from inside his own account
     //  */
     deleteMyUserIfExists(options?: UserLoginInfo): Chainable<any>;
 
+    checkHomePageLoaded(): void;
 
 
     // /**

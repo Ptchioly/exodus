@@ -56,6 +56,14 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }).its('body.user_id').should('exist')
 })
 
+Cypress.Commands.add('checkHomePageLoaded', () => {
+  cy.getBySel('telegram-button').should('be.visible');
+  cy.getBySel('menu-button').should('be.visible');
+  cy.getBySel('limit-setter').should('be.visible');
+  cy.getBySel('limit-input').should('be.visible');
+  cy.getCookie('jwt').should('have.property', 'value');
+})
+
 // Cypress.Commands.add('setToken', (response) => {
 //   const token = response.headers['set-cookie'][0].match(/jwt=([^;]+)/)[1];
 //   return cy.setCookie('jwt', token, { expiry: configs.MAX_AGE })
