@@ -86,7 +86,7 @@
           type="text"
           placeholder="Monobank token"
           required
-          data-automation-d="xtoken-input"
+          data-automation-id="xtoken-input"
           bind:value={token}
         />
         <div class="items-center w-1/6"><MonoLogo /></div>
