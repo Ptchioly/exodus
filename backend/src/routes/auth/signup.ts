@@ -65,7 +65,7 @@ signup.post('/signup', async (req, res) => {
       'X-Token': xtoken,
     },
     body: JSON.stringify({
-      webHookUrl: 'https://webhook.site/6207193e-0a59-4e8b-9f26-468fb2ca901f',
+      webHookUrl: 'https://api.beeeee.es/hook',
     }),
   })
     .then(console.log)
