@@ -2,11 +2,9 @@
   import { updatePassword, deleteUser } from '../endpointApi';
   import { isSuccessResponse } from '../types/guards';
   import ErrorMessage from './ErrorMessage.svelte';
+  import PasswordChange from './PasswordChange.svelte';
 
   let state: 'password' | 'x-token' | 'deleteUser' = 'password';
-  let currentPass = '';
-  let newPass = '';
-  let confirmPass = '';
   let error;
   let errorMessage;
   let xToken;
@@ -37,46 +35,35 @@
   };
 </script>
 
-{#if error}
-  <ErrorMessage bind:visible={error} {errorMessage} />
-{/if}
-
 <div id="bg" class="w-full z-0">
-  <div id="content" class="flex max-w-lg relative flex-row bg-white">
-    <div class="flex-col px-5 text-left border-r-2 border-gray-600">
-      <div class="cursor-pointer" on:click={() => (state = 'password')}>
+  {#if error}
+    <ErrorMessage bind:visible={error} {errorMessage} />
+  {/if}
+  <div id="content" class="flex max-w-lg relative flex-row bg-white rounded-sm">
+    <div
+      class="flex-col px-5 text-left border-r-2 border-gray-600 min-w-max-content"
+    >
+      <div class="cursor-pointer mt-5" on:click={() => (state = 'password')}>
         Change password
       </div>
-      <div class="cursor-pointer" on:click={() => (state = 'x-token')}>
+      <div class="cursor-pointer mt-5" on:click={() => (state = 'x-token')}>
         Change X-Token
       </div>
-      <div class="cursor-pointer" on:click={() => (state = 'deleteUser')}>
+      <div class="cursor-pointer mt-5" on:click={() => (state = 'deleteUser')}>
         Delete User
       </div>
     </div>
-    <div class="ml-10">
+    <div class="ml-10 mt-5">
       {#if state === 'password'}
-        <div class="flex flex-row mt-2">
-          <div>Current Password</div>
-          <input bind:value={currentPass} placeholder="Current" class="ml-5" />
-        </div>
-        <div class="flex flex-row mt-2">
-          <div>New Password</div>
-          <input bind:value={newPass} placeholder="New" class="ml-5" />
-        </div>
-        <div class="flex flex-row mt-2">
-          <div>Confirm Password</div>
-          <input bind:value={confirmPass} placeholder="Confirm" class="ml-5" />
-        </div>
-        <button
-          type="submit"
-          on:click={() => changePassword(currentPass, newPass, confirmPass)}
-          >Change</button
-        >
+        <PasswordChange bind:error bind:errorMessage />
       {:else if state === 'x-token'}
         <div class="flex flex-row mt-2">
           <div>X-Token</div>
-          <input bind:value={xToken} placeholder="X-Token" class="ml-5" />
+          <input
+            bind:value={xToken}
+            placeholder="X-Token"
+            class="ml-5 border-r-2 border-gray-400 border-2 rounded-md pl-3 mr-5"
+          />
         </div>
       {:else if state === 'deleteUser'}
         <div class="flex flex-row mt-2">
@@ -111,6 +98,7 @@
   }
 
   #content {
-    min-width: 50%;
+    min-width: 60%;
+    min-height: 20rem;
   }
 </style>
