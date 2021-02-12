@@ -1,45 +1,21 @@
 <script lang="ts">
   import { updatePassword, deleteUser } from '../endpointApi';
   import { isSuccessResponse } from '../types/guards';
+  import DeleteUser from './DeleteUser.svelte';
   import ErrorMessage from './ErrorMessage.svelte';
   import PasswordChange from './PasswordChange.svelte';
+  import XtokenChange from './XtokenChange.svelte';
 
   let state: 'password' | 'x-token' | 'deleteUser' = 'password';
-  let error;
-  let errorMessage;
-  let xToken;
-
-  const changePassword = async (
-    current: string,
-    newPass: string,
-    confirm: string
-  ) => {
-    if (newPass === confirm) {
-      const response = await updatePassword(current, newPass);
-      if (!isSuccessResponse(response)) {
-        error = true;
-        errorMessage = response.message;
-      }
-    }
-  };
-
-  const handleDeleteUser = async () => {
-    const response = await deleteUser();
-    if (!isSuccessResponse(response)) {
-      console.log('log');
-      error = true;
-      errorMessage = 'Failed to delete user';
-    } else {
-      location.reload();
-    }
-  };
+  let error = false;
+  let errorMessage = '';
 </script>
 
 <div id="bg" class="w-full z-0">
   {#if error}
     <ErrorMessage bind:visible={error} {errorMessage} />
   {/if}
-  <div id="content" class="flex max-w-lg relative flex-row bg-white rounded-sm">
+  <div id="content" class="flex flex-row bg-white rounded-sm min-w-max-content">
     <div
       class="flex-col px-5 text-left border-r-2 border-gray-600 min-w-max-content"
     >
@@ -57,22 +33,9 @@
       {#if state === 'password'}
         <PasswordChange bind:error bind:errorMessage />
       {:else if state === 'x-token'}
-        <div class="flex flex-row mt-2">
-          <div>X-Token</div>
-          <input
-            bind:value={xToken}
-            placeholder="X-Token"
-            class="ml-5 border-r-2 border-gray-400 border-2 rounded-md pl-3 mr-5"
-          />
-        </div>
+        <XtokenChange />
       {:else if state === 'deleteUser'}
-        <div class="flex flex-row mt-2">
-          <div>Delete user?</div>
-          <button
-            class="ml-5 bg-coolGreen-default rounded-md py-2 px-3"
-            on:click={handleDeleteUser}>Delete</button
-          >
-        </div>
+        <DeleteUser bind:error bind:errorMessage />
       {/if}
     </div>
   </div>

@@ -24,32 +24,35 @@
   };
 </script>
 
-<div class="flex flex-row mt-2">
-  <div>Current Password</div>
-  <input
-    bind:value={currentPass}
-    placeholder="Current"
-    class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5"
-  />
+<div class="flex flex-col">
+  <div class="flex flex-row">
+    <div class="flex flex-col min-w-max-content text-left">
+      <div class="">Current Password</div>
+      <div class="mt-4">New Password</div>
+      <div class="mt-4">Confirm Password</div>
+    </div>
+    <div class="flex flex-col">
+      <input
+        bind:value={currentPass}
+        placeholder="Current"
+        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-xs"
+      />
+      <input
+        bind:value={newPass}
+        placeholder="New"
+        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
+      />
+      <input
+        bind:value={confirmPass}
+        placeholder="Confirm"
+        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
+      />
+    </div>
+  </div>
+  <button
+    type="submit"
+    on:click={() => changePassword(currentPass, newPass, confirmPass)}
+    class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
+    >Change</button
+  >
 </div>
-<div class="flex flex-row mt-2">
-  <div>New Password</div>
-  <input
-    bind:value={newPass}
-    placeholder="New"
-    class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5"
-  />
-</div>
-<div class="flex flex-row mt-2">
-  <div>Confirm Password</div>
-  <input
-    bind:value={confirmPass}
-    placeholder="Confirm"
-    class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5"
-  />
-</div>
-<button
-  type="submit"
-  on:click={() => changePassword(currentPass, newPass, confirmPass)}
-  >Change</button
->

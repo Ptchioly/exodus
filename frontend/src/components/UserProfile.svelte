@@ -18,7 +18,7 @@
       on:click={async () => {
         isOpen = !isOpen;
       }}
-      class="bg-coolGreen-default w-8 h-8 rounded-full text-white small shadow-lg border-coolGreen-dark border-4 flex items-center flex-row cursor-pointer"
+      class="bg-coolGreen-default w-8 h-8 rounded-full text-white small shadow-lg border-coolGreen-dark border-4 flex items-center justify-center flex-row cursor-pointer "
     >
       <div class="pr-0.5">{first[0]}</div>
       <div>{last[0]}</div>
