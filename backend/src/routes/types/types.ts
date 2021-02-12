@@ -45,7 +45,6 @@ export type Payment = {
   categoryId: number;
   description: string;
   amount: number;
-  time: number;
 };
 
 export type MonoClientInfo = {

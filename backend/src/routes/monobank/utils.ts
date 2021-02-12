@@ -91,27 +91,23 @@ export const statementUpdate = async (
   data: any[],
   processedData: LimitCategory[]
 ): Promise<void> => {
-  const accounts = userFromDB.Item.accounts;
-  await Promise.all(
-    accounts.map(async (id) => {
-      const dbItem = await getItem(configs.STATEMENTS_TABLE, {
-        accountId: id,
-      });
-      const newObject = { rawData: data, processedData };
+  const account = userFromDB.Item.accounts[0];
+  const dbItem = await getItem(configs.STATEMENTS_TABLE, {
+    accountId: account,
+  });
+  const newObject = { rawData: data, processedData };
 
-      Object.keys(dbItem).length > 0
-        ? await updateItem(
-            configs.STATEMENTS_TABLE,
-            { accountId: id },
-            { [timestamp]: newObject, username: userFromDB.Item.username }
-          )
-        : await putItem(configs.STATEMENTS_TABLE, {
-            accountId: id,
-            [timestamp]: newObject,
-            username: userFromDB.Item.username,
-          });
-    })
-  );
+  Object.keys(dbItem).length > 0
+    ? await updateItem(
+        configs.STATEMENTS_TABLE,
+        { accountId: account },
+        { [timestamp]: newObject, username: userFromDB.Item.username }
+      )
+    : await putItem(configs.STATEMENTS_TABLE, {
+        accountId: account,
+        [timestamp]: newObject,
+        username: userFromDB.Item.username,
+      });
 };
 
 export const updateLimit = async (

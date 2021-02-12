@@ -19,6 +19,14 @@
   let data: ChartData[];
   let currentDate = Date.now();
   let isEmpty: boolean;
+  let currentMaxValue = 0;
+
+  const getMaxValue = (el: any) => {
+    el.forEach((el) => {
+      if (el.id !== 15 && el.moneySpent > currentMaxValue)
+        currentMaxValue = el.moneySpent;
+    });
+  };
 
   const getStatementWithRetry = async (
     variant: 'previous' | 'current'
@@ -51,6 +59,7 @@
     if (isSuccessResponse(curResp)) currentMonth = curResp.data;
     const prevResp = await getStatementWithRetry('previous');
     if (isSuccessResponse(prevResp)) previousMonth = prevResp.data;
+    getMaxValue(previousMonth);
   });
 
   const mergeData = (
@@ -66,7 +75,7 @@
           (previousMonth &&
             previousMonth.find((st) => st.category === category)?.moneySpent) ||
           0,
-        limit: limit || 2000,
+        limit: limit || 0,
       }));
 
     const previous = previousMonth
@@ -80,7 +89,7 @@
             title: category,
             current: 0,
             previous: moneySpent,
-            limit: limit || 2000,
+            limit: limit || 0,
           }))
       : [];
 
