@@ -10,7 +10,6 @@ export const statement = Router();
 
 statement.post('/statement', authenticateToken, async (req: any, res) => {
   const { username } = req.user.data;
-  console.log('statement.post => username', username);
   const respond = endpointRespond(res);
 
   const fields = requiredFields(req.body);
@@ -19,13 +18,14 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
     username,
   });
 
-  console.log('statement.post => userFromDB', userFromDB);
   if (!isFailure(userFromDB)) {
     const statement = await getItem(configs.STATEMENTS_TABLE, {
       accountId: userFromDB.Item.accounts[0],
     });
-    console.log('statement.post => statement ', statement);
     if (isFailure(statement)) return respond.FailureResponse(statement.message);
+
+    if (!statement.Item) return respond.FailureResponse('Statement is empty');
+
     if (
       hasKey(statement.Item, fields.from) &&
       statement.Item[fields.from].processedData
