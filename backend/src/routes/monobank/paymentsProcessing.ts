@@ -26,20 +26,18 @@ const getCategoriesTemplate = (categories: Category[]): Payment[] => {
   });
 };
 
-const defineCategory = (payments: MonoStatements) => {
+const defineCategory = (payments: MonoStatements): Payment[] => {
   const initialCategories = getCategoriesTemplate(categories);
-  return payments.reduce((accum, { mcc, description, amount }) => {
-    const { category, id } = getMccCategory(mcc);
-    const sobaka = initialCategories.findIndex((el) => el.categoryId === id);
-    if (sobaka !== -1) {
-      accum[sobaka] = {
-        category,
-        categoryId: id,
-        description,
-        amount: Math.abs(amount) / 100,
+  console.log('defineCategory => initialCategories', initialCategories);
+  return payments.reduce((accum, { mcc, amount }) => {
+    const { id } = getMccCategory(mcc);
+    return accum.map((pay) => {
+      if (pay.categoryId !== id) return pay;
+      return {
+        ...pay,
+        amount: pay.amount + Math.abs(amount / 100),
       };
-    }
-    return accum;
+    });
   }, initialCategories);
 };
 

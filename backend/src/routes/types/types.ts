@@ -18,10 +18,7 @@ export type UserMeta = {
 };
 
 export type StatementRequest = {
-  account: string;
-  from: number;
-  to?: number;
-  previous: boolean;
+  mounth: 'previous' | 'current';
 };
 
 export type Category = {
