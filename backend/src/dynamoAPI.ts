@@ -1,7 +1,8 @@
 import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
-import { configs, secrets } from './config';
-import { GetOutput } from './routes/types/types';
+import { secrets } from './config';
+import { startMonth } from './routes/monobank/utils';
+import { GetOutput, MonoStatement } from './routes/types/types';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,
@@ -102,59 +103,58 @@ export const updateItem = async (
     .catch((err) => err);
 };
 
-export const updateStatements = (accountId: string, statements: any) => {
-  const date = new Date();
+export const appendStatement = async (
+  table: string,
+  keyData: { accountId: string },
+  statementItem: MonoStatement,
+  keyPath?: string
+): Promise<PutItemOutput | AWSError> => {
+  const startDate = startMonth('cur').getTime();
+  const k = `#${startDate}`;
   const params = {
-    TableName: configs.STATEMENTS_TABLE,
-    Key: { accountId },
+    TableName: table,
+    Key: keyData,
     ReturnValues: 'ALL_NEW',
-    UpdateExpression:
-      'set #timestamp.rawData = list_append(if_not_exists(#timestamp.rawData, :empty_list), :location)',
+    UpdateExpression: `set #${startDate}.${keyPath} = list_append(if_not_exists(#${startDate}.${keyPath}, :empty_list), :statementItem)`,
     ExpressionAttributeNames: {
-      '#timestamp': `${new Date(date.getFullYear(), date.getMonth(), 1)}`,
+      [k]: `${startDate}`,
     },
     ExpressionAttributeValues: {
-      ':location': [statements],
+      ':statementItem': [statementItem],
       ':empty_list': [],
     },
   };
-  return documentClient
+  console.log(JSON.stringify(params));
+
+  return await documentClient
     .update(params)
     .promise()
     .catch((err) => err);
 };
 
-// params = {
-//   TableName: table,
-//   KeyConditionExpression: "EventType = :eventType",
-//   FilterExpression: "contains(Commits, :commitVal )",
-//   ExpressionAttributeValues: {
-//       ":eventType": 'git/push',
-//       ":commitVal": {
-//           'id': '29d02aff',
-//           'subject': 'Add the thing to the place'
-//       }
-//   }
-// };
-
-export const getProcessedData = (accountId: string, id: any) => {
-  const date = new Date();
+export const incrementStatemntSpendings = async (
+  table: string,
+  keyData: { accountId: string },
+  incValue: number,
+  index: number
+): Promise<PutItemOutput | AWSError> => {
+  const startDate = startMonth('cur').getTime();
+  const k = `#${startDate}`;
   const params = {
-    TableName: configs.STATEMENTS_TABLE,
-    Key: { accountId },
-    ReturnValues: 'ALL_NEW',
-    UpdateExpression: 'contains(#timestamp.processedData, :category)',
+    TableName: table,
+    Key: keyData,
+    UpdateExpression: `set ${k}.processedData[${index}].moneySpent = ${k}.processedData[${index}].moneySpent + :val`,
     ExpressionAttributeNames: {
-      '#timestamp': `${new Date(date.getFullYear(), date.getMonth(), 1)}`,
+      [k]: `${startDate}`,
     },
     ExpressionAttributeValues: {
-      ':category': {
-        id,
-      },
+      ':val': incValue,
     },
+    ReturnValues: 'UPDATED_NEW',
   };
-  return documentClient
-    .query(params)
+
+  return await documentClient
+    .update(params)
     .promise()
     .catch((err) => err);
 };

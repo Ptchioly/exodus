@@ -26,7 +26,7 @@ export const requiredFields = ({
   };
 };
 
-const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
+export const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
   const date = new Date();
   switch (variant) {
     case 'prev':

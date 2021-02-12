@@ -9,7 +9,7 @@ import {
 
 const other = 15;
 
-const getMccCategory = (mccNumber: number): Category =>
+export const getMccCategory = (mccNumber: number): Category =>
   categories.find(
     ({ mcc }) =>
       mcc.numbers.includes(mccNumber) || isInRange(mcc.ranges, mccNumber)
@@ -26,10 +26,14 @@ const getCategoriesTemplate = (categories: Category[]): Payment[] => {
   });
 };
 
-const defineCategory = (payments: MonoStatements) => {
+export const defineCategory = (payments: MonoStatements) => {
+  // It should return one category, not all of them
+  // or rename it
   const initialCategories = getCategoriesTemplate(categories);
   return payments.reduce((accum, { mcc, description, amount }) => {
     const { category, id } = getMccCategory(mcc);
+    console.log(id);
+
     const sobaka = initialCategories.findIndex((el) => el.categoryId === id);
     if (sobaka !== -1) {
       accum[sobaka] = {
