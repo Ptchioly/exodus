@@ -7,7 +7,6 @@
   $: name = user.name;
   const dispath = createEventDispatcher();
   let isOpen: boolean = false;
-  console.log('Name', name);
   $: [first, last] = name.split(' ');
 </script>
 

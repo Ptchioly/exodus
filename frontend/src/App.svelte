@@ -4,12 +4,7 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import {
-    getStatement,
-    getUserInfo,
-    isAuthenticated,
-    updateLimit,
-  } from './endpointApi';
+  import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
@@ -51,11 +46,10 @@
     error = false;
     navigationState = 'signIn';
   };
-  $: console.log(navigationState);
 </script>
 
 <TailwindCss />
-<main class="font-main h-screen text-center flex content-center">
+<main class="font-main h-screen text-center flex content-center p-0">
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
