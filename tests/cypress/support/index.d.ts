@@ -1,17 +1,19 @@
 /// <reference types="cypress" />
+
 declare namespace Cypress {
 
   type UserSignupInfo = {
     username: string;
     password: string;
     xtoken: string;
+    // [propName: string]: any;
   };
 
   type UserLoginInfo = {
     username?: string;
     password?: string;
   };
-  interface Chainable {
+  interface Chainable<Subject = any> {
 
     /**
     * Custom command to select DOM element by data-automation-id attribute.
@@ -36,11 +38,7 @@ declare namespace Cypress {
     //  * Logs user in manually via app UI
     //  */
     manualLogin(options?: UserLoginInfo): void;
-    // /**
-    //  * Trim country code off the phone
-    //  */
-    trimUsername(username?: string): string;
-
+    
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */

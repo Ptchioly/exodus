@@ -56,7 +56,10 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }).its('body.user_id').should('exist')
 })
 
-const trimUsername = (username = Cypress.env('username')) => username.slice(3); //user phone without region)
+// /**
+//  * Trim country code off the phone
+//  */
+const trimUsername = (username:string = Cypress.env('username')): string => username.slice(3);
 
 Cypress.Commands.add('manualLogin', (user = {}) => {
   const defaults = {

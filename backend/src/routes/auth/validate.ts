@@ -43,7 +43,7 @@ export const validateUserInfo = async ({
   xtoken,
 }: any): Promise<any> => {
   if (!isValidUsername(username))
-    return formVerdict('Phone number is not valid.');
+    return formVerdict('Phone number is invalid.');
 
   if (!isValidPassword(password))
     return formVerdict(
@@ -53,7 +53,7 @@ export const validateUserInfo = async ({
   if (xtoken) {
     const validateToken = await getClientInfo(xtoken);
     return validateToken.errorDescription
-      ? formVerdict("Unknown 'X-Token'")
+      ? formVerdict('Invalid X-Token')
       : formVerdict('OK', validateToken);
   }
   return formVerdict('OK');
