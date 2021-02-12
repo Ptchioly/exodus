@@ -1,5 +1,11 @@
 {
     "baseUrl": "https://beeeee.es",
+    "stagingUrl": "https://staging.beeeee.es",
+    "env": {
+        "apiUrl": "https://api.beeeee.es",
+        "stagingApiUrl": "https://staging-api.beeeee.es",
+        "username": "380936298775"
+    },
     "retries": {
         "runMode": 1,
         "openMode": 0
@@ -7,6 +13,6 @@
     "videoUploadOnPasses": false,
     "projectId": "door68",
     "experimentalStudio": true,
-    "chromeWebSecurity": false,
+    "fixturesFolder": false,
     "supportFile": "cypress/support/index.ts"
 }

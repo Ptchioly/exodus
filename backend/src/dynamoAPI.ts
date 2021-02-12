@@ -1,7 +1,7 @@
 import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
-import { secrets } from './config';
-import { GetOutput, Users } from './routes/types/types';
+import { configs, secrets } from './config';
+import { GetOutput } from './routes/types/types';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,
@@ -20,6 +20,20 @@ export const getItem = async (
 
   return await documentClient
     .get(params)
+    .promise()
+    .catch((err) => err);
+};
+
+export const getTokens = async (table: string) => {
+  const params = {
+    ExpressionAttributeNames: {
+      '#XT': 'xtoken',
+    },
+    ProjectionExpression: '#XT',
+    TableName: table,
+  };
+  return await documentClient
+    .scan(params)
     .promise()
     .catch((err) => err);
 };
@@ -63,7 +77,6 @@ const buildUpdateParam = (obj: Record<string, any>) => {
     ExpressionAttributeValues[':' + k] = obj[k];
     return `#${k} = :${k}`;
   });
-
   return {
     UpdateExpression: `SET ${keys.join(', ')}`,
     ExpressionAttributeNames,

@@ -15,6 +15,7 @@
   type="text"
   class="login-input code w-1/5"
   data-automation-id="country-code--input"
+  readonly
   required
   bind:value={countryCode}
 />

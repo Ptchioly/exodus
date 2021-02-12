@@ -1,13 +1,17 @@
 import { configs } from '../../config';
 import { getItem, putItem, updateItem } from '../../dynamoAPI';
-import { GetOutput, StatementRequest } from '../types/types';
+import { isFailure } from '../types/guards';
+import { GetOutput, LimitCategory, StatementRequest } from '../types/types';
+import { requests } from './endpoints';
+import { categorize } from './paymentsProcessing';
+import fetch from 'node-fetch';
 
 export const requiredFields = ({
   account,
   from,
   to,
   previous,
-}: Partial<StatementRequest>): StatementRequest => {
+}: StatementRequest): StatementRequest => {
   const date = new Date(Date.now());
   const currentMonth = date.getMonth();
   const currentYear = date.getFullYear();
@@ -15,37 +19,121 @@ export const requiredFields = ({
   const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
   const dateFrom = new Date(yearCheck, previousMonth).valueOf();
   return {
-    account: account || 0,
+    account,
     from: from || dateFrom,
-    to: to,
+    to,
     previous: !!previous,
   };
 };
 
-const checkMonth = (timestamp: number): boolean => {
-  return timestamp < new Date(new Date(Date.now()).getMonth()).valueOf();
+const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
+  const date = new Date();
+  switch (variant) {
+    case 'prev':
+      return new Date(date.getFullYear(), date.getMonth() - 1, 1);
+    case 'cur':
+      return new Date(date.getFullYear(), date.getMonth(), 1);
+    case 'next':
+      return new Date(date.getFullYear(), date.getMonth() + 1, 1);
+  }
+};
+
+const fetchStatement = async (
+  account: string | 0, //???
+  time: { start: number; finish: number },
+  xtoken: string
+): Promise<{ data: any; categorizedData: LimitCategory[] }> => {
+  const data = await fetch(
+    requests.statement(account, time.start, time.finish),
+    {
+      headers: {
+        'X-Token': xtoken,
+      },
+    }
+  ).then((el) => el.json());
+
+  const categorizedData = categorize(data);
+  return { data, categorizedData };
+};
+
+export const syncStatements = async (user: GetOutput): Promise<void> => {
+  const account = 0; //stubbb
+  const start = startMonth('prev').getTime();
+  const finish = startMonth('cur').getTime();
+  const prevMounthTime = { start, finish };
+  const currentMounthTime = {
+    start: finish,
+    finish: startMonth('next').getTime(),
+  };
+  const { data, categorizedData } = await fetchStatement(
+    account,
+    currentMounthTime,
+    user.Item.xtoken
+  );
+  await statementUpdate(user, finish, data, categorizedData);
+
+  setTimeout(async () => {
+    const { data, categorizedData } = await fetchStatement(
+      account,
+      prevMounthTime,
+      user.Item.xtoken
+    );
+
+    await statementUpdate(user, start, data, categorizedData);
+  }, 70000);
 };
 
 export const statementUpdate = async (
   userFromDB: GetOutput,
   timestamp: number,
-  data: any[]
+  data: any[],
+  processedData: LimitCategory[]
 ): Promise<void> => {
-  const accounts = userFromDB.Item.accounts;
-  accounts.forEach(async (id) => {
-    await getItem(configs.STATEMENTS_TABLE, {
-      accountId: id,
-    }).then((dbItem) => {
-      if (Object.keys(dbItem).length > 0) {
-        if (!checkMonth(timestamp))
-          updateItem(
-            configs.STATEMENTS_TABLE,
-            { accountId: id },
-            { [timestamp]: data }
-          );
-      } else {
-        putItem(configs.STATEMENTS_TABLE, { accountId: id, [timestamp]: data });
-      }
-    });
+  const account = userFromDB.Item.accounts[0];
+  const dbItem = await getItem(configs.STATEMENTS_TABLE, {
+    accountId: account,
   });
+  const newObject = { rawData: data, processedData };
+
+  Object.keys(dbItem).length > 0
+    ? await updateItem(
+        configs.STATEMENTS_TABLE,
+        { accountId: account },
+        { [timestamp]: newObject, username: userFromDB.Item.username }
+      )
+    : await putItem(configs.STATEMENTS_TABLE, {
+        accountId: account,
+        [timestamp]: newObject,
+        username: userFromDB.Item.username,
+      });
+};
+
+export const updateLimit = async (
+  userId: string,
+  timestamp: number,
+  category: string,
+  value: number
+): Promise<void> => {
+  const key = { accountId: userId };
+  const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
+  if (!isFailure(statements)) {
+    const newData = statements.Item[timestamp].processedData.reduce(
+      (accum: any, el: any) => {
+        if (el.category === category) el.limit = value;
+        accum.push(el);
+        return accum;
+      },
+      []
+    );
+    updateItem(
+      configs.STATEMENTS_TABLE,
+      { accountId: userId },
+      {
+        [timestamp]: {
+          processedData: newData,
+          rawData: statements.Item[timestamp].rawData,
+        },
+      }
+    );
+  } else console.log('error');
 };

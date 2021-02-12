@@ -5,6 +5,7 @@ export type GetOutput = {
 export type Users = {
   id: string;
   key: string;
+  name: string;
   username: string;
   password: string;
   xtoken: string;
@@ -17,7 +18,7 @@ export type UserMeta = {
 };
 
 export type StatementRequest = {
-  account: 0 | string;
+  account: string;
   from: number;
   to?: number;
   previous: boolean;
@@ -32,12 +33,11 @@ export type Category = {
   id: number;
 };
 
-type Month = 'previousMonth' | 'currentMonth';
 export type LimitCategory = {
   category: string;
   id: number;
 } & {
-  [k in Month]?: number;
+  moneySpent: number;
 };
 
 export type Payment = {
@@ -45,7 +45,6 @@ export type Payment = {
   categoryId: number;
   description: string;
   amount: number;
-  time: number;
 };
 
 export type MonoClientInfo = {

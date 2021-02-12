@@ -1,39 +1,57 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
+  import { updateLimit } from '../endpointApi';
 
   export let title;
   export let current;
   export let previous;
   export let limit;
-  const barSize = 2000;
+  export let maxValue = 4000;
 
   let currentP = 0;
   let previousP = 0;
   let limitP = 0;
   let overlap;
+  let smol = false;
+  let timeoutId;
 
   let bar;
   let limits;
+  let currentElement;
+
+  //hot fix from Max; previousP doesnt sync when previous updates
+  $: previousP = percentOf(previous);
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
     bar.classList.toggle('detailed');
   };
 
-  const percentOf = (i) => (i * 100) / barSize;
+  const percentOf = (i) => (i * 100) / maxValue;
 
   const countOverlap = () => {
     return limit && current > limit
-      ? (barSize / current) * (currentP - limitP)
+      ? (maxValue / current) * (percentOf(current) - limitP)
       : 0;
   };
 
   const handlePress = (e) => {
     const step = 50;
-    if (e.key === 'ArrowUp' && limit + step <= barSize) {
+    if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
+    }
+  };
+
+  const handleLimitSet = async (value) => {
+    updateLimit(title, value);
+  };
+
+  const isSmallEnough = (elem) => {
+    if (elem) {
+      const barRect = bar.getBoundingClientRect();
+      return (currentP * barRect.width) / 100 < 60;
     }
   };
 
@@ -41,7 +59,7 @@
     const node = e.target;
     node.classList.add('moveable');
     const overlap = bar.querySelector('.bar__over');
-    overlap.classList.add('moveable');
+    overlap && overlap.classList.add('moveable');
 
     const handleMove = (e) => {
       const limitsRect = limits.getBoundingClientRect();
@@ -49,14 +67,15 @@
         ((e.clientX - limitsRect.left) * 100) / limitsRect.width
       );
       if (movePercent >= 0 && movePercent <= 100) {
-        limit = Math.round((movePercent * barSize) / 100);
+        limit = Math.round((movePercent * maxValue) / 100);
       }
     };
 
     const handleEnd = (e) => {
       node.classList.remove('moveable');
-      overlap.classList.remove('moveable');
+      overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
+      handleLimitSet(limit);
     };
 
     window.addEventListener('mouseup', handleEnd);
@@ -67,7 +86,9 @@
     setTimeout(() => {
       currentP = percentOf(current);
       previousP = percentOf(previous);
+      console.log('Chart mount');
       limitP = percentOf(limit);
+      smol = isSmallEnough(currentElement);
     }, 20);
   });
 
@@ -81,7 +102,13 @@
   <div class="top">
     <section class="actions">
       {#if limit <= 0}
-        <button class="action action--addLimit" on:click={() => (limit = 50)}>
+        <button
+          class="action action--addLimit"
+          on:click={() => {
+            limit = 50;
+            handleLimitSet(limit);
+          }}
+        >
           <img src="/images/add.svg" alt="+" />
         </button>
       {:else}
@@ -90,6 +117,7 @@
           bind:value={limit}
           on:keydown={handlePress}
           pattern="\d+"
+          data-automation-id="limit-input"
           class="action action--setLimit"
         />
       {/if}
@@ -112,35 +140,41 @@
       <div class="bars">
         <div
           class="bar bar--previous"
-          data-value={`$${previous}`}
+          data-value={`₴ ${previous}`}
           style={`width: ${previousP}%`}
         />
-        <div
-          class="bar bar--current"
-          style={`width: ${currentP}%`}
-          data-value={`$${current}`}
-        >
+        {#if current > 0}
           <div
-            class="bar__over"
-            class:moveable={false}
-            style={`width: ${overlap}%`}
-          />
-          <div
-            class="bar__toLimit"
-            style={`width: ${
-              (limitP - currentP) * (barSize / current)
-            }%; margin-right: -${(limitP - currentP) * (barSize / current)}%`}
+            class="bar bar--current"
+            style={`width: ${currentP}%`}
+            data-value={`₴ ${current}`}
+            bind:this={currentElement}
+            data-hiddenValue={smol}
           >
-            {#if limit && limit > current + 20}
-              <div>
-                <div
-                  class:detailed={limit - current > 99}
-                  data-value={limit - current}
-                />
-              </div>
-            {/if}
+            <div
+              class="bar__over"
+              class:moveable={false}
+              style={`width: ${overlap}%`}
+            />
+            <div
+              class="bar__toLimit"
+              style={`width: ${percentOf(
+                (limit - current) * (maxValue / current)
+              )}%; margin-right: -${
+                (limitP - currentP) * (maxValue / current)
+              }%`}
+            >
+              {#if limit && limit > current + 20}
+                <div>
+                  <div
+                    class:detailed={limit - current > 99}
+                    data-value={limit - current}
+                  />
+                </div>
+              {/if}
+            </div>
           </div>
-        </div>
+        {/if}
       </div>
 
       <div class="limits" bind:this={limits}>
@@ -150,6 +184,7 @@
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
+          data-automation-id="limit-setter"
           style={`left: ${limitP}%`}
         />
       </div>
@@ -163,6 +198,7 @@
     flex-direction: row;
     padding: 0.75em 0;
     user-select: none;
+    -webkit-user-select: none;
   }
 
   .top,
@@ -215,8 +251,7 @@
     background-color: #e7f4ec;
     text-align: center;
     border-radius: 8px;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: bold;
+    font-size: 0.75em;
   }
 
   .title {
@@ -229,7 +264,6 @@
   }
 
   .title__name {
-    /* text-transform: uppercase; */
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -252,7 +286,6 @@
 
   .bar {
     height: 2em;
-    min-width: 5em;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
@@ -293,10 +326,10 @@
 
   .bar__toLimit > div > div.detailed::before {
     content: attr(data-value);
-    font-size: 0.6em;
+    font-size: 0.5em;
     color: #2f9e9e;
     margin-left: -1.1em;
-    margin-top: -0.7em;
+    margin-top: -0.8em;
     position: absolute;
     background-color: #2f9e9e;
     border-radius: 0.3em;
@@ -321,11 +354,10 @@
   }
 
   .detailed > .bars > .bar--previous::after {
-    content: 'previous: ' attr(data-value);
+    content: attr(data-value);
     position: absolute;
-    font-weight: bold;
-    margin-top: -1em;
-    font-family: 'Courier New', Courier, monospace;
+    margin-top: -1.1em;
+    font-size: 0.85em;
   }
 
   .bar--previous {
@@ -339,19 +371,44 @@
     margin-top: -2em;
     display: flex;
     box-sizing: border-box;
-    font-weight: bold;
-    font-family: 'Courier New', Courier, monospace;
-    color: #a6d6d1;
+    color: #d4e7e5;
     transition: margin 0.2s, width 0.7s;
   }
 
   .bar--current::after {
     content: attr(data-value);
     position: absolute;
+    height: 2.3em;
+    display: flex;
+    align-items: center;
+    padding-right: 0.75em;
+    font-size: 0.85em;
+  }
+
+  .bar--current[data-hiddenValue='true']::after {
+    content: attr(data-value);
+    position: absolute;
     height: 2em;
     display: flex;
     align-items: center;
     padding-right: 0.75em;
+    visibility: hidden;
+  }
+
+  .bottom:hover
+    > .bar__container
+    > .bars
+    > .bar--current[data-hiddenValue='true']::after {
+    visibility: visible;
+    height: 2.33em;
+    padding: 0 0.75em;
+    background-color: #20aeae;
+    color: #eee;
+    border-radius: 8px;
+    margin: -0.35em 0em 0 0;
+    border-bottom-right-radius: 0;
+    transition: all 0.2s;
+    z-index: 100;
   }
 
   .limits {
@@ -365,7 +422,6 @@
     background-color: #ec0808;
     position: relative;
     border-radius: 2px;
-    top: -1px;
     border: 1px solid #ec0808;
     border-top: 1px solid #ec0808;
     border-bottom: 1px solid #ec0808;
@@ -395,10 +451,10 @@
     content: attr(data-value);
     position: absolute;
     color: #ec0808;
-    font-family: 'Courier New', Courier, monospace;
+
     font-weight: bold;
-    font-size: 0.8em;
-    margin-top: -1em;
+    font-size: 0.75em;
+    margin-top: -1.2em;
     margin-left: -8px;
   }
 

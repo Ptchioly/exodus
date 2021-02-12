@@ -22,3 +22,17 @@ export interface RequestsQueue {
   pushRequest: (url: string, init?: RequestInit) => void;
   onResponse: (cb: OnResponseCB) => void;
 }
+
+export type ChartData = {
+  title: string;
+  previous: number;
+  current: number;
+  limit: number;
+};
+
+export type Statement = {
+  category: string;
+  moneySpent: number;
+  limit: number;
+  id: number;
+};

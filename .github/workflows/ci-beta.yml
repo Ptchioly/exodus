@@ -1,0 +1,95 @@
+name: CI - Run Tests on Beta and Deploy to Staging
+
+on:
+  push:
+    branches:
+      - beta
+
+jobs:
+  # setup-and-run-ui-tests:
+  #   name: Run UI Tests - Chrome - Beta
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2.3.1
+  #       with:
+  #         fetch-depth: 0
+  #     - name: UI Tests - Chrome
+  #       uses: cypress-io/github-action@v2
+  #       with:
+  #         config: 'baseUrl=http://localhost:5000'
+  #         env: 'password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080'
+  #         # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
+  #         start: npm run frontend:start, npm run backend:start
+  #         wait-on: 'http://localhost:5000, http://localhost:8080/'
+  #         wait-on-timeout: 120
+  #         browser: chrome
+  #         headless: true
+  #         working-directory: tests
+  #         # group: 'UI - Chrome - Beta'
+  #         # record: true
+  #       # env:
+  #         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+
+  buildAndTest:
+    name: CI Pipeline
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['12.x']
+
+    # needs: setup-and-run-ui-tests
+    steps:
+      - uses: actions/checkout@v2
+
+  deploy:
+    name: CD Pipeline
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+        node-version: ['12.x']
+        appname: ['	staging-update']
+        deploy-group: ['staging-update-devgr']
+        s3-bucket: ['aws-codedeploy-deployments-staging']
+        s3-filename: ['aws-codedeploy-deployments-staging-${{ github.sha }}']
+
+    needs: buildAndTest
+    steps:
+      - uses: actions/checkout@v2
+      # Install AWS CLI 2
+      - name: Install AWS CLI 2
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      # Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGING }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGING }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Deploy push to AWS S3
+      - name: AWS Deploy push
+        run: |
+          aws deploy push \
+          --application-name ${{ matrix.appname }} \
+          --description "This is a revision for the ${{ matrix.appname }}-${{ github.sha }}" \
+          --ignore-hidden-files \
+          --s3-location s3://${{ matrix.s3-bucket }}/${{ matrix.s3-filename }}.zip \
+          --source .
+
+      # Create deployment to CodeDeploy
+      - name: AWS Create Deployment
+        run: |
+          aws deploy create-deployment \
+           --application-name ${{ matrix.appname }} \
+           --deployment-config-name CodeDeployDefault.AllAtOnce \
+           --deployment-group-name ${{ matrix.deploy-group }} \
+           --file-exists-behavior OVERWRITE \
+           --s3-location bucket=${{ matrix.s3-bucket }},key=${{ matrix.s3-filename }}.zip,bundleType=zip \
+           --ignore-application-stop-failures\

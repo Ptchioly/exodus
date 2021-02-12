@@ -13,30 +13,32 @@ login.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   if (!exist(req.body, username, password))
-    return respond.FailureResponse('Required fields are empty');
+    return respond.FailureResponse('Required fields are empty.');
 
-  const validationVerdict = validateUserInfo(username, password);
+  const { message } = await validateUserInfo(req.body);
 
-  if (validationVerdict !== 'OK')
-    return respond.FailureResponse(validationVerdict);
+  if (message !== 'OK') return respond.FailureResponse(message);
 
   const userResponse = await getItem(configs.USER_TABLE, {
     username,
   });
 
   if (isFailure(userResponse))
-    return respond.FailureResponse('Unable to get user');
+    return respond.FailureResponse('Unable to get user. Contact support.');
 
   const user = userResponse.Item;
-  if (!user) return respond.FailureResponse('Unauthorized user.');
+  if (!user) return respond.FailureResponse('User does not exist.');
 
   const decrypted = decrypt(user.password, user.key);
 
   if (password !== decrypted)
     return respond.FailureResponse('Incorrect password.');
 
-  const token = generateAccessToken(userResponse.Item.username);
+  const token = generateAccessToken(
+    userResponse.Item.username,
+    userResponse.Item.xtoken
+  );
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
-  return respond.SuccessResponse({ user_id: userResponse.Item.id });
+  return respond.SuccessResponse();
 });

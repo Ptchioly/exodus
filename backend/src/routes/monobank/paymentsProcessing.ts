@@ -15,29 +15,40 @@ const getMccCategory = (mccNumber: number): Category =>
       mcc.numbers.includes(mccNumber) || isInRange(mcc.ranges, mccNumber)
   ) || categories[other];
 
-const defineCategory = (payments: MonoStatements): Payment[] => {
-  const spending = payments.filter((e) => e.operationAmount < 0);
-  return spending.map(({ mcc, description, amount, time }) => {
-    const { category, id } = getMccCategory(mcc);
+const getCategoriesTemplate = (categories: Category[]): Payment[] => {
+  return categories.map((category) => {
     return {
-      time,
-      category,
-      categoryId: id,
-      description,
-      amount: Math.abs(amount) / 100,
+      category: category.category,
+      categoryId: category.id,
+      description: category.category,
+      amount: 0,
     };
   });
 };
 
-export const categorize = (
-  payments: MonoStatements,
-  previousMonth = false
-): LimitCategory[] => {
-  const field = previousMonth ? 'previousMonth' : 'currentMonth';
+const defineCategory = (payments: MonoStatements) => {
+  const initialCategories = getCategoriesTemplate(categories);
+  return payments.reduce((accum, { mcc, description, amount }) => {
+    const { category, id } = getMccCategory(mcc);
+    const sobaka = initialCategories.findIndex((el) => el.categoryId === id);
+    if (sobaka !== -1) {
+      accum[sobaka] = {
+        category,
+        categoryId: id,
+        description,
+        amount: Math.abs(amount) / 100,
+      };
+    }
+    return accum;
+  }, initialCategories);
+};
+
+export const categorize = (payments: MonoStatements): LimitCategory[] => {
   const categoryObj = defineCategory(payments).reduce(
     (acc: any, { categoryId, amount }) => {
-      if (acc[categoryId] === undefined) acc[categoryId] = amount;
-      else acc[categoryId] = acc[categoryId] + amount;
+      const rounded = Math.floor(amount);
+      if (acc[categoryId] === undefined) acc[categoryId] = rounded;
+      else acc[categoryId] = acc[categoryId] + rounded;
 
       return acc;
     },
@@ -49,7 +60,7 @@ export const categorize = (
       const { category } = categories.find(({ id }) => +e === id) as Category;
       return {
         category,
-        [field]: categoryObj[e],
+        moneySpent: categoryObj[e],
         id: +e,
       };
     }
