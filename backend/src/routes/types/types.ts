@@ -18,10 +18,7 @@ export type UserMeta = {
 };
 
 export type StatementRequest = {
-  account: string;
-  from: number;
-  to?: number;
-  previous: boolean;
+  mounth: 'previous' | 'current';
 };
 
 export type Category = {
@@ -33,12 +30,11 @@ export type Category = {
   id: number;
 };
 
-type Month = 'previousMonth' | 'currentMonth';
 export type LimitCategory = {
   category: string;
   id: number;
 } & {
-  [k in Month]?: number;
+  moneySpent: number;
 };
 
 export type Payment = {
@@ -46,7 +42,6 @@ export type Payment = {
   categoryId: number;
   description: string;
   amount: number;
-  time: number;
 };
 
 export type MonoClientInfo = {

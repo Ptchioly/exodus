@@ -4,29 +4,32 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { getStatement, isAuthenticated } from './endpointApi';
+  import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
+  import Loading from './routes/Loading.svelte';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
   const currentDate = Date.now();
+  let previous;
+  let current;
 
   onMount(async () => {
     authorized = await isAuthenticated();
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+  const handleSignIn = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      // getStatement(currentDate, 'previous');
-      // setTimeout(() => {
-      //   getStatement(currentDate, 'current');
-      // }, 70000);
     }
+  };
+
+  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+    if (isSuccessResponse(detail)) navigationState = 'home';
   };
 
   const handleLogout = () => {
@@ -43,11 +46,10 @@
     error = false;
     navigationState = 'signIn';
   };
-  $: console.log(navigationState);
 </script>
 
 <TailwindCss />
-<main class="font-main h-screen text-center flex content-center">
+<main class="font-main h-screen text-center flex content-center p-0">
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
@@ -58,10 +60,12 @@
     />
   {:else if navigationState === 'signUp'}
     <SignUp
-      on:signUp={handleApiResponse}
+      on:signUp={handleSignIn}
       on:openSignIn={handleOpenSignIn}
       bind:error
     />
+  {:else if navigationState === 'waiting'}
+    <Loading />
   {:else}
     Loading
   {/if}
@@ -73,7 +77,7 @@
 
 <!-- Probably should be placed in html tag with tailwind and using 'rem' instead of 'px' -->
 <style global lang="postcss">
-  main {
+  html {
     background-color: aliceblue;
   }
   @media only screen and (min-width: 600px) {

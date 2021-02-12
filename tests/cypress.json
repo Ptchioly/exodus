@@ -1,8 +1,7 @@
 {
     "baseUrl": "https://beeeee.es",
     "env": {
-        "apiUrl": "https://api.beeeee.es",
-        "username": "380933510338"
+        "apiUrl": "https://api.beeeee.es"
     },
     "retries": {
         "runMode": 1,
@@ -11,7 +10,6 @@
     "videoUploadOnPasses": false,
     "projectId": "door68",
     "experimentalStudio": true,
-    "chromeWebSecurity": false,
     "fixturesFolder": false,
     "supportFile": "cypress/support/index.ts"
 }

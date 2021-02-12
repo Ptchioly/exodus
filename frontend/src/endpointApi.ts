@@ -6,6 +6,9 @@ const authEndpoint = baseUrl.concat('/authentication');
 const signupEndpoint = baseUrl.concat('/signup');
 const logoutEndpoint = baseUrl.concat('/logout');
 const statementsEndpoint = baseUrl.concat('/statement');
+const limitsEndpoint = baseUrl.concat('/limit');
+const updateInfoEndpoint = baseUrl.concat('/updateInfo');
+const deleteUserEndpoint = baseUrl.concat('/deleteUser');
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -117,10 +120,9 @@ const getDateRange = (
 
 export const getStatement = async (
   date: number,
-  month: 'previous' | 'current'
-): Promise<any> => {
-  const { from, to } = getDateRange(date, month);
-  return await fetch(statementsEndpoint, {
+  mounth: 'previous' | 'current'
+): Promise<APIResponse> => {
+  const response = await fetch(statementsEndpoint, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
@@ -128,9 +130,82 @@ export const getStatement = async (
     },
     method: 'POST',
     body: JSON.stringify({
-      account: 0,
-      from,
-      to,
+      mounth,
     }),
-  }).then((res) => res.json);
+  });
+
+  const resp: APIResponse = response.ok
+    ? { data: await response.json(), status: 200 }
+    : { status: response.status, message: await response.text() };
+
+  return resp;
+};
+
+export const updateLimit = async (category: string, value: number) => {
+  await fetch(limitsEndpoint, {
+    ...defaultInit,
+    method: 'POST',
+    body: JSON.stringify({
+      category,
+      value,
+    }),
+  });
+};
+
+export const updatePassword = async (current, newPass) => {
+  const response = await fetch(updateInfoEndpoint, {
+    method: 'POST',
+    ...defaultInit,
+    body: JSON.stringify({
+      oldPassword: current,
+      newPassword: newPass,
+    }),
+  });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
+  }
+};
+
+export const updateXToken = async (newXtoken) => {
+  const response = await fetch(updateInfoEndpoint, {
+    method: 'POST',
+    ...defaultInit,
+    body: JSON.stringify({
+      newXtoken,
+    }),
+  });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
+  }
+};
+
+export const deleteUser = async () => {
+  const response = await fetch(deleteUserEndpoint, {
+    ...defaultInit,
+    method: 'DELETE',
+  });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
+  }
 };

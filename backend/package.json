@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "dev": "nodemon src/app.ts",
-    "start": "npm run compile && node out/src/app.js",
+    "start": "npm run build && node out/src/app.js",
     "deploy": "forever stopall && forever start out/src/app.js"
   },
   "author": "",
