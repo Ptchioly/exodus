@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { nanoid } from 'nanoid';
-import { configs } from '../../config';
+import { configs, secrets } from '../../config';
 import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { syncStatements } from '../monobank/utils';
@@ -13,6 +13,7 @@ export const signup = Router();
 signup.post('/signup', async (req, res) => {
   const respond = endpointRespond(res);
   const { username, password, xtoken } = req.body;
+  console.log(secrets.REGION)
 
   if (!exist(req.body, username, password, xtoken))
     return respond.FailureResponse('Required fields are empty');
