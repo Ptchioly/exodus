@@ -23,10 +23,12 @@
       bind:value={xToken}
       placeholder="X-Token"
       class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5"
+      data-automation-id="new-xtoken"
     />
   </div>
   <button
     class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
+    data-automation-id="change-xtoken"
     on:click={() => handleXTokenChange(xToken)}>Send</button
   >
 </div>

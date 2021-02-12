@@ -153,29 +153,59 @@ export const updateLimit = async (category: string, value: number) => {
 };
 
 export const updatePassword = async (current, newPass) => {
-  return await fetch(updateInfoEndpoint, {
+  const response = await fetch(updateInfoEndpoint, {
     method: 'POST',
     ...defaultInit,
     body: JSON.stringify({
       oldPassword: current,
       newPassword: newPass,
     }),
-  }).then((res) => res.json());
+  });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
+  }
 };
 
 export const updateXToken = async (newXtoken) => {
-  return await fetch(updateInfoEndpoint, {
+  const response = await fetch(updateInfoEndpoint, {
     method: 'POST',
     ...defaultInit,
     body: JSON.stringify({
       newXtoken,
     }),
-  }).then((el) => el.json());
+  });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
+  }
 };
 
 export const deleteUser = async () => {
-  return await fetch(deleteUserEndpoint, {
+  const response = await fetch(deleteUserEndpoint, {
     ...defaultInit,
     method: 'DELETE',
   });
+
+  const { status } = response;
+
+  if (status === 200) {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  } else {
+    const { message } = await response.json();
+    return { status, message };
+  }
 };

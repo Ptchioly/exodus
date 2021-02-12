@@ -21,6 +21,7 @@
   <div>Delete user?</div>
   <button
     class="ml-5 rounded-md py-1 px-3 box-content bg-red-600 text-white"
+    data-automation-id="delete-user"
     on:click={handleDeleteUser}>Delete</button
   >
 </div>

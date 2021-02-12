@@ -21,18 +21,31 @@
     <div
       class="flex-col px-5 text-left border-r-2 border-gray-600 min-w-max-content relative"
     >
-      <div class="cursor-pointer mt-5" on:click={() => (state = 'password')}>
+      <div
+        class="cursor-pointer mt-5"
+        on:click={() => (state = 'password')}
+        data-automation-id="change-password-nav"
+      >
         Change password
       </div>
-      <div class="cursor-pointer mt-5" on:click={() => (state = 'x-token')}>
+      <div
+        class="cursor-pointer mt-5"
+        on:click={() => (state = 'x-token')}
+        data-automation-id="change-token-nav"
+      >
         Change X-Token
       </div>
-      <div class="cursor-pointer mt-5" on:click={() => (state = 'deleteUser')}>
+      <div
+        class="cursor-pointer mt-5"
+        on:click={() => (state = 'deleteUser')}
+        data-automation-id="delete-user-nav"
+      >
         Delete User
       </div>
       <div
         class="cursor-pointer absolute bottom-5 bg-coolGreen-default py-1 px-3 rounded-md text-white"
         on:click={() => (showSettings = false)}
+        data-automation-id="close-settings"
       >
         Close
       </div>

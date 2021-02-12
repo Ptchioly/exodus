@@ -35,17 +35,20 @@
       <input
         bind:value={currentPass}
         placeholder="Current"
-        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-xs"
+        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-"
+        data-automation-id="current-password"
       />
       <input
         bind:value={newPass}
         placeholder="New"
         class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
+        data-automation-id="new-password"
       />
       <input
         bind:value={confirmPass}
         placeholder="Confirm"
         class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
+        data-automation-id="password-check"
       />
     </div>
   </div>
@@ -53,6 +56,6 @@
     type="submit"
     on:click={() => changePassword(currentPass, newPass, confirmPass)}
     class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
-    >Change</button
+    data-automation-id="change-password">Change</button
   >
 </div>
