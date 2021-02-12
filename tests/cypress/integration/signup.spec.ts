@@ -1,22 +1,27 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-describe('sign up', () => {
+describe('sign up', {
+  env: {
+    phone: Cypress.env('username').slice(3) //user phone without region
+  }
+}, () => {
   beforeEach(() => {
-    cy.deleteMyUserIfExists()
+    // cy.deleteMyUserIfExists()
     // we are not logged in
     cy.visit('/')
   })
-
+  
+  it('registers new user', () => { 
+    cy.manualRegisterUser();
+    cy.checkHomePageLoaded();
+  })
+  
 //   it('does not register new user with already registered phone number', () => { })
 
-//   it('requires only digits in phone number', () => {
-//     cy.getBySel('phone').type('A^HJF@3F32fh{enter}')
-//     cy.get('.error-msg')
-//       .should('contain', 'phone number should contain only digits')
-//   })
+//   it('requires only digits in phone number', () => { })
 
-//   it('does not register new user without generated X-Token', () => { })
+  // it('does not register new user without incorrct X-Token', () => { })
 
 //   it('does not register new user with less than 12 chars in phone number', () => { })
 
@@ -31,8 +36,6 @@ describe('sign up', () => {
 //   it('does not register new user with whitespaces in password', () => { })
 
 //   it('does not register new user with "password" and "confirm password" inputs mismatched', () => { })
-
-//   it('registers new user', () => { })
 
 
 })
