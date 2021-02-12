@@ -18,7 +18,7 @@ describe.only('Login', () => {
   })
 
   it('displays register page on "Join now" click', () => {
-    cy.contains('Join Now').click()
+    cy.getBySel('link-signup-button').click()
     cy.get('h1').should('contain', 'Sign Up').and('be.visible')
   })
 
