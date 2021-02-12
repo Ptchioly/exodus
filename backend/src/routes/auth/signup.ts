@@ -8,6 +8,7 @@ import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
 import { encrypt, getAccounts } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
+import fetch from 'node-fetch';
 
 export const signup = Router();
 
