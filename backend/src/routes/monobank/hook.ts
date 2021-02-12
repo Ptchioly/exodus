@@ -1,6 +1,9 @@
 import { Router } from 'express';
-import { putItem } from '../../dynamoAPI';
+import { configs } from '../../config';
+import { getProcessedData, putItem, updateStatements } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
+import { isFailure } from '../types/guards';
+import { categorize } from './paymentsProcessing';
 
 export const hook = Router();
 
@@ -52,19 +55,18 @@ type MonoStatementItem = {
   counterIban: string;
 };
 
-hook.get('/hook', async (req: any, res) => {
+hook.post('/monobank/webhook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
-  if (!req.body) return respond.FailureResponse('Empty body.'); // dunno if it's necessary
+  const { account, statementItem } = req.body.data;
 
-  const { account, statementItem } = (req.body as StatementItems).data;
+  const updateUserResponse = await updateStatements(account, statementItem);
 
-  const updateUserResponse = await putItem('statements', {
-    account,
-    statementItem,
-  });
+  const [category] = categorize([statementItem]);
 
-  // searching by account and push statementItem to others
+  const dbCategory = await getProcessedData(account, category.id);
+  if (!isFailure(updateUserResponse) && !isFailure(dbCategory))
+    // searching by account and push statementItem to others
 
-  return respond.SuccessResponse({});
+    return respond.SuccessResponse({});
 });

@@ -40,7 +40,7 @@ export const getTokens = async (table: string) => {
 
 export const putItem = async (
   table: string,
-  keyData: Users | any
+  keyData: any
 ): Promise<PutItemOutput | AWSError> => {
   const params = {
     TableName: table,
@@ -98,6 +98,63 @@ export const updateItem = async (
 
   return await documentClient
     .update(params)
+    .promise()
+    .catch((err) => err);
+};
+
+export const updateStatements = (accountId: string, statements: any) => {
+  const date = new Date();
+  const params = {
+    TableName: configs.STATEMENTS_TABLE,
+    Key: { accountId },
+    ReturnValues: 'ALL_NEW',
+    UpdateExpression:
+      'set #timestamp.rawData = list_append(if_not_exists(#timestamp.rawData, :empty_list), :location)',
+    ExpressionAttributeNames: {
+      '#timestamp': `${new Date(date.getFullYear(), date.getMonth(), 1)}`,
+    },
+    ExpressionAttributeValues: {
+      ':location': [statements],
+      ':empty_list': [],
+    },
+  };
+  return documentClient
+    .update(params)
+    .promise()
+    .catch((err) => err);
+};
+
+// params = {
+//   TableName: table,
+//   KeyConditionExpression: "EventType = :eventType",
+//   FilterExpression: "contains(Commits, :commitVal )",
+//   ExpressionAttributeValues: {
+//       ":eventType": 'git/push',
+//       ":commitVal": {
+//           'id': '29d02aff',
+//           'subject': 'Add the thing to the place'
+//       }
+//   }
+// };
+
+export const getProcessedData = (accountId: string, id: any) => {
+  const date = new Date();
+  const params = {
+    TableName: configs.STATEMENTS_TABLE,
+    Key: { accountId },
+    ReturnValues: 'ALL_NEW',
+    UpdateExpression: 'contains(#timestamp.processedData, :category)',
+    ExpressionAttributeNames: {
+      '#timestamp': `${new Date(date.getFullYear(), date.getMonth(), 1)}`,
+    },
+    ExpressionAttributeValues: {
+      ':category': {
+        id,
+      },
+    },
+  };
+  return documentClient
+    .query(params)
     .promise()
     .catch((err) => err);
 };
