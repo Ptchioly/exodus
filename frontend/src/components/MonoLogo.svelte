@@ -1,6 +1,11 @@
 <div class="flex justify-center ml-2">
   <div class="mono mt-1">
-    <a href="https://api.monobank.ua" class="flex rounded-lg" target="_blank">
+    <a
+      href="https://api.monobank.ua"
+      class="flex rounded-lg"
+      target="_blank"
+      data-automation-id="monobank-link"
+    >
       <img src="images/mono-logo.png" alt="mono" />
     </a>
   </div>
