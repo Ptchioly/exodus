@@ -18,6 +18,7 @@
 
   let data: ChartData[];
   let currentDate = Date.now();
+  let isEmpty: boolean;
 
   const getStatementWithRetry = async (
     variant: 'previous' | 'current'
@@ -37,6 +38,7 @@
   $: {
     if (currentMonth) {
       data = mergeData(currentMonth, previousMonth);
+      isEmpty = !data.length;
     }
   }
 
@@ -55,15 +57,17 @@
     currentMonth: Statement[],
     previousMonth: Statement[] | undefined
   ): ChartData[] => {
-    const current = currentMonth.map(({ category, moneySpent, limit }) => ({
-      title: category,
-      current: moneySpent,
-      previous:
-        (previousMonth &&
-          previousMonth.find((st) => st.category === category)?.moneySpent) ||
-        0,
-      limit: limit || 2000,
-    }));
+    const current = currentMonth
+      .filter((c) => c.id !== 15)
+      .map(({ category, moneySpent, limit }) => ({
+        title: category,
+        current: moneySpent,
+        previous:
+          (previousMonth &&
+            previousMonth.find((st) => st.category === category)?.moneySpent) ||
+          0,
+        limit: limit || 2000,
+      }));
 
     const previous = previousMonth
       ? previousMonth
@@ -71,6 +75,7 @@
             ({ id }) =>
               !currentMonth.find(({ id: currentId }) => id == currentId)
           )
+          .filter((c) => c.id !== 15)
           .map(({ category, moneySpent, limit }) => ({
             title: category,
             current: 0,
@@ -106,6 +111,11 @@
       </div>
     </div>
     <section class="container">
+      {#if isEmpty}
+        <h1 class="w-full flex items-start text-gray-700">
+          You does not have waste for current mounth
+        </h1>
+      {/if}
       <!-- <RawCharts /> -->
       {#if data}
         {#each data as { previous, current, title, limit }}
