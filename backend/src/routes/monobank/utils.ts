@@ -6,43 +6,28 @@ import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
 import fetch from 'node-fetch';
 
-export const requiredFields = ({
-  account,
-  from,
-  to,
-  previous,
-}: StatementRequest): StatementRequest => {
-  const date = new Date(Date.now());
-  const currentMonth = date.getMonth();
-  const currentYear = date.getFullYear();
-  const previousMonth = currentMonth > 0 ? currentMonth - 1 : 11;
-  const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
-  const dateFrom = new Date(yearCheck, previousMonth).valueOf();
-  return {
-    account,
-    from: from || dateFrom,
-    to,
-    previous: !!previous,
-  };
+export const statementStartDate = (mounth: 'previous' | 'current'): Date => {
+  return mounth === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
-const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
+export const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
   const date = new Date();
   switch (variant) {
     case 'prev':
-      return new Date(date.getFullYear(), date.getMonth() - 1, 1);
+      return new Date(date.getFullYear(), date.getMonth() - 1);
     case 'cur':
-      return new Date(date.getFullYear(), date.getMonth(), 1);
+      return new Date(date.getFullYear(), date.getMonth());
     case 'next':
-      return new Date(date.getFullYear(), date.getMonth() + 1, 1);
+      return new Date(date.getFullYear(), date.getMonth() + 1);
   }
 };
 
 const fetchStatement = async (
-  account: string | 0, //???
+  account: any, //???
   time: { start: number; finish: number },
   xtoken: string
 ): Promise<{ data: any; categorizedData: LimitCategory[] }> => {
+  console.log('time', time);
   const data = await fetch(
     requests.statement(account, time.start, time.finish),
     {
@@ -51,13 +36,13 @@ const fetchStatement = async (
       },
     }
   ).then((el) => el.json());
+  console.log('data', data);
 
   const categorizedData = categorize(data);
   return { data, categorizedData };
 };
 
 export const syncStatements = async (user: GetOutput): Promise<void> => {
-  const account = 0; //stubbb
   const start = startMonth('prev').getTime();
   const finish = startMonth('cur').getTime();
   const prevMounthTime = { start, finish };
@@ -66,7 +51,7 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
     finish: startMonth('next').getTime(),
   };
   const { data, categorizedData } = await fetchStatement(
-    account,
+    user.Item.accounts[0],
     currentMounthTime,
     user.Item.xtoken
   );
@@ -74,7 +59,7 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
 
   setTimeout(async () => {
     const { data, categorizedData } = await fetchStatement(
-      account,
+      user.Item.accounts[0],
       prevMounthTime,
       user.Item.xtoken
     );
