@@ -71,7 +71,6 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
     user.Item.xtoken
   );
   await statementUpdate(user, finish, data, categorizedData);
-  console.log('Data updated for current mounth');
 
   setTimeout(async () => {
     const { data, categorizedData } = await fetchStatement(
@@ -81,7 +80,6 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
     );
 
     await statementUpdate(user, start, data, categorizedData);
-    console.log('Data updated for previous mounth');
   }, 70000);
 };
 

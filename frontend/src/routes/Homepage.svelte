@@ -13,8 +13,6 @@
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
-  $: console.log('currentMonth', currentMonth);
-  $: console.log('previousMonth', previousMonth);
 
   let data: ChartData[];
   let currentDate = Date.now();
@@ -33,7 +31,6 @@
     });
   };
 
-  $: console.log('data', data);
   const dispatch = createEventDispatcher();
   $: {
     if (currentMonth) {

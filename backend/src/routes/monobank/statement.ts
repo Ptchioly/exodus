@@ -22,18 +22,14 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
     const statement = await getItem(configs.STATEMENTS_TABLE, {
       accountId: userFromDB.Item.accounts[0],
     });
-    console.log('statement.post => statement', statement);
     if (isFailure(statement)) return respond.FailureResponse(statement.message);
     if (
       !isFailure(statement) &&
       hasKey(statement.Item, fields.from) &&
       statement.Item[fields.from].processedData
-    ) {
-      console.log('JUST STATEMENT');
+    )
       return respond.SuccessResponse(statement.Item[fields.from].processedData);
-    }
 
-    console.log('NOTJING STATEMENT');
     return respond.FailureResponse(
       'Data is not available. Wait for a 60s.',
       404
