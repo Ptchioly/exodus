@@ -17,7 +17,7 @@ describe('sign up', () => {
     cy.getBySel('monobank-link').should('be.visible');
     cy.request({
       method: 'GET',
-      url: 'api.monobank.ua'
+      url: 'https://api.monobank.ua'
       }).then(response => {expect(response.status).to.eq(200), expect(response.body).contain('id="qrcode"')})
   })
 
