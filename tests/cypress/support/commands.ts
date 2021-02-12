@@ -103,7 +103,7 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('confirm-pwd-input').type(userInfo.confirmPassword);
   cy.getBySel('xtoken-input').type(userInfo.xtoken);
   cy.getBySel('signup-button').click();
-  cy.checkHomePageLoaded();
+  // cy.checkHomePageLoaded();
 })
 
 // Cypress.Commands.add('setToken', (response) => {
