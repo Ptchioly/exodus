@@ -1,8 +1,10 @@
 {
     "baseUrl": "https://beeeee.es",
+    "stagingUrl": "https://staging.beeeee.es",
     "env": {
         "apiUrl": "https://api.beeeee.es",
-        "username": "380933510338"
+        "stagingApiUrl": "https://staging-api.beeeee.es",
+        "username": "380936298775"
     },
     "retries": {
         "runMode": 1,

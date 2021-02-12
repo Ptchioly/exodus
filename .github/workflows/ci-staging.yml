@@ -5,7 +5,7 @@ on:
       - 'staging'
 jobs:
   setup-and-run-ui-tests:
-    name: Run UI Tests - Chrome
+    name: Run UI Tests - Chrome - Staging
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -139,11 +139,10 @@ export const getStatement = async (
     ? { data: await response.json(), status: 200 }
     : { status: response.status, message: await response.text() };
 
-  console.log('Final statemnt resp', resp);
   return resp;
 };
 
-export const updateLimit = async (category, value) => {
+export const updateLimit = async (category: string, value: number) => {
   await fetch(limitsEndpoint, {
     ...defaultInit,
     method: 'POST',

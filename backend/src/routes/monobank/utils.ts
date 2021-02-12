@@ -71,7 +71,6 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
     user.Item.xtoken
   );
   await statementUpdate(user, finish, data, categorizedData);
-  console.log('Data updated for current mounth');
 
   setTimeout(async () => {
     const { data, categorizedData } = await fetchStatement(
@@ -81,7 +80,6 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
     );
 
     await statementUpdate(user, start, data, categorizedData);
-    console.log('Data updated for previous mounth');
   }, 70000);
 };
 
@@ -91,27 +89,23 @@ export const statementUpdate = async (
   data: any[],
   processedData: LimitCategory[]
 ): Promise<void> => {
-  const accounts = userFromDB.Item.accounts;
-  await Promise.all(
-    accounts.map(async (id) => {
-      const dbItem = await getItem(configs.STATEMENTS_TABLE, {
-        accountId: id,
-      });
-      const newObject = { rawData: data, processedData };
+  const account = userFromDB.Item.accounts[0];
+  const dbItem = await getItem(configs.STATEMENTS_TABLE, {
+    accountId: account,
+  });
+  const newObject = { rawData: data, processedData };
 
-      Object.keys(dbItem).length > 0
-        ? await updateItem(
-            configs.STATEMENTS_TABLE,
-            { accountId: id },
-            { [timestamp]: newObject, username: userFromDB.Item.username }
-          )
-        : await putItem(configs.STATEMENTS_TABLE, {
-            accountId: id,
-            [timestamp]: newObject,
-            username: userFromDB.Item.username,
-          });
-    })
-  );
+  Object.keys(dbItem).length > 0
+    ? await updateItem(
+        configs.STATEMENTS_TABLE,
+        { accountId: account },
+        { [timestamp]: newObject, username: userFromDB.Item.username }
+      )
+    : await putItem(configs.STATEMENTS_TABLE, {
+        accountId: account,
+        [timestamp]: newObject,
+        username: userFromDB.Item.username,
+      });
 };
 
 export const updateLimit = async (

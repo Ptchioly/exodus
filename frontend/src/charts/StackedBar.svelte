@@ -5,7 +5,6 @@
   export let title;
   export let current;
   export let previous;
-  $: console.log('previous', previous);
   export let limit;
   export let maxValue = 4000;
 
@@ -46,10 +45,7 @@
   };
 
   const handleLimitSet = async (value) => {
-    if (timeoutId !== undefined) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      updateLimit(title, value);
-    }, 5000);
+    updateLimit(title, value);
   };
 
   const isSmallEnough = (elem) => {
@@ -79,6 +75,7 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
+      handleLimitSet(limit);
     };
 
     window.addEventListener('mouseup', handleEnd);
@@ -105,7 +102,13 @@
   <div class="top">
     <section class="actions">
       {#if limit <= 0}
-        <button class="action action--addLimit" on:click={() => (limit = 50)}>
+        <button
+          class="action action--addLimit"
+          on:click={() => {
+            limit = 50;
+            handleLimitSet(limit);
+          }}
+        >
           <img src="/images/add.svg" alt="+" />
         </button>
       {:else}
@@ -178,7 +181,6 @@
         <div
           class="limit limit--red"
           on:mousedown={move}
-          on:mouseup={() => handleLimitSet(limit)}
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
