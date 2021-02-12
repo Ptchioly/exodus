@@ -1,9 +1,7 @@
 {
     "baseUrl": "https://beeeee.es",
-    "stagingUrl": "https://staging.beeeee.es",
     "env": {
         "apiUrl": "https://api.beeeee.es",
-        "stagingApiUrl": "https://staging-api.beeeee.es",
         "username": "380936298775"
     },
     "retries": {
