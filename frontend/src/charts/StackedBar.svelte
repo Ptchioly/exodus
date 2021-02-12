@@ -45,6 +45,7 @@
   };
 
   const handleLimitSet = async (value) => {
+    console.log(value);
     if (timeoutId !== undefined) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
       updateLimit(title, value);
@@ -78,6 +79,7 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
+      handleLimitSet(limit);
     };
 
     window.addEventListener('mouseup', handleEnd);
@@ -183,7 +185,6 @@
         <div
           class="limit limit--red"
           on:mousedown={move}
-          on:mouseup={() => handleLimitSet(limit)}
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
