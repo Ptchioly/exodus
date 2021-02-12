@@ -4,29 +4,37 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { getStatement, isAuthenticated } from './endpointApi';
+  import {
+    getStatement,
+    getUserInfo,
+    isAuthenticated,
+    updateLimit,
+  } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
+  import Loading from './routes/Loading.svelte';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
   const currentDate = Date.now();
+  let previous;
+  let current;
 
   onMount(async () => {
     authorized = await isAuthenticated();
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+  const handleSignIn = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
       navigationState = 'home';
-      // getStatement(currentDate, 'previous');
-      // setTimeout(() => {
-      //   getStatement(currentDate, 'current');
-      // }, 70000);
     }
+  };
+
+  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+    if (isSuccessResponse(detail)) navigationState = 'home';
   };
 
   const handleLogout = () => {
@@ -58,10 +66,12 @@
     />
   {:else if navigationState === 'signUp'}
     <SignUp
-      on:signUp={handleApiResponse}
+      on:signUp={handleSignIn}
       on:openSignIn={handleOpenSignIn}
       bind:error
     />
+  {:else if navigationState === 'waiting'}
+    <Loading />
   {:else}
     Loading
   {/if}
