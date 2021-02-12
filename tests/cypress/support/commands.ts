@@ -47,7 +47,7 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }
 
   const user = Cypress._.defaults({}, options, defaults)
-  console.log(user)
+  cy.log(user)
   return cy.request({
     method: 'POST',
     url: `${Cypress.env("apiUrl")}/signup`,
