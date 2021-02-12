@@ -54,16 +54,33 @@
   const mergeData = (
     currentMonth: Statement[],
     previousMonth: Statement[] | undefined
-  ): ChartData[] =>
-    currentMonth.map(({ category, moneySpent }) => ({
+  ): ChartData[] => {
+    const current = currentMonth.map(({ category, moneySpent, limit }) => ({
       title: category,
       current: moneySpent,
       previous:
         (previousMonth &&
           previousMonth.find((st) => st.category === category)?.moneySpent) ||
         0,
-      limit: 2000,
+      limit: limit || 2000,
     }));
+
+    const previous = previousMonth
+      ? previousMonth
+          .filter(
+            ({ id }) =>
+              !currentMonth.find(({ id: currentId }) => id == currentId)
+          )
+          .map(({ category, moneySpent, limit }) => ({
+            title: category,
+            current: 0,
+            previous: moneySpent,
+            limit: limit || 2000,
+          }))
+      : [];
+
+    return [...current, ...previous].filter((c) => c.id !== 15);
+  };
 </script>
 
 {#if userInfo}

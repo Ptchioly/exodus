@@ -34,4 +34,5 @@ export type Statement = {
   category: string;
   moneySpent: number;
   limit: number;
+  id: number;
 };
