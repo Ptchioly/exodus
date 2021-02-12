@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
       - name: set config
         run: |
-          cd ../backend
+          cd ./backend
           npm ci 
           export SESSION_TOKEN=${{ secrets.SESSION_TOKEN }}
           export AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
