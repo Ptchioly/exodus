@@ -19,8 +19,7 @@
   let limits;
   let currentElement;
 
-  //hot fix from Max; previousP doesnt sync when previous updates
-  $: previousP = percentOf(previous);
+
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
@@ -95,6 +94,8 @@
   $: {
     limitP = percentOf(limit);
     overlap = countOverlap();
+    previousP = percentOf(previous);
+    currentP = percentOf(current);
   }
 </script>
 
@@ -140,14 +141,14 @@
       <div class="bars">
         <div
           class="bar bar--previous"
-          data-value={`₴ ${previous}`}
+          data-value={`₴${previous}`}
           style={`width: ${previousP}%`}
         />
         {#if current > 0}
           <div
             class="bar bar--current"
             style={`width: ${currentP}%`}
-            data-value={`₴ ${current}`}
+            data-value={`₴${current}`}
             bind:this={currentElement}
             data-hiddenValue={smol}
           >
