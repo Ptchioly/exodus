@@ -41,7 +41,7 @@ export const validateUserInfo = async ({
   username,
   password,
   xtoken,
-}: any): Promise<any> => {
+}: any): Promise<{ message: string; data: any }> => {
   if (!isValidUsername(username))
     return formVerdict('Phone number is invalid.');
 

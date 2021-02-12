@@ -2,6 +2,7 @@
   import type { Validator } from '../types/Layout';
 
   export let value: string;
+  export let dataAut = 'pwd-input';
   export let placeholder: string;
   export let isValid: boolean = false;
   export let validator: Validator | undefined;
@@ -13,36 +14,39 @@
   };
 </script>
 
-{#if show}
-  <input
-    class="login-input mt-5"
-    data-automation-id="pwd-input"
-    type="text"
-    {placeholder}
-    bind:value
-    on:input={handleInput}
-  />
-{:else}
-  <input
-    class="login-input mt-5"
-    type="password"
-    data-automation-id="pwd-input"
-    {placeholder}
-    bind:value
-    on:input={handleInput}
-  />
-{/if}
-<div
-  class="pt-8 absolute float-right ml-48 md:ml-56 cursor-pointer"
-  on:click={() => (show = !show)}
->
-  <div class:show>
-    <img src="images/show-password.svg" alt="show-password" />
+<div class="py-2 w-3/4">
+  <div class="relative w-full">
+    {#if show}
+      <input
+        class="text-md text-gray-700 placeholder-gray-500 border-gray-200  border-2  pl-2  block px-3 mt-5 py-2 rounded-lg w-full"
+        data-automation-id={dataAut}
+        type="text"
+        {placeholder}
+        bind:value
+        on:input={handleInput}
+      />
+    {:else}
+      <input
+        class="text-md text-gray-700 placeholder-gray-500 border-gray-200  border-2  pl-2  block px-3 mt-5 py-2 rounded-lg w-full"
+        data-automation-id={dataAut}
+        type="password"
+        {placeholder}
+        bind:value
+        on:input={handleInput}
+      />
+    {/if}
+    <div
+      class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+    >
+      <div class:show on:click={() => (show = !show)} class="px-1">
+        <img src="images/show-password.svg" alt="show-password" />
+      </div>
+    </div>
   </div>
 </div>
 
 <style lang="postcss">
   .show {
-    @apply rounded-2xl bg-gray-300 px-1;
+    @apply rounded-2xl bg-gray-300;
   }
 </style>
