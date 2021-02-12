@@ -33,12 +33,11 @@ export type Category = {
   id: number;
 };
 
-type Month = 'previousMonth' | 'currentMonth';
 export type LimitCategory = {
   category: string;
   id: number;
 } & {
-  [k in Month]?: number;
+  moneySpent: number;
 };
 
 export type Payment = {
@@ -46,7 +45,6 @@ export type Payment = {
   categoryId: number;
   description: string;
   amount: number;
-  time: number;
 };
 
 export type MonoClientInfo = {

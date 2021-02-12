@@ -9,6 +9,7 @@ import { atLeast, isFailure } from '../types/guards';
 export const updateInfo = Router();
 
 updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
+  const { username } = req.user.data;
   const respond = endpointRespond(res);
 
   if (!req.body) return respond.FailureResponse('Empty body.');
@@ -22,7 +23,7 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
 
   if (password !== undefined) {
     const userFromDB = await getItem(configs.USER_TABLE, {
-      username: req.user.data,
+      username,
     });
 
     if (isFailure(userFromDB))
@@ -33,9 +34,7 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
 
   const updateUserResponse = await updateItem(
     configs.USER_TABLE,
-    {
-      username: req.user.data,
-    },
+    { username },
     { ...req.body, password: encryptedPass }
   );
 

@@ -72,7 +72,11 @@
       <PasswordInput placeholder="Password" bind:value={pwd} />
     </div>
     <div class="flex items-center justify-center w-full relative">
-      <PasswordInput placeholder="Confirm Password" bind:value={confirmPwd} />
+      <PasswordInput
+        placeholder="Confirm Password"
+        bind:value={confirmPwd}
+        dataAut="confirm-pwd-input"
+      />
     </div>
 
     <div class="flex items-center w-full justify-center">
@@ -82,9 +86,10 @@
           type="text"
           placeholder="Monobank token"
           required
+          data-automation-d="xtoken-input"
           bind:value={token}
         />
-        <div class="items-center"><MonoLogo /></div>
+        <div class="items-center w-1/6"><MonoLogo /></div>
       </div>
     </div>
   </div>

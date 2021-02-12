@@ -1,17 +1,19 @@
 /// <reference types="cypress" />
+
 declare namespace Cypress {
 
   type UserSignupInfo = {
     username: string;
     password: string;
     xtoken: string;
+    // [propName: string]: any;
   };
 
   type UserLoginInfo = {
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
   };
-  interface Chainable {
+  interface Chainable<Subject = any> {
 
     /**
     * Custom command to select DOM element by data-automation-id attribute.
@@ -27,11 +29,16 @@ declare namespace Cypress {
 
     getBySelLike(dataIdPrefixAttribute: string, args?: any): Chainable<Element>;
 
-     // /**
+    // /**
     //  * Logs-in user by using API request and sets the received JWT cookie 
     //  */
     loginByAPI(options?: UserLoginInfo): Chainable<any>;
-
+    
+    // /**
+    //  * Logs user in manually via app UI
+    //  */
+    manualLogin(options?: UserLoginInfo): void;
+    
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */
