@@ -18,7 +18,7 @@ Cypress.Commands.add('loginByAPI', (user = { username: Cypress.env('username'), 
     body: {
       ...user
     },
-    failOnStatusCode: false
+    // failOnStatusCode: false
   })
 })
 
@@ -53,7 +53,7 @@ Cypress.Commands.add('registerUser', (options = {}) => {
     body: {
       ...user
     },
-  }).then((response) => expect(response.status).to.eq(200))
+  })
 })
 
 // /**
