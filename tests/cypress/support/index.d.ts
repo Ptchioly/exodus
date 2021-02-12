@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-type ApiHost = "http://localhost:8080" | "https://api.beeeee.es";
 declare namespace Cypress {
 
   type UserSignupInfo = {
@@ -15,12 +14,6 @@ declare namespace Cypress {
     password?: string;
   };
   interface Chainable<Subject = any> {
-
-    // This types out our Cypress.env("key") calls better
-    env(key: 'apiUrl'): ApiHost | undefined;
-    env(key: 'username'): string | undefined;
-    env(key: 'password'): string | undefined;
-    env(key: 'xtoken'): string | undefined;
 
     /**
     * Custom command to select DOM element by data-automation-id attribute.
