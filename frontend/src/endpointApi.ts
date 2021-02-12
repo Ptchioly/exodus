@@ -142,7 +142,7 @@ export const getStatement = async (
   return resp;
 };
 
-export const updateLimit = async (category, value) => {
+export const updateLimit = async (category: string, value: number) => {
   await fetch(limitsEndpoint, {
     ...defaultInit,
     method: 'POST',
