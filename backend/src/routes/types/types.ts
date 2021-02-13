@@ -10,7 +10,7 @@ export type Users = {
   password: string;
   xtoken: string;
   telegramId?: string;
-  accounts: AccountInfo[];
+  accounts: string[];
 };
 
 export type UserMeta = {
