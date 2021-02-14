@@ -106,7 +106,7 @@
   <Settings bind:showSettings />
 {/if}
 {#if userInfo}
-  <main class="flex w-full flex-col items-center mx-20">
+  <main class="flex w-full flex-col items-center">
     <div class="header flex justify-end w-full px-5 mt-4 mb-40">
       <div class="flex w-1/8 ">
         <div
