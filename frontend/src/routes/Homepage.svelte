@@ -107,7 +107,7 @@
 {/if}
 {#if userInfo}
   <main class="flex w-full flex-col items-center">
-    <div class="header flex justify-end w-full px-5 mt-4 mb-40">
+    <div class="header flex justify-end w-full px-5 mt-4 md:mb-40 mb-10">
       <div class="flex w-1/8 ">
         <div
           class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
