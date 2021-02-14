@@ -110,7 +110,7 @@ export const appendStatement = async (
   statementItem: MonoStatement,
   keyPath?: string
 ): Promise<PutItemOutput | AWSError> => {
-  const startDate = startMonth('cur').getTime();
+  const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
     TableName: table,
@@ -139,7 +139,7 @@ export const incrementStatemntSpendings = async (
   incValue: number,
   index: number
 ): Promise<PutItemOutput | AWSError> => {
-  const startDate = startMonth('cur').getTime();
+  const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
     TableName: table,

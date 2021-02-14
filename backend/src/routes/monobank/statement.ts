@@ -16,7 +16,7 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   if (!isValidMonthVariant(mounth))
     return respond.FailureResponse('Invalid mounth variant');
 
-  const from = statementStartDate(mounth).getTime();
+  const from = statementStartDate(mounth);
 
   const userFromDB = await getItem(configs.USER_TABLE, {
     username,
