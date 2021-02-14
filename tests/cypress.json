@@ -11,5 +11,6 @@
     "projectId": "door68",
     "experimentalStudio": true,
     "fixturesFolder": false,
-    "supportFile": "cypress/support/index.ts"
+    "supportFile": "cypress/support/index.ts",
+    "pluginsFile": false
 }

@@ -4,7 +4,6 @@
 // import { configs } from '../../../backend/src/config';
 
 export default (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
-
   // on("task", {
 
   //   async "db:deleteUser"({ username, accessKeyId, secretAccessKey, region }) {
@@ -49,6 +48,5 @@ export default (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) =
   //   }
 
   // });
-  return config;
+  return config
 }
-

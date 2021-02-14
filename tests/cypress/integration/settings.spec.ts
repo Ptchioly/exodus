@@ -1,15 +1,15 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-// describe('actions on home page', () => {
+// describe('settings actions', () => {
 //     before(function() {
-        // cy.deleteMyUserIfExists()
-        // cy.registerUser()
+// cy.deleteMyUserIfExists()
+// cy.registerUser()
 //     })
 
-    // beforeEach(() => {
-    //     cy.visit('/')
-    // })
+// beforeEach(() => {
+//     cy.visit('/')
+// })
 
 //     it('check telegramm link', () => {
 //         // cy.getBySel('telegram-button').should('be.visible');
@@ -18,6 +18,5 @@
 //           url: 'https://t.me/exodus_MonobankBudgetBot'
 //           }).then(response => {expect(response.status).to.eq(200), expect(response.body).contain('class="tgme_action_button_new"')})
 //     })
-
 
 // })
