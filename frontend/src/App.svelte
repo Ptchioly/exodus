@@ -49,7 +49,7 @@
 </script>
 
 <TailwindCss />
-<main class="font-main h-screen text-center flex content-center p-0">
+<main class="font-main h-screen md:mx-20 text-center flex content-center p-0">
   {#if navigationState === 'home'}
     <Homepage on:logout={handleLogout} />
   {:else if navigationState === 'signIn'}
