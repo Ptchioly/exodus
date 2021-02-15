@@ -1,7 +1,12 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
   import UserProfile from '../components/UserProfile.svelte';
-  import { getStatement, getUserInfo, logout } from '../endpointApi';
+  import {
+    getStatement,
+    getUserInfo,
+    logout,
+    updateLimit,
+  } from '../endpointApi';
   import type {
     APIResponse,
     ChartData,
@@ -92,7 +97,7 @@
           }))
       : [];
 
-    return [...current, ...previous].filter((c) => c.id !== 15);
+    return [...current, ...previous].filter((category) => category.id !== 15); //Id#15 - Category "Other"
   };
 
   const sorted = (d) =>
@@ -100,14 +105,34 @@
       (a, b) =>
         b.limit - a.limit || b.current > a.current || b.previous - a.previous
     );
+
+  let timeoutId: any;
+  let delay = 5000;
+  let limitCallback: () => Promise<any> | null;
+
+  const handleSetLimit = (title: string) => ({
+    detail,
+  }: CustomEvent<{ limit: number }>) => {
+    if (timeoutId) clearInterval(timeoutId);
+    limitCallback = () => updateLimit(title, detail.limit);
+    timeoutId = setTimeout(async () => {
+      await limitCallback();
+      limitCallback = null;
+    }, delay);
+  };
+
+  window.onbeforeunload = () => {
+    limitCallback && limitCallback();
+    console.log('AAAAAAAAAAa');
+  };
 </script>
 
 {#if showSettings}
   <Settings bind:showSettings />
 {/if}
 {#if userInfo}
-  <main class="flex w-full flex-col items-center mx-20">
-    <div class="header flex justify-end w-full px-5 mt-4 mb-40">
+  <main class="flex w-full flex-col items-center">
+    <div class="header flex justify-end w-full px-5 mt-4 md:mb-40 mb-10">
       <div class="flex w-1/8 ">
         <div
           class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
@@ -144,7 +169,13 @@
       <!-- <RawCharts /> -->
       {#if data}
         {#each sorted(data) as { previous, current, title, limit }}
-          <StackedBar {previous} {current} {title} {limit} />
+          <StackedBar
+            {previous}
+            {current}
+            {title}
+            {limit}
+            on:setLimit={handleSetLimit(title)}
+          />
         {/each}
       {/if}
     </section>

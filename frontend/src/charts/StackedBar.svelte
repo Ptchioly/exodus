@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
   export let title;
@@ -19,8 +19,6 @@
   let limits;
   let currentElement;
 
-
-
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
     bar.classList.toggle('detailed');
@@ -38,13 +36,11 @@
     const step = 50;
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
+      setLimit();
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
+      setLimit();
     }
-  };
-
-  const handleLimitSet = async (value) => {
-    updateLimit(title, value);
   };
 
   const isSmallEnough = (elem) => {
@@ -52,6 +48,11 @@
       const barRect = bar.getBoundingClientRect();
       return (currentP * barRect.width) / 100 < 60;
     }
+  };
+
+  const dispatch = createEventDispatcher();
+  const setLimit = () => {
+    dispatch('setLimit', { limit });
   };
 
   const move = (e) => {
@@ -74,7 +75,7 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
-      handleLimitSet(limit);
+      setLimit();
     };
 
     window.addEventListener('mouseup', handleEnd);
@@ -85,7 +86,6 @@
     setTimeout(() => {
       currentP = percentOf(current);
       previousP = percentOf(previous);
-      console.log('Chart mount');
       limitP = percentOf(limit);
       smol = isSmallEnough(currentElement);
     }, 20);
@@ -107,7 +107,7 @@
           class="action action--addLimit"
           on:click={() => {
             limit = 50;
-            handleLimitSet(limit);
+            setLimit();
           }}
         >
           <img src="/images/add.svg" alt="+" />
@@ -116,6 +116,7 @@
         <input
           type="text"
           bind:value={limit}
+          on:input={setLimit}
           on:keydown={handlePress}
           pattern="\d+"
           data-automation-id="limit-input"

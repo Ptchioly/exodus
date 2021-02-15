@@ -3,9 +3,9 @@
 
 // describe('logout', () => {
 //     // beforeEach(() => {
-  // cy.deleteMyUserIfExists()
-  // cy.registerUser()
-  // })
+// cy.deleteMyUserIfExists()
+// cy.registerUser()
+// })
 
 //     it('clears the session and logs out', () => { })
 

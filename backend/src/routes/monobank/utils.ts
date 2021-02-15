@@ -6,19 +6,19 @@ import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
 import fetch from 'node-fetch';
 
-export const statementStartDate = (mounth: 'previous' | 'current'): Date => {
+export const statementStartDate = (mounth: 'previous' | 'current'): number => {
   return mounth === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
-export const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
+export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
   const date = new Date();
   switch (variant) {
     case 'prev':
-      return new Date(date.getFullYear(), date.getMonth() - 1);
+      return Date.UTC(date.getFullYear(), date.getMonth() - 1);
     case 'cur':
-      return new Date(date.getFullYear(), date.getMonth());
+      return Date.UTC(date.getFullYear(), date.getMonth());
     case 'next':
-      return new Date(date.getFullYear(), date.getMonth() + 1);
+      return Date.UTC(date.getFullYear(), date.getMonth() + 1);
   }
 };
 
@@ -43,12 +43,12 @@ const fetchStatement = async (
 };
 
 export const syncStatements = async (user: GetOutput): Promise<void> => {
-  const start = startMonth('prev').getTime();
-  const finish = startMonth('cur').getTime();
+  const start = startMonth('prev');
+  const finish = startMonth('cur');
   const prevMounthTime = { start, finish };
   const currentMounthTime = {
     start: finish,
-    finish: startMonth('next').getTime(),
+    finish: startMonth('next'),
   };
   const { data, categorizedData } = await fetchStatement(
     user.Item.accounts[0],
@@ -95,9 +95,9 @@ export const statementUpdate = async (
 
 export const updateLimit = async (
   userId: string,
-  timestamp: number,
   category: string,
-  value: number
+  value: number,
+  timestamp = startMonth('cur')
 ): Promise<void> => {
   const key = { accountId: userId };
   const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
