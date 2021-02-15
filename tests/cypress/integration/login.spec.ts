@@ -24,7 +24,6 @@ describe.only('Login', () => {
   })
 
   it('requires phone number', () => {
-    cy.getBySel('country-code--input').clear()
     cy.getBySel('phone-input').clear()
     cy.getBySel('signin-button').click()
     cy.getBySel('login-error-message').should('contain', 'Required fields are empty')
