@@ -8,7 +8,7 @@ describe.only('Login', () => {
   })
 
   beforeEach(() => {
-    cy.clearCookies();
+    cy.clearCookies()
     cy.visit('/')
   })
 

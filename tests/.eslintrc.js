@@ -4,9 +4,9 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.ts'],
-      },
-    },
+        extensions: ['.js', '.ts']
+      }
+    }
   },
   extends: [
     'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
@@ -14,11 +14,11 @@ module.exports = {
     'prettier',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
-    'plugin:chai-friendly/recommended',
+    'plugin:chai-friendly/recommended'
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-    sourceType: 'module', // Allows for the use of imports
+    sourceType: 'module' // Allows for the use of imports
   },
   rules: {
     'prettier/prettier': [
@@ -27,11 +27,11 @@ module.exports = {
         printWidth: 120,
         tabWidth: 2,
         singleQuote: true,
-        trailingComma: 'es5',
+        trailingComma: 'none',
         bracketSpacing: true,
         semi: false,
-        useTabs: false,
-      },
+        useTabs: false
+      }
     ],
     '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/indent': 'off',
@@ -42,13 +42,13 @@ module.exports = {
       {
         multiline: {
           delimiter: 'none',
-          requireLast: true,
+          requireLast: true
         },
         singleline: {
           delimiter: 'semi',
-          requireLast: false,
-        },
-      },
+          requireLast: false
+        }
+      }
     ],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
@@ -56,11 +56,11 @@ module.exports = {
       'warn',
       {
         ignoreProperties: true,
-        ignoreParameters: true,
-      },
+        ignoreParameters: true
+      }
     ],
     '@typescript-eslint/interface-name-prefix': ['off'],
     'no-unused-expressions': 0,
-    'chai-friendly/no-unused-expressions': 2,
-  },
+    'chai-friendly/no-unused-expressions': 2
+  }
 }

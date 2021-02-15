@@ -20,7 +20,7 @@ declare namespace Cypress {
     username?: string
     password?: string
   }
-  interface Chainable<Subject = any> {
+  interface Chainable {
     /**
      * Custom command to select DOM element by data-automation-id attribute.
      * @example cy.getBySel('greeting')

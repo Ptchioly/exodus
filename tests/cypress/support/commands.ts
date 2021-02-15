@@ -15,16 +15,16 @@ Cypress.Commands.add(
   (
     user = {
       username: Cypress.env('username'),
-      password: Cypress.env('password'),
+      password: Cypress.env('password')
     }
   ) => {
     return cy.request({
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/login`,
       body: {
-        ...user,
+        ...user
       },
-      failOnStatusCode: false,
+      failOnStatusCode: false
     })
   }
 )
@@ -50,7 +50,7 @@ Cypress.Commands.add(
   (
     user = {
       username: Cypress.env('username'),
-      password: Cypress.env('password'),
+      password: Cypress.env('password')
     }
   ) => {
     cy.loginByAPI(user)
@@ -58,7 +58,7 @@ Cypress.Commands.add(
       if (val) {
         cy.request({
           method: 'DELETE',
-          url: `${Cypress.env('apiUrl')}/deleteUser`,
+          url: `${Cypress.env('apiUrl')}/deleteUser`
         })
       } else {
         cy.log(`Unable to login to delete user ${Cypress.env('username')}.`)
@@ -72,7 +72,7 @@ Cypress.Commands.add('registerUser', (options = {}) => {
     // phone, password, xtoken
     username: Cypress.env('username'),
     password: Cypress.env('password'),
-    xtoken: Cypress.env('xtoken'),
+    xtoken: Cypress.env('xtoken')
   }
 
   const user = Cypress._.defaults({}, options, defaults)
@@ -81,8 +81,8 @@ Cypress.Commands.add('registerUser', (options = {}) => {
       method: 'POST',
       url: `${Cypress.env('apiUrl')}/signup`,
       body: {
-        ...user,
-      },
+        ...user
+      }
     })
     .then(response => expect(response.status).to.eq(200))
 })
@@ -112,7 +112,7 @@ const trimUsername = (username: string = Cypress.env('username')): string => use
 Cypress.Commands.add('manualLogin', (user = {}) => {
   const defaults = {
     username: Cypress.env('username'),
-    password: Cypress.env('password'),
+    password: Cypress.env('password')
   }
   const userInfo = Cypress._.defaults({}, user, defaults)
   cy.getBySel('phone-input').type(trimUsername(userInfo.username))
@@ -132,7 +132,7 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
     username: Cypress.env('username'),
     password: Cypress.env('password'),
     confirmPassword: Cypress.env('password'),
-    xtoken: Cypress.env('xtoken'),
+    xtoken: Cypress.env('xtoken')
   }
   const userInfo = Cypress._.defaults({}, user, defaults)
   cy.getBySel('link-signup-button').click()
