@@ -1,7 +1,4 @@
 /// <reference types="cypress" />
-import fs from 'fs-extra'
-import path from 'path'
-
 // // import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 // // import { configs } from '../../../backend/src/config';
 
