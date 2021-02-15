@@ -80,6 +80,11 @@
   html {
     background-color: aliceblue;
   }
+  @media only screen and (max-width: 600px) {
+    html {
+      font-size: 12px;
+    }
+  }
   @media only screen and (min-width: 600px) {
     html {
       font-size: 12px;
