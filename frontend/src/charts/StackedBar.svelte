@@ -2,10 +2,10 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
-  export let title;
-  export let current;
-  export let previous;
-  export let limit;
+  export let title: string;
+  export let current: number;
+  export let previous: number;
+  export let limit: number;
   export let maxValue = 4000;
 
   let currentP = 0;
@@ -15,9 +15,9 @@
   let smol = false;
   let timeoutId;
 
-  let bar;
-  let limits;
-  let currentElement;
+  let bar: HTMLElement;
+  let limits: HTMLElement;
+  let currentElement: HTMLElement;
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
@@ -43,7 +43,7 @@
     }
   };
 
-  const isSmallEnough = (elem) => {
+  const isSmallEnough = (elem: HTMLElement) => {
     if (elem) {
       const barRect = bar.getBoundingClientRect();
       return (currentP * barRect.width) / 100 < 60;
@@ -96,6 +96,7 @@
     overlap = countOverlap();
     previousP = percentOf(previous);
     currentP = percentOf(current);
+    smol = isSmallEnough(currentElement);
   }
 </script>
 
@@ -288,6 +289,7 @@
 
   .bar {
     height: 2em;
+    max-width: 100%;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
