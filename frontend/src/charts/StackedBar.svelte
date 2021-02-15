@@ -13,7 +13,6 @@
   let limitP = 0;
   let overlap;
   let smol = false;
-  let timeoutId;
 
   let bar;
   let limits;
@@ -50,9 +49,22 @@
     }
   };
 
-  const dispatch = createEventDispatcher();
+  let timeoutId: any;
+  let delay = 5000;
+  let limitCallback: () => Promise<any> | null;
+
   const setLimit = () => {
-    dispatch('setLimit', { limit });
+    if (timeoutId) clearInterval(timeoutId);
+    limitCallback = () => updateLimit(title, limit);
+    timeoutId = setTimeout(async () => {
+      await limitCallback();
+      limitCallback = null;
+    }, delay);
+  };
+
+  window.onbeforeunload = () => {
+    limitCallback && limitCallback();
+    console.log('AAAAAAAAAAa');
   };
 
   const move = (e) => {

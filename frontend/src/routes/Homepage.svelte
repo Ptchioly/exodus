@@ -105,26 +105,6 @@
       (a, b) =>
         b.limit - a.limit || b.current > a.current || b.previous - a.previous
     );
-
-  let timeoutId: any;
-  let delay = 5000;
-  let limitCallback: () => Promise<any> | null;
-
-  const handleSetLimit = (title: string) => ({
-    detail,
-  }: CustomEvent<{ limit: number }>) => {
-    if (timeoutId) clearInterval(timeoutId);
-    limitCallback = () => updateLimit(title, detail.limit);
-    timeoutId = setTimeout(async () => {
-      await limitCallback();
-      limitCallback = null;
-    }, delay);
-  };
-
-  window.onbeforeunload = () => {
-    limitCallback && limitCallback();
-    console.log('AAAAAAAAAAa');
-  };
 </script>
 
 {#if showSettings}
