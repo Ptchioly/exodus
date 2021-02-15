@@ -3,7 +3,7 @@ import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
-import { hasKey, isFailure, isValidMounthVariant } from '../types/guards';
+import { hasKey, isFailure, isValidMonthVariant } from '../types/guards';
 import { statementStartDate } from './utils';
 
 export const statement = Router();
@@ -13,10 +13,10 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   const respond = endpointRespond(res);
 
   const { mounth } = req.body;
-  if (!isValidMounthVariant(mounth))
+  if (!isValidMonthVariant(mounth))
     return respond.FailureResponse('Invalid mounth variant');
 
-  const from = statementStartDate(mounth).getTime();
+  const from = statementStartDate(mounth);
 
   const userFromDB = await getItem(configs.USER_TABLE, {
     username,

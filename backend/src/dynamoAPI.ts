@@ -2,6 +2,7 @@ import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from './config';
 import { startMonth } from './routes/monobank/utils';
+import { isFailure } from './routes/types/guards';
 import { GetOutput, MonoStatement } from './routes/types/types';
 
 const documentClient = new DocumentClient({
@@ -109,7 +110,7 @@ export const appendStatement = async (
   statementItem: MonoStatement,
   keyPath?: string
 ): Promise<PutItemOutput | AWSError> => {
-  const startDate = startMonth('cur').getTime();
+  const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
     TableName: table,
@@ -138,7 +139,7 @@ export const incrementStatemntSpendings = async (
   incValue: number,
   index: number
 ): Promise<PutItemOutput | AWSError> => {
-  const startDate = startMonth('cur').getTime();
+  const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
     TableName: table,
@@ -158,3 +159,8 @@ export const incrementStatemntSpendings = async (
     .promise()
     .catch((err) => err);
 };
+
+export const deleteAccounts = async (table: string, accounts: string[]) =>
+  Promise.allSettled(
+    accounts.map((account) => deleteItem(table, { accountId: account }))
+  ).then((results) => !results.some(isFailure));
