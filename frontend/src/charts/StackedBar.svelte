@@ -11,9 +11,8 @@
   let currentP = 0;
   let previousP = 0;
   let limitP = 0;
-  let overlap;
+  let overlap: number;
   let smol = false;
-  let timeoutId;
 
   let bar;
   let limits;

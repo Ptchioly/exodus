@@ -36,11 +36,11 @@
   const getStatementWithRetry = async (
     variant: 'previous' | 'current'
   ): Promise<APIResponse> => {
-    const response = await getStatement(currentDate, variant);
+    const response = await getStatement(variant);
     if (isSuccessResponse(response)) return response;
     return new Promise((resolve) => {
       setTimeout(async () => {
-        const response = await getStatement(currentDate, variant);
+        const response = await getStatement(variant);
         resolve(response);
       }, 75000);
     });
@@ -163,7 +163,7 @@
     <section class="container">
       {#if isEmpty}
         <h1 class="w-full flex items-start text-gray-700">
-          You does not have waste for current mounth
+          You did not spend anything for current month
         </h1>
       {/if}
       <!-- <RawCharts /> -->
