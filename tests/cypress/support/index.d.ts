@@ -43,7 +43,7 @@ declare namespace Cypress {
     // /**
     //  * Logs user in manually via app UI
     //  */
-    manualLogin(options?: UserLoginInfo): void
+    manualLogin(options?: UserLoginInfo): Chainable<Response>
 
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account

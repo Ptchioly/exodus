@@ -119,9 +119,7 @@ Cypress.Commands.add('manualLogin', (user = {}) => {
   cy.getBySel('pwd-input').type(userInfo.password)
   cy.intercept('POST', 'login').as('login')
   cy.getBySel('signin-button').click()
-  cy.wait('@login')
-    .its('response.statusCode')
-    .should('eq', 200)
+  return cy.wait('@login')
 })
 
 // /**
