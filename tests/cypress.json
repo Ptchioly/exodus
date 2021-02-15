@@ -12,5 +12,6 @@
     "experimentalStudio": true,
     "fixturesFolder": false,
     "supportFile": "cypress/support/index.ts",
-    "pluginsFile": false
+    "pluginsFile": false,
+    "responseTimeout": 50000
 }
