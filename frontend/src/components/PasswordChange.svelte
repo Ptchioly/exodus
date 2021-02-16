@@ -8,6 +8,8 @@
   let currentPass = '';
   let newPass = '';
   let confirmPass = '';
+  let show = false;
+  let type = 'text'
 
   const changePassword = async (
     current: string,
@@ -22,6 +24,8 @@
       }
     }
   };
+
+  $: type = (show ? 'text' : 'password')
 </script>
 
 <div class="flex flex-col">
@@ -32,24 +36,36 @@
       <div class="mt-4">Confirm Password</div>
     </div>
     <div class="flex flex-col">
-      <input
-        bind:value={currentPass}
-        placeholder="Current"
-        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-"
-        data-automation-id="current-password"
-      />
-      <input
-        bind:value={newPass}
-        placeholder="New"
-        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
-        data-automation-id="new-password"
-      />
-      <input
-        bind:value={confirmPass}
-        placeholder="Confirm"
-        class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
-        data-automation-id="password-check"
-      />
+      <div class='relative'>
+        <input
+          bind:value={currentPass}
+          placeholder="Current"
+          class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-"
+          data-automation-id="current-password"
+        />
+        <div class="absolute inset-y-0 right-5 pr-3 flex items-center text-sm leading-5"
+      >
+        <div class:show on:click={() => (show = !show)} class="px-1">
+          <img src="images/show-password.svg" alt="show-password" />
+        </div>
+      </div>
+      </div>
+      <div class="relative">
+        <input
+          bind:value={newPass}
+          placeholder="New"
+          class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
+          data-automation-id="new-password"
+        />
+      </div>
+      <div class="relative">
+        <input
+          bind:value={confirmPass}
+          placeholder="Confirm"
+          class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
+          data-automation-id="password-check"
+        />
+      </div>
     </div>
   </div>
   <button
