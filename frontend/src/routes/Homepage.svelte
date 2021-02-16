@@ -103,7 +103,7 @@
   const sorted = (d) =>
     d.sort(
       (a, b) =>
-        b.limit - a.limit || b.current > a.current || b.previous - a.previous
+        b.limit - a.limit || b.current - a.current || b.previous - a.previous
     );
 </script>
 
