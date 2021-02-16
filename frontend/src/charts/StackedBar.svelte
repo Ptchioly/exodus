@@ -117,6 +117,7 @@
     <section class="actions">
       {#if limit <= 0}
         <button
+          data-automation-id="limit-button"
           class="action action--addLimit"
           on:click={() => {
             limit = 50;
