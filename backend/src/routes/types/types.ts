@@ -13,12 +13,21 @@ export type Users = {
   accounts: string[];
 };
 
+export type Statement = {
+  accountId: string;
+  username: string;
+  [k: number]: {
+    rawData: MonoStatement[];
+    processedData: LimitCategory[];
+  };
+};
+
 export type UserMeta = {
   username: string;
 };
 
 export type StatementRequest = {
-  mounth: 'previous' | 'current';
+  month: 'previous' | 'current';
 };
 
 export type Category = {
@@ -33,6 +42,7 @@ export type Category = {
 export type LimitCategory = {
   category: string;
   id: number;
+  limit?: number;
 } & {
   moneySpent: number;
 };

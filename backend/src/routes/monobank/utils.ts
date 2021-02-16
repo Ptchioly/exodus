@@ -6,8 +6,8 @@ import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
 import fetch from 'node-fetch';
 
-export const statementStartDate = (mounth: 'previous' | 'current'): number => {
-  return mounth === 'current' ? startMonth('cur') : startMonth('prev');
+export const statementStartDate = (month: 'previous' | 'current'): number => {
+  return month === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
 export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
@@ -45,14 +45,14 @@ const fetchStatement = async (
 export const syncStatements = async (user: GetOutput): Promise<void> => {
   const start = startMonth('prev');
   const finish = startMonth('cur');
-  const prevMounthTime = { start, finish };
-  const currentMounthTime = {
+  const prevmonthTime = { start, finish };
+  const currentmonthTime = {
     start: finish,
     finish: startMonth('next'),
   };
   const { data, categorizedData } = await fetchStatement(
     user.Item.accounts[0],
-    currentMounthTime,
+    currentmonthTime,
     user.Item.xtoken
   );
   await statementUpdate(user, finish, data, categorizedData);
@@ -60,7 +60,7 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
   setTimeout(async () => {
     const { data, categorizedData } = await fetchStatement(
       user.Item.accounts[0],
-      prevMounthTime,
+      prevmonthTime,
       user.Item.xtoken
     );
 

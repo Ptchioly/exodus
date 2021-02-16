@@ -1,8 +1,3 @@
-export type NavigationState =
-  | 'home'
-  | 'signIn'
-  | 'signUp'
-  | 'loading'
-  | 'waiting';
+export type NavigationState = 'home' | 'signIn' | 'signUp' | 'loading';
 
 export type Validator = (value: string) => boolean;
