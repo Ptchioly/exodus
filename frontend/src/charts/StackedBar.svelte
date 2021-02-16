@@ -190,6 +190,10 @@
               {/if}
             </div>
           </div>
+        {:else if limit && !current}
+          <div class='unbar__toLimit' style='width: {limitP}%'>
+            <div><div class:detailed={limit - current > 99} data-value={limit}></div></div>
+          </div>
         {/if}
       </div>
 
@@ -320,12 +324,14 @@
     transition: width 0s;
   }
 
-  .bar__toLimit {
+  .bar__toLimit,
+  .unbar__toLimit {
     display: flex;
     align-items: center;
   }
 
-  .bar__toLimit > div {
+  .bar__toLimit > div,
+  .unbar__toLimit > div {
     width: 100%;
     height: 1em;
     margin: 4px;
@@ -335,13 +341,15 @@
     border-right: 1px solid #2f9e9e;
   }
 
-  .bar__toLimit > div > div {
+  .bar__toLimit > div > div,
+  .unbar__toLimit > div > div {
     width: 100%;
     height: 0px;
     border-top: 1px dashed #2f9e9e;
   }
 
-  .bar__toLimit > div > div.detailed::before {
+  .bar__toLimit > div > div.detailed::before,
+  .unbar__toLimit > div > div.detailed::before {
     content: attr(data-value);
     font-size: 0.5em;
     color: #2f9e9e;
@@ -352,6 +360,11 @@
     border-radius: 0.3em;
     color: white;
     padding: 1px 3px;
+  }
+
+  .unbar__toLimit {
+    margin-top: -2em;
+    height: 2em;
   }
 
   .detailed > .bars > .bar--previous {
