@@ -95,9 +95,9 @@ export const statementUpdate = async (
 
 export const updateLimit = async (
   userId: string,
-  timestamp: number,
   category: string,
-  value: number
+  value: number,
+  timestamp = startMonth('cur')
 ): Promise<void> => {
   const key = { accountId: userId };
   const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;

@@ -9,6 +9,8 @@ describe('sign up', () => {
 
   it('registers new user', () => {
     cy.manualRegisterUser()
+      .its('response.statusCode')
+      .should('eq', 200)
     cy.checkHomePageLoaded()
   })
 

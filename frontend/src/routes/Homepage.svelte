@@ -1,7 +1,12 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
   import UserProfile from '../components/UserProfile.svelte';
-  import { getStatement, getUserInfo, logout } from '../endpointApi';
+  import {
+    getStatement,
+    getUserInfo,
+    logout,
+    updateLimit,
+  } from '../endpointApi';
   import type {
     APIResponse,
     ChartData,
@@ -92,7 +97,7 @@
           }))
       : [];
 
-    return [...current, ...previous].filter((c) => c.id !== 15);
+    return [...current, ...previous].filter((category) => category.id !== 15); //Id#15 - Category "Other"
   };
 
   const sorted = (d) =>
@@ -144,7 +149,13 @@
       <!-- <RawCharts /> -->
       {#if data}
         {#each sorted(data) as { previous, current, title, limit }}
-          <StackedBar {previous} {current} {title} {limit} />
+          <StackedBar
+            {previous}
+            {current}
+            {title}
+            {limit}
+            on:setLimit={handleSetLimit(title)}
+          />
         {/each}
       {/if}
     </section>

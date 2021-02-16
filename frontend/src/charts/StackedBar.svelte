@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
-  export let title;
-  export let current;
-  export let previous;
-  export let limit;
+  export let title: string;
+  export let current: number;
+  export let previous: number;
+  export let limit: number;
   export let maxValue = 4000;
 
   let currentP = 0;
@@ -13,13 +13,10 @@
   let limitP = 0;
   let overlap;
   let smol = false;
-  let timeoutId;
 
-  let bar;
-  let limits;
-  let currentElement;
-
-
+  let bar: HTMLElement;
+  let limits: HTMLElement;
+  let currentElement: HTMLElement;
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
@@ -38,20 +35,36 @@
     const step = 50;
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
+      setLimit();
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
+      setLimit();
     }
   };
 
-  const handleLimitSet = async (value) => {
-    updateLimit(title, value);
-  };
-
-  const isSmallEnough = (elem) => {
+  const isSmallEnough = (elem: HTMLElement) => {
     if (elem) {
       const barRect = bar.getBoundingClientRect();
       return (currentP * barRect.width) / 100 < 60;
     }
+  };
+
+  let timeoutId: any;
+  let delay = 5000;
+  let limitCallback: () => Promise<any> | null;
+
+  const setLimit = () => {
+    if (timeoutId) clearInterval(timeoutId);
+    limitCallback = () => updateLimit(title, limit);
+    timeoutId = setTimeout(async () => {
+      await limitCallback();
+      limitCallback = null;
+    }, delay);
+  };
+
+  window.onbeforeunload = () => {
+    limitCallback && limitCallback();
+    console.log('AAAAAAAAAAa');
   };
 
   const move = (e) => {
@@ -74,7 +87,7 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
-      handleLimitSet(limit);
+      setLimit();
     };
 
     window.addEventListener('mouseup', handleEnd);
@@ -85,7 +98,6 @@
     setTimeout(() => {
       currentP = percentOf(current);
       previousP = percentOf(previous);
-      console.log('Chart mount');
       limitP = percentOf(limit);
       smol = isSmallEnough(currentElement);
     }, 20);
@@ -96,6 +108,7 @@
     overlap = countOverlap();
     previousP = percentOf(previous);
     currentP = percentOf(current);
+    smol = isSmallEnough(currentElement);
   }
 </script>
 
@@ -107,7 +120,7 @@
           class="action action--addLimit"
           on:click={() => {
             limit = 50;
-            handleLimitSet(limit);
+            setLimit();
           }}
         >
           <img src="/images/add.svg" alt="+" />
@@ -116,6 +129,7 @@
         <input
           type="text"
           bind:value={limit}
+          on:input={setLimit}
           on:keydown={handlePress}
           pattern="\d+"
           data-automation-id="limit-input"
@@ -287,6 +301,7 @@
 
   .bar {
     height: 2em;
+    max-width: 100%;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;

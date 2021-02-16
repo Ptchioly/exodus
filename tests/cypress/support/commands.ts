@@ -140,9 +140,7 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('xtoken-input').type(userInfo.xtoken)
   cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
-  cy.wait('@signup')
-    .its('response.statusCode')
-    .should('eq', 200)
+  return cy.wait('@signup')
   // cy.checkHomePageLoaded();
 })
 
