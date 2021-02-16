@@ -4,7 +4,7 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { isAuthenticated } from './endpointApi';
+  import { getUserInfo, isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
@@ -18,14 +18,16 @@
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleSignIn = async ({ detail }: CustomEvent<APIResponse>) => {
+  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
     if (isSuccessResponse(detail)) {
+      const response = await getUserInfo();
+      if (isSuccessResponse(response)) {
+        const userInfo = response.data;
+        localStorage.setItem('username', userInfo.name);
+        localStorage.setItem('clientId', userInfo.clientId);
+      }
       navigationState = 'home';
     }
-  };
-
-  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
-    if (isSuccessResponse(detail)) navigationState = 'home';
   };
 
   const handleLogout = () => {
@@ -56,7 +58,7 @@
     />
   {:else if navigationState === 'signUp'}
     <SignUp
-      on:signUp={handleSignIn}
+      on:signUp={handleApiResponse}
       on:openSignIn={handleOpenSignIn}
       bind:error
     />

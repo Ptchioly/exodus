@@ -21,7 +21,6 @@
   export let currentMonth: Statement[] | undefined;
 
   let data: ChartData[];
-  let currentDate = Date.now();
   let isEmpty: boolean;
   let currentMaxValue = 0;
   let showSettings = false;
@@ -54,11 +53,9 @@
     }
   }
 
-  let userInfo: UserInfo;
+  let username = localStorage.getItem('username');
 
   onMount(async () => {
-    const resp = await getUserInfo();
-    if (isSuccessResponse(resp)) userInfo = resp.data;
     const curResp = await getStatementWithRetry('current');
     if (isSuccessResponse(curResp)) currentMonth = curResp.data;
     const prevResp = await getStatementWithRetry('previous');
@@ -110,7 +107,7 @@
 {#if showSettings}
   <Settings bind:showSettings />
 {/if}
-{#if userInfo}
+{#if username}
   <main class="flex w-full flex-col items-center">
     <div class="header flex justify-end w-full px-5 mt-4 md:mb-40 mb-10">
       <div class="flex w-1/8 ">
@@ -131,7 +128,7 @@
         <div class="logout ml-6 user flex items-center">
           <UserProfile
             bind:showSettings
-            user={userInfo}
+            user={username}
             on:logout={async () => {
               await logout();
               dispatch('logout', {});

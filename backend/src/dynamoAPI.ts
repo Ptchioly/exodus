@@ -125,7 +125,6 @@ export const appendStatement = async (
       ':empty_list': [],
     },
   };
-  console.log(JSON.stringify(params));
 
   return await documentClient
     .update(params)
