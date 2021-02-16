@@ -2,8 +2,8 @@
   import { updateXToken } from '../endpointApi';
   import { isSuccessResponse } from '../types/guards';
 
-  export let error;
-  export let errorMessage;
+  export let error: boolean;
+  export let errorMessage: string;
 
   let xToken = '';
 

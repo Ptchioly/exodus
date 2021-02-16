@@ -11,7 +11,7 @@
   let currentP = 0;
   let previousP = 0;
   let limitP = 0;
-  let overlap;
+  let overlap: number;
   let smol = false;
 
   let bar: HTMLElement;
@@ -117,6 +117,7 @@
     <section class="actions">
       {#if limit <= 0}
         <button
+          data-automation-id="limit-button"
           class="action action--addLimit"
           on:click={() => {
             limit = 50;

@@ -1,4 +1,5 @@
 import { AWSError } from 'aws-sdk';
+import { Users } from './types';
 
 export const isFailure = (response: any): response is AWSError =>
   response.statusCode;
