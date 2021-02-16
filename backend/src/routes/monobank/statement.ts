@@ -12,11 +12,11 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
   const { username } = req.user.data;
   const respond = endpointRespond(res);
 
-  const { mounth } = req.body;
-  if (!isValidMonthVariant(mounth))
-    return respond.FailureResponse('Invalid mounth variant');
+  const { month } = req.body;
+  if (!isValidMonthVariant(month))
+    return respond.FailureResponse('Invalid month variant');
 
-  const from = statementStartDate(mounth);
+  const from = statementStartDate(month);
 
   const userFromDB = await getItem(configs.USER_TABLE, {
     username,

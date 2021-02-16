@@ -10,6 +10,8 @@ const isInViewport = _chai => {
   function assertIsInViewport() {
     const subject = this._obj
 
+    // cy.state is undocumented and should probably not be used, but it's the only thing that works for now
+
     const bottom = Cypress.$(cy.state('window')).height()
     const right = Cypress.$(cy.state('window')).width()
     const rect = subject[0].getBoundingClientRect()

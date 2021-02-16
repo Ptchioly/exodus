@@ -8,14 +8,10 @@
   import type { NavigationState } from './types/Layout';
   import type { APIResponse } from './types/Api';
   import { isSuccessResponse } from './types/guards';
-  import Loading from './routes/Loading.svelte';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
-  const currentDate = Date.now();
-  let previous;
-  let current;
 
   onMount(async () => {
     authorized = await isAuthenticated();
@@ -64,8 +60,6 @@
       on:openSignIn={handleOpenSignIn}
       bind:error
     />
-  {:else if navigationState === 'waiting'}
-    <Loading />
   {:else}
     Loading
   {/if}
@@ -75,10 +69,14 @@
   <link rel="icon" type="image/png" href="images/favicon.png" />
 </svelte:head>
 
-<!-- Probably should be placed in html tag with tailwind and using 'rem' instead of 'px' -->
 <style global lang="postcss">
   html {
     background-color: aliceblue;
+  }
+  @media only screen and (max-width: 600px) {
+    html {
+      font-size: 12px;
+    }
   }
   @media only screen and (min-width: 600px) {
     html {
@@ -101,11 +99,6 @@
       font-size: 20px;
     }
   }
-  /* @media only screen and (min-width: 1600px) {
-    html {
-      font-size: 24px;
-    }
-  } */
 
   :global(*:focus) {
     outline: none;

@@ -2,8 +2,8 @@
   import { updatePassword } from '../endpointApi';
   import { isSuccessResponse } from '../types/guards';
 
-  export let error;
-  export let errorMessage;
+  export let error: boolean;
+  export let errorMessage: string;
 
   let currentPass = '';
   let newPass = '';
@@ -55,7 +55,7 @@
   <button
     type="submit"
     on:click={() => changePassword(currentPass, newPass, confirmPass)}
-    class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
+    class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white xs:mb-5"
     data-automation-id="change-password">Change</button
   >
 </div>
