@@ -6,7 +6,7 @@ import { endpointRespond } from '../../utils';
 import { requests } from '../monobank/endpoints';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
-import { encrypt, getAccounts } from './utils';
+import { getAccounts, hash } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 import fetch from 'node-fetch';
 
@@ -31,7 +31,6 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('User already exist.');
 
   const tokenResponse = await getTokens(configs.USER_TABLE);
-  console.log(tokenResponse);
 
   if (!tokenResponse.Items)
     return respond.FailureResponse('Unexpected error from db.');
@@ -40,7 +39,7 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('Monobank token is already registered.');
 
   const key = nanoid(21);
-  const encryptedPassword = encrypt(password, key);
+  const encryptedPassword = hash(password, key);
 
   const user = {
     id: data.clientId,

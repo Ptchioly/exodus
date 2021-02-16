@@ -2,18 +2,16 @@ import { Router } from 'express';
 import { configs } from '../../config';
 import { getItem, updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { decrypt, encrypt, isValidPassword } from '../auth/utils';
-import { authenticateToken, validateUserInfo } from '../auth/validate';
+import { hash, isValidPassword } from '../auth/utils';
+import { authenticateToken } from '../auth/validate';
 import { getClientInfo } from '../monobank/endpoints';
 import { atLeast, isFailure } from '../types/guards';
 
 export const updateInfo = Router();
 
 updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
-  const { username, xtoken } = req.user.data;
-  console.log(req.user.data);
+  const { username } = req.user.data;
   const respond = endpointRespond(res);
-  console.log(xtoken);
 
   if (!req.body) return respond.FailureResponse('Empty body.');
 
@@ -33,11 +31,11 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
           'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
         );
 
-      const decryptedCurrent = decrypt(user.password, user.key);
-      if (decryptedCurrent !== oldPassword)
+      const oldHash = hash(oldPassword, user.key);
+      if (oldHash !== user.password)
         return respond.FailureResponse('Old password is incorrect');
 
-      const encryptedPass = encrypt(newPassword, userFromDB.Item.key);
+      const encryptedPass = hash(newPassword, userFromDB.Item.key);
 
       const updateUserResponse = await updateItem(
         configs.USER_TABLE,
