@@ -40,21 +40,27 @@ describe.only('Login', () => {
   })
 
   it('should error for an invalid user', () => {
-    cy.manualLogin({ username: `123456789123` }).its('response.statusCode').should('eq', 400)
+    cy.manualLogin({ username: `123456789123` })
+      .its('response.statusCode')
+      .should('eq', 400)
     cy.getBySel('login-error-message')
       .should('be.visible')
       .and('have.text', 'User does not exist.')
   })
 
   it('should error for an invalid password for existing user', () => {
-    cy.manualLogin({ password: `Wr0ngPa$$word` }).its('response.statusCode').should('eq', 400)
+    cy.manualLogin({ password: `Wr0ngPa$$word` })
+      .its('response.statusCode')
+      .should('eq', 400)
     cy.getBySel('login-error-message')
       .should('be.visible')
       .and('have.text', 'Incorrect password.')
   })
 
   it('displays home page on successful login', () => {
-    cy.manualLogin().its('response.statusCode').should('eq', 200)
+    cy.manualLogin()
+      .its('response.statusCode')
+      .should('eq', 200)
     cy.getBySel('menu-button').should('be.visible')
     cy.getCookie('jwt').should('have.property', 'value')
   })
