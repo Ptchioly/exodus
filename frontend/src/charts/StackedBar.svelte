@@ -14,6 +14,11 @@
   let overlap: number;
   let smol = false;
 
+  const percentOf = (i) => (i * 100) / maxValue;
+  const getRemainings = () => percentOf((limit - current) * (maxValue / current));
+
+  let remainings = getRemainings();
+
   let bar: HTMLElement;
   let limits: HTMLElement;
   let currentElement: HTMLElement;
@@ -23,7 +28,6 @@
     bar.classList.toggle('detailed');
   };
 
-  const percentOf = (i) => (i * 100) / maxValue;
 
   const countOverlap = () => {
     return limit && current > limit
@@ -109,6 +113,7 @@
     previousP = percentOf(previous);
     currentP = percentOf(current);
     smol = isSmallEnough(currentElement);
+    remainings = getRemainings();
   }
 </script>
 
@@ -174,11 +179,7 @@
             />
             <div
               class="bar__toLimit"
-              style={`width: ${percentOf(
-                (limit - current) * (maxValue / current)
-              )}%; margin-right: -${
-                (limitP - currentP) * (maxValue / current)
-              }%`}
+              style={`width: ${remainings}%; margin-right: -${remainings}%;`}
             >
               {#if limit && limit > current + 20}
                 <div>

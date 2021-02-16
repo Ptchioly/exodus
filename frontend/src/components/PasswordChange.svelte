@@ -34,18 +34,21 @@
     <div class="flex flex-col">
       <input
         bind:value={currentPass}
+        type="password"
         placeholder="Current"
         class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-"
         data-automation-id="current-password"
       />
       <input
         bind:value={newPass}
+        type="password"
         placeholder="New"
         class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
         data-automation-id="new-password"
       />
       <input
         bind:value={confirmPass}
+        type="password"
         placeholder="Confirm"
         class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"
         data-automation-id="password-check"
