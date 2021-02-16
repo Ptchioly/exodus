@@ -21,6 +21,7 @@
   export let currentMonth: Statement[] | undefined;
 
   let data: ChartData[];
+  let otherCategory: ChartData | undefined;
   let currentDate = Date.now();
   let isEmpty: boolean;
   let currentMaxValue = 0;
@@ -46,10 +47,26 @@
     });
   };
 
+  const maxBarSize = (charts: ChartData[]): number => {
+    let max = 0;
+
+    charts.forEach((chart: ChartData) => {
+      const currentMax =  Math.max(chart.limit, chart.previous, chart.current);
+      if (currentMax > max) max = currentMax;
+    });
+
+    return (Math.ceil(max / 100) * 1.4) * 100;
+  } 
+
   const dispatch = createEventDispatcher();
   $: {
     if (currentMonth) {
-      data = mergeData(currentMonth, previousMonth);
+      const mergedData = mergeData(currentMonth, previousMonth);
+      console.log(mergedData);
+
+      data = mergedData.filter((category) => category.id !== 15); //Id#15 - Category "Other";
+      otherCategory = mergedData.filter((category) => category.id === 15).pop();
+
       isEmpty = !data.length;
     }
   }
@@ -71,8 +88,8 @@
     previousMonth: Statement[] | undefined
   ): ChartData[] => {
     const current = currentMonth
-      .filter((c) => c.id !== 15)
-      .map(({ category, moneySpent, limit }) => ({
+      .map(({ category, moneySpent, limit, id }) => ({
+        id,
         title: category,
         current: moneySpent,
         previous:
@@ -88,8 +105,8 @@
             ({ id }) =>
               !currentMonth.find(({ id: currentId }) => id == currentId)
           )
-          .filter((c) => c.id !== 15)
-          .map(({ category, moneySpent, limit }) => ({
+          .map(({ category, moneySpent, limit, id }) => ({
+            id,
             title: category,
             current: 0,
             previous: moneySpent,
@@ -97,7 +114,7 @@
           }))
       : [];
 
-    return [...current, ...previous].filter((category) => category.id !== 15); //Id#15 - Category "Other"
+    return [...current, ...previous];
   };
 
   const sorted = (d) =>
@@ -155,8 +172,21 @@
             {title}
             {limit}
             on:setLimit={handleSetLimit(title)}
+            maxValue={maxBarSize(data)}
           />
         {/each}
+      {/if}
+      {#if otherCategory}
+        <div class='other-category'>
+          <StackedBar
+          previous={otherCategory.previous}
+          current={otherCategory.current}
+          title={otherCategory.title}
+          limit={otherCategory.limit}
+          on:setLimit={handleSetLimit(otherCategory.title)}
+          maxValue={maxBarSize([otherCategory])}
+        />
+        </div>
       {/if}
     </section>
   </main>

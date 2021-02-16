@@ -232,7 +232,7 @@
   }
 
   .actions {
-    width: 45%;
+    width: 5em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -271,7 +271,7 @@
   }
 
   .title {
-    width: 55%;
+    width: calc(100% - 5em);
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     display: flex;
