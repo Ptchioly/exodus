@@ -62,5 +62,5 @@ app.use(hook);
 app.get('/', defaultRoute);
 
 app.listen(configs.HTTP_PORT, () =>
-  console.log(`Listen on port ${configs.HTTP_PORT}`)
+  `Listen on port ${configs.HTTP_PORT}`)
 );

@@ -22,7 +22,6 @@
 
   let data: ChartData[];
   let otherCategory: ChartData | undefined;
-  let currentDate = Date.now();
   let isEmpty: boolean;
   let currentMaxValue = 0;
   let showSettings = false;
@@ -51,19 +50,17 @@
     let max = 0;
 
     charts.forEach((chart: ChartData) => {
-      const currentMax =  Math.max(chart.limit, chart.previous, chart.current);
+      const currentMax = Math.max(chart.limit, chart.previous, chart.current);
       if (currentMax > max) max = currentMax;
     });
 
-    return (Math.ceil(max / 100) * 1.4) * 100;
-  } 
+    return Math.ceil(max / 100) * 1.4 * 100;
+  };
 
   const dispatch = createEventDispatcher();
   $: {
     if (currentMonth) {
       const mergedData = mergeData(currentMonth, previousMonth);
-      console.log(mergedData);
-
       data = mergedData.filter((category) => category.id !== 15); //Id#15 - Category "Other";
       otherCategory = mergedData.filter((category) => category.id === 15).pop();
 
@@ -74,6 +71,11 @@
   let username = localStorage.getItem('username');
 
   onMount(async () => {
+    // let tokenCheck = localStorage.getItem('hookCheck');
+    // if (Date.now() - +tokenCheck > 3600000) {
+    //   await getUserInfo();
+    //   tokenCheck = Date.now().toString();
+    // }
     const curResp = await getStatementWithRetry('current');
     if (isSuccessResponse(curResp)) currentMonth = curResp.data;
     const prevResp = await getStatementWithRetry('previous');
@@ -85,17 +87,16 @@
     currentMonth: Statement[],
     previousMonth: Statement[] | undefined
   ): ChartData[] => {
-    const current = currentMonth
-      .map(({ category, moneySpent, limit, id }) => ({
-        id,
-        title: category,
-        current: moneySpent,
-        previous:
-          (previousMonth &&
-            previousMonth.find((st) => st.category === category)?.moneySpent) ||
-          0,
-        limit: limit || 0,
-      }));
+    const current = currentMonth.map(({ category, moneySpent, limit, id }) => ({
+      id,
+      title: category,
+      current: moneySpent,
+      previous:
+        (previousMonth &&
+          previousMonth.find((st) => st.category === category)?.moneySpent) ||
+        0,
+      limit: limit || 0,
+    }));
 
     const previous = previousMonth
       ? previousMonth
@@ -175,15 +176,16 @@
         {/each}
       {/if}
       {#if otherCategory}
-        <div class='other-category'>
+        <div class="other-category">
+          <!-- svelte-ignore missing-declaration -->
           <StackedBar
-          previous={otherCategory.previous}
-          current={otherCategory.current}
-          title={otherCategory.title}
-          limit={otherCategory.limit}
-          on:setLimit={handleSetLimit(otherCategory.title)}
-          maxValue={maxBarSize([otherCategory])}
-        />
+            previous={otherCategory.previous}
+            current={otherCategory.current}
+            title={otherCategory.title}
+            limit={otherCategory.limit}
+            on:setLimit={handleSetLimit(otherCategory.title)}
+            maxValue={maxBarSize([otherCategory])}
+          />
         </div>
       {/if}
     </section>

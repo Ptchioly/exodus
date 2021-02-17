@@ -18,7 +18,10 @@ type StatementItems = {
 hook.post('/hook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
-  if (!req.body) return respond.FailureResponse('Empty body.'); // dunno if it's necessary
+  if (!req.body) {
+    console.log('LOGGGGGGGING EMPTY BODY LOL');
+    return respond.FailureResponse('Empty body.');
+  } // dunno if it's necessary
 
   const { account, statementItem } = (req.body as StatementItems).data;
 
@@ -34,6 +37,7 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(updateUserRawStatement)) {
+    console.log('LOGGGGGGGGGGING RAW UPDATE LOL');
     return respond.FailureResponse('Failed to update user raw statement');
   }
 
@@ -47,6 +51,7 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(inctementResponse)) {
+    console.log('LOGGGING INCREMENT LOL');
     return respond.FailureResponse('Failed to increment proccess');
   }
 

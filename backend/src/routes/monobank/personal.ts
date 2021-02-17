@@ -19,15 +19,15 @@ personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
   });
 
   if (!isFailure(userFromDB) && userFromDB.Item) {
-    const clientInfo = await getClientInfo(xtoken);
-    if (
-      clientInfo.webHookUrl === undefined ||
-      clientInfo.webHookUrl.length < 1 ||
-      clientInfo.webhook !== ''
-    ) {
-      setHook(xtoken);
-      await syncStatements(userFromDB);
-    }
+    // const clientInfo = await getClientInfo(xtoken);
+    // if (
+    //   clientInfo.webHookUrl === undefined ||
+    //   clientInfo.webHookUrl.length < 1 ||
+    //   clientInfo.webhook !== ''
+    // ) {
+    //   setHook(xtoken);
+    //   await syncStatements(userFromDB);
+    // }
     const { name, accounts } = userFromDB.Item;
     return respond.SuccessResponse({ name, accounts });
   } else return respond.FailureResponse('Failed to get user info.');
