@@ -125,7 +125,6 @@ export const appendStatement = async (
       ':empty_list': [],
     },
   };
-  console.log(JSON.stringify(params));
 
   return await documentClient
     .update(params)
@@ -133,7 +132,7 @@ export const appendStatement = async (
     .catch((err) => err);
 };
 
-export const incrementStatemntSpendings = async (
+export const incrementStatementSpendings = async (
   table: string,
   keyData: { accountId: string },
   incValue: number,

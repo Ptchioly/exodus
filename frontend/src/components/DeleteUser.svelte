@@ -8,7 +8,6 @@
   const handleDeleteUser = async () => {
     const response = await deleteUser();
     if (!isSuccessResponse(response)) {
-      console.log('log');
       error = true;
       errorMessage = 'Failed to delete user';
     } else {

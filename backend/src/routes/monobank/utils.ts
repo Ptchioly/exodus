@@ -27,7 +27,6 @@ const fetchStatement = async (
   time: { start: number; finish: number },
   xtoken: string
 ): Promise<{ data: any; categorizedData: LimitCategory[] }> => {
-  console.log('time', time);
   const data = await fetch(
     requests.statement(account, time.start, time.finish),
     {
@@ -36,7 +35,6 @@ const fetchStatement = async (
       },
     }
   ).then((el) => el.json());
-  console.log('data', data);
 
   const categorizedData = categorize(data);
   return { data, categorizedData };

@@ -3,12 +3,10 @@ import { nanoid } from 'nanoid';
 import { configs } from '../../config';
 import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { requests } from '../monobank/endpoints';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
-import { encrypt, getAccounts } from './utils';
+import { encrypt, getAccounts, setHook } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
-import fetch from 'node-fetch';
 
 export const signup = Router();
 
@@ -31,7 +29,6 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('User already exist.');
 
   const tokenResponse = await getTokens(configs.USER_TABLE);
-  console.log(tokenResponse);
 
   if (!tokenResponse.Items)
     return respond.FailureResponse('Unexpected error from db.');
@@ -60,17 +57,7 @@ signup.post('/signup', async (req, res) => {
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
-  await fetch(requests.webhook(), {
-    method: 'POST',
-    headers: {
-      'X-Token': xtoken,
-    },
-    body: JSON.stringify({
-      webHookUrl: 'https://api.beeeee.es/hook',
-    }),
-  })
-    .then(console.log)
-    .catch(console.log);
+  setHook(xtoken);
 
   await syncStatements({
     Item: user as any,

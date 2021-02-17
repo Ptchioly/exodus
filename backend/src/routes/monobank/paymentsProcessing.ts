@@ -28,7 +28,6 @@ const getCategoriesTemplate = (categories: Category[]): Payment[] => {
 
 export const defineCategory = (payments: MonoStatements): Payment[] => {
   const initialCategories = getCategoriesTemplate(categories);
-  console.log('defineCategory => initialCategories', initialCategories);
   return payments.reduce((accum, { mcc, amount }) => {
     const { id } = getMccCategory(mcc);
     return accum.map((pay) => {

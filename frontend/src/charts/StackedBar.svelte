@@ -68,7 +68,6 @@
 
   window.onbeforeunload = () => {
     limitCallback && limitCallback();
-    console.log('AAAAAAAAAAa');
   };
 
   const move = (e) => {
