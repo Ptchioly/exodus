@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount } from 'svelte';
   import UserProfile from '../components/UserProfile.svelte';
-  import { getStatement, logout } from '../endpointApi';
+  import { getStatement, getUserInfo, logout } from '../endpointApi';
   import type { APIResponse, ChartData, Statement } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
   import StackedBar from '../charts/StackedBar.svelte';
@@ -66,7 +66,7 @@
     }
   }
 
-  let username = localStorage.getItem('username');
+  let username;
 
   onMount(async () => {
     // let tokenCheck = localStorage.getItem('hookCheck');
@@ -74,6 +74,14 @@
     //   await getUserInfo();
     //   tokenCheck = Date.now().toString();
     // }
+    username = localStorage.getItem('username');
+    if (username === null) {
+      const userInfo = await getUserInfo();
+      if (isSuccessResponse(userInfo)) {
+        username = userInfo.data.name;
+        localStorage.setItem('username', username);
+      }
+    }
     const curResp = await getStatementWithRetry('current');
     if (isSuccessResponse(curResp)) currentMonth = curResp.data;
     const prevResp = await getStatementWithRetry('previous');
@@ -121,10 +129,7 @@
     );
 
   const handleAddCategory = (e: CustomEvent<ChartData>) => {
-    console.log('1', data);
     data = [...data, e.detail];
-    console.log('2', data);
-    console.log('handleAddCategory => detail', e.detail);
   };
 </script>
 
