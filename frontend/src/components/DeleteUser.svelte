@@ -8,7 +8,6 @@
   const handleDeleteUser = async () => {
     const response = await deleteUser();
     if (!isSuccessResponse(response)) {
-      console.log('log');
       error = true;
       errorMessage = 'Failed to delete user';
     } else {
@@ -20,7 +19,7 @@
 <div class="flex flex-row mt-2 items-center">
   <div>Delete user?</div>
   <button
-    class="ml-5 rounded-md py-1 px-3 box-content bg-red-600 text-white"
+    class="ml-5 rounded-md py-1 px-3 box-content bg-red-600 text-white mr-5"
     data-automation-id="delete-user"
     on:click={handleDeleteUser}>Delete</button
   >

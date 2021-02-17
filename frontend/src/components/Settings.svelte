@@ -20,7 +20,7 @@
     class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay"
   >
     <div
-      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-r-2 border-gray-600"
+      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-r-2 border-gray-600 relative"
     >
       <div
         class="cursor-pointer xs:mt-2 sm:mt-5"
@@ -72,7 +72,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 300;
+    z-index: 4000;
     display: flex;
     flex-direction: column;
     padding-top: 32px;
@@ -83,7 +83,7 @@
   }
 
   #content {
-    min-width: 60%;
+    min-width: 38rem;
     min-height: 20rem;
   }
 

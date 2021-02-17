@@ -8,7 +8,6 @@
 
   let isActive = false;
   let activeCategotegory: string | null;
-  $: console.log('activeCategotegory', activeCategotegory);
 
   const dispatch = createEventDispatcher();
   const handleClick = (category: ChartData) => () => {

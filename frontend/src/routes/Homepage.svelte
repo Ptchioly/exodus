@@ -1,18 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy, onMount } from 'svelte';
   import UserProfile from '../components/UserProfile.svelte';
-  import {
-    getStatement,
-    getUserInfo,
-    logout,
-    updateLimit,
-  } from '../endpointApi';
-  import type {
-    APIResponse,
-    ChartData,
-    Statement,
-    UserInfo,
-  } from '../types/Api';
+  import { getStatement, logout } from '../endpointApi';
+  import type { APIResponse, ChartData, Statement } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
   import StackedBar from '../charts/StackedBar.svelte';
   import Settings from '../components/Settings.svelte';
@@ -23,7 +13,6 @@
 
   let data: ChartData[];
   let unbudgeted: ChartData[];
-  $: console.log('data', data);
   let otherCategory: ChartData | undefined;
   let isEmpty: boolean;
   let currentMaxValue = 0;
@@ -77,11 +66,14 @@
     }
   }
 
-  let userInfo: UserInfo;
+  let username = localStorage.getItem('username');
 
   onMount(async () => {
-    const resp = await getUserInfo();
-    if (isSuccessResponse(resp)) userInfo = resp.data;
+    // let tokenCheck = localStorage.getItem('hookCheck');
+    // if (Date.now() - +tokenCheck > 3600000) {
+    //   await getUserInfo();
+    //   tokenCheck = Date.now().toString();
+    // }
     const curResp = await getStatementWithRetry('current');
     if (isSuccessResponse(curResp)) currentMonth = curResp.data;
     const prevResp = await getStatementWithRetry('previous');
@@ -139,75 +131,75 @@
 {#if showSettings}
   <Settings bind:showSettings />
 {/if}
-{#if userInfo}
-  <main class="flex w-full flex-col items-center">
-    <div class="header flex justify-end w-full px-5 mt-4 md:mb-32 mb-10">
-      <div class="flex w-1/8 ">
-        <div
-          class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
-          on:click={() => location.reload()}
-        >
-          <img src="images/refresh.png" alt="refresh page" />
-        </div>
-        <div
-          class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl ml-6"
-          data-automation-id="telegram-link"
-          on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
-        >
-          <img src="images/tg.png" alt="telegram" />
-        </div>
-        <div class="user flex items-center" />
-        <div class="logout ml-6 user flex">
-          <UserProfile
+
+<main class="flex w-full flex-col items-center">
+  <div class="header flex justify-end w-full px-5 mt-4 md:mb-32 mb-10">
+    <div class="flex w-1/8 ">
+      <div
+        class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
+        on:click={() => location.reload()}
+      >
+        <img src="images/refresh.png" alt="refresh page" />
+      </div>
+      <div
+        class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl ml-6"
+        data-automation-id="telegram-link"
+        on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
+      >
+        <img src="images/tg.png" alt="telegram" />
+      </div>
+      <div class="user flex items-center" />
+      <div class="logout ml-6 user flex">
+        {#if username}<UserProfile
             bind:showSettings
-            user={userInfo}
+            user={username}
             on:logout={async () => {
               await logout();
               dispatch('logout', {});
             }}
-          />
-        </div>
+          />{/if}
       </div>
     </div>
-    <section class="container">
-      <div class="w-full flex justify-end">
-        <div class="mb-15">
-          {#if data}
-            <UnbudgetedCategories
-              categories={unbudgeted}
-              on:addCategory={handleAddCategory}
-            />
-          {/if}
-        </div>
+  </div>
+  <section class="container">
+    <div class="w-full flex justify-end">
+      <div class="mb-15">
+        {#if data}
+          <UnbudgetedCategories
+            categories={unbudgeted}
+            on:addCategory={handleAddCategory}
+          />
+        {/if}
       </div>
-      {#if isEmpty}
-        <h1 class="w-full flex items-start text-gray-700">
-          You did not spend anything for current month
-        </h1>
-      {/if}
-      <!-- <RawCharts /> -->
-      {#if data}
-        {#each data as { previous, current, title, limit }}
-          <StackedBar
-            {previous}
-            {current}
-            {title}
-            {limit}
-            maxValue={maxBarSize(data)}
-          />
-        {/each}
-      {/if}
-      {#if otherCategory}
-        <div class="other-category">
-          <StackedBar
-            previous={otherCategory.previous}
-            current={otherCategory.current}
-            title={otherCategory.title}
-            limit={otherCategory.limit}
-            maxValue={maxBarSize([otherCategory])}
-          />
-        </div>
-      {/if}
-    </section>
-  </main>
-{/if}
+    </div>
+    {#if isEmpty}
+      <h1 class="w-full flex items-start text-gray-700">
+        You did not spend anything for current month
+      </h1>
+    {/if}
+    <!-- <RawCharts /> -->
+    {#if data}
+      {#each data as { previous, current, title, limit }}
+        <StackedBar
+          {previous}
+          {current}
+          {title}
+          {limit}
+          maxValue={maxBarSize(data)}
+        />
+      {/each}
+    {/if}
+    {#if otherCategory}
+      <div class="other-category">
+        <!-- svelte-ignore missing-declaration -->
+        <StackedBar
+          previous={otherCategory.previous}
+          current={otherCategory.current}
+          title={otherCategory.title}
+          limit={otherCategory.limit}
+          maxValue={maxBarSize([otherCategory])}
+        />
+      </div>
+    {/if}
+  </section>
+</main>
