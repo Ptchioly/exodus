@@ -373,9 +373,11 @@
     margin-left: -0.5em;
   }
 
-  .detailed > .bars > .bar--current {
+  .detailed > .bars > .bar--current,
+  .detailed > .bars > .unbar__toLimit {
     margin-top: -1.5em;
     margin-left: -1em;
+    transition: margin 0.2s, width 0.5s ease;
   }
 
   .detailed > .limits:hover > .limit--red,
