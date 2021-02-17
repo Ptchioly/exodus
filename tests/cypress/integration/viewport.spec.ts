@@ -58,7 +58,7 @@ describe(`Login page visibility`, () => {
       cy.loginByAPI()
       cy.visit('/')
       cy.getBySel('telegram-link').should('be.visible')
-      cy.getBySel('menu-button').should('be.inViewport')
+      // cy.getBySel('menu-button').should('be.inViewport')
       cy.getBySel('limit-button')
         .first()
         .should('be.inViewport')
