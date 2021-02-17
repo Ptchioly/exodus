@@ -16,13 +16,15 @@
   import { isSuccessResponse } from '../types/guards';
   import StackedBar from '../charts/StackedBar.svelte';
   import Settings from '../components/Settings.svelte';
+  import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
 
   let data: ChartData[];
+  let unbudgeted: ChartData[];
+  $: console.log('data', data);
   let otherCategory: ChartData | undefined;
-  let currentDate = Date.now();
   let isEmpty: boolean;
   let currentMaxValue = 0;
   let showSettings = false;
@@ -51,23 +53,27 @@
     let max = 0;
 
     charts.forEach((chart: ChartData) => {
-      const currentMax =  Math.max(chart.limit, chart.previous, chart.current);
+      const currentMax = Math.max(chart.limit, chart.previous, chart.current);
       if (currentMax > max) max = currentMax;
     });
 
-    return (Math.ceil(max / 100) * 1.4) * 100;
-  } 
+    return Math.ceil(max / 100) * 1.4 * 100;
+  };
 
   const dispatch = createEventDispatcher();
   $: {
     if (currentMonth) {
       const mergedData = mergeData(currentMonth, previousMonth);
-      console.log(mergedData);
 
-      data = mergedData.filter((category) => category.id !== 15); //Id#15 - Category "Other";
+      data = mergedData
+        .filter((category) => category.id !== 15) //Id#15 - Category "Other";
+        .filter((el) => el.previous || el.current || el.limit);
       otherCategory = mergedData.filter((category) => category.id === 15).pop();
+      unbudgeted = mergedData.filter(
+        (t) => !(t.previous || t.current || t.limit)
+      );
 
-      isEmpty = !data.length;
+      isEmpty = !mergedData.length;
     }
   }
 
@@ -87,17 +93,16 @@
     currentMonth: Statement[],
     previousMonth: Statement[] | undefined
   ): ChartData[] => {
-    const current = currentMonth
-      .map(({ category, moneySpent, limit, id }) => ({
-        id,
-        title: category,
-        current: moneySpent,
-        previous:
-          (previousMonth &&
-            previousMonth.find((st) => st.category === category)?.moneySpent) ||
-          0,
-        limit: limit || 0,
-      }));
+    const current = currentMonth.map(({ category, moneySpent, limit, id }) => ({
+      id,
+      title: category,
+      current: moneySpent,
+      previous:
+        (previousMonth &&
+          previousMonth.find((st) => st.category === category)?.moneySpent) ||
+        0,
+      limit: limit || 0,
+    }));
 
     const previous = previousMonth
       ? previousMonth
@@ -114,7 +119,7 @@
           }))
       : [];
 
-    return [...current, ...previous];
+    return sorted([...current, ...previous]);
   };
 
   const sorted = (d) =>
@@ -122,6 +127,13 @@
       (a, b) =>
         b.limit - a.limit || b.current - a.current || b.previous - a.previous
     );
+
+  const handleAddCategory = (e: CustomEvent<ChartData>) => {
+    console.log('1', data);
+    data = [...data, e.detail];
+    console.log('2', data);
+    console.log('handleAddCategory => detail', e.detail);
+  };
 </script>
 
 {#if showSettings}
@@ -129,7 +141,7 @@
 {/if}
 {#if userInfo}
   <main class="flex w-full flex-col items-center">
-    <div class="header flex justify-end w-full px-5 mt-4 md:mb-40 mb-10">
+    <div class="header flex justify-end w-full px-5 mt-4 md:mb-32 mb-10">
       <div class="flex w-1/8 ">
         <div
           class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
@@ -145,7 +157,7 @@
           <img src="images/tg.png" alt="telegram" />
         </div>
         <div class="user flex items-center" />
-        <div class="logout ml-6 user flex items-center">
+        <div class="logout ml-6 user flex">
           <UserProfile
             bind:showSettings
             user={userInfo}
@@ -158,6 +170,16 @@
       </div>
     </div>
     <section class="container">
+      <div class="w-full flex justify-end">
+        <div class="mb-15">
+          {#if data}
+            <UnbudgetedCategories
+              categories={unbudgeted}
+              on:addCategory={handleAddCategory}
+            />
+          {/if}
+        </div>
+      </div>
       {#if isEmpty}
         <h1 class="w-full flex items-start text-gray-700">
           You did not spend anything for current month
@@ -165,27 +187,25 @@
       {/if}
       <!-- <RawCharts /> -->
       {#if data}
-        {#each sorted(data) as { previous, current, title, limit }}
+        {#each data as { previous, current, title, limit }}
           <StackedBar
             {previous}
             {current}
             {title}
             {limit}
-            on:setLimit={handleSetLimit(title)}
             maxValue={maxBarSize(data)}
           />
         {/each}
       {/if}
       {#if otherCategory}
-        <div class='other-category'>
+        <div class="other-category">
           <StackedBar
-          previous={otherCategory.previous}
-          current={otherCategory.current}
-          title={otherCategory.title}
-          limit={otherCategory.limit}
-          on:setLimit={handleSetLimit(otherCategory.title)}
-          maxValue={maxBarSize([otherCategory])}
-        />
+            previous={otherCategory.previous}
+            current={otherCategory.current}
+            title={otherCategory.title}
+            limit={otherCategory.limit}
+            maxValue={maxBarSize([otherCategory])}
+          />
         </div>
       {/if}
     </section>
