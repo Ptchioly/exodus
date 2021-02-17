@@ -36,6 +36,8 @@ module.exports = {
       red: colors.rose,
       yellow: colors.amber,
       coolGreen: {
+        light: '#a6d6d1',
+        lessLight: 'rgb(47, 158, 158, .5)',
         default: '#2F9E9E',
         dark: '#2d9a9a',
         darkest: '#2b9090',
