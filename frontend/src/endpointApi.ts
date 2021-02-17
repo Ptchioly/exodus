@@ -145,6 +145,9 @@ export const updatePassword = async (
   if (status !== 200) {
     const { message } = await response.json();
     return { status, message };
+  } else {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
   }
 };
 
@@ -164,6 +167,9 @@ export const updateXToken = async (
   if (status !== 200) {
     const { message } = await response.json();
     return { status, message };
+  } else {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
   }
 };
 
@@ -180,5 +186,8 @@ export const deleteUser = async (): Promise<
   if (status !== 200) {
     const { message } = await response.json();
     return { status, message };
+  } else {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
   }
 };

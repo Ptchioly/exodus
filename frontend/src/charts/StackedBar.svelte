@@ -2,10 +2,10 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
-  export let title;
-  export let current;
-  export let previous;
-  export let limit;
+  export let title: string;
+  export let current: number;
+  export let previous: number;
+  export let limit: number;
   export let maxValue = 4000;
 
   let currentP = 0;
@@ -14,16 +14,20 @@
   let overlap: number;
   let smol = false;
 
-  let bar;
-  let limits;
-  let currentElement;
+  const percentOf = (i) => (i * 100) / maxValue;
+  const getRemainings = () => percentOf((limit - current) * (maxValue / current));
+
+  let remainings = getRemainings();
+
+  let bar: HTMLElement;
+  let limits: HTMLElement;
+  let currentElement: HTMLElement;
 
   const detailed = (e) => {
     if (!bar || e.target.classList.contains('limit')) return;
     bar.classList.toggle('detailed');
   };
 
-  const percentOf = (i) => (i * 100) / maxValue;
 
   const countOverlap = () => {
     return limit && current > limit
@@ -42,16 +46,29 @@
     }
   };
 
-  const isSmallEnough = (elem) => {
+  const isSmallEnough = (elem: HTMLElement) => {
     if (elem) {
       const barRect = bar.getBoundingClientRect();
       return (currentP * barRect.width) / 100 < 60;
     }
   };
 
-  const dispatch = createEventDispatcher();
+  let timeoutId: any;
+  let delay = 5000;
+  let limitCallback: () => Promise<any> | null;
+
   const setLimit = () => {
-    dispatch('setLimit', { limit });
+    if (timeoutId) clearInterval(timeoutId);
+    limitCallback = () => updateLimit(title, limit);
+    timeoutId = setTimeout(async () => {
+      await limitCallback();
+      limitCallback = null;
+    }, delay);
+  };
+
+  window.onbeforeunload = () => {
+    limitCallback && limitCallback();
+    console.log('AAAAAAAAAAa');
   };
 
   const move = (e) => {
@@ -95,6 +112,8 @@
     overlap = countOverlap();
     previousP = percentOf(previous);
     currentP = percentOf(current);
+    smol = isSmallEnough(currentElement);
+    remainings = getRemainings();
   }
 </script>
 
@@ -103,6 +122,7 @@
     <section class="actions">
       {#if limit <= 0}
         <button
+          data-automation-id="limit-button"
           class="action action--addLimit"
           on:click={() => {
             limit = 50;
@@ -159,11 +179,7 @@
             />
             <div
               class="bar__toLimit"
-              style={`width: ${percentOf(
-                (limit - current) * (maxValue / current)
-              )}%; margin-right: -${
-                (limitP - currentP) * (maxValue / current)
-              }%`}
+              style={`width: ${remainings}%; margin-right: -${remainings}%;`}
             >
               {#if limit && limit > current + 20}
                 <div>
@@ -174,6 +190,10 @@
                 </div>
               {/if}
             </div>
+          </div>
+        {:else if limit && !current}
+          <div class='unbar__toLimit' style='width: {limitP}%'>
+            <div><div class:detailed={limit - current > 99} data-value={limit}></div></div>
           </div>
         {/if}
       </div>
@@ -217,7 +237,7 @@
   }
 
   .actions {
-    width: 45%;
+    width: 5em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -256,7 +276,7 @@
   }
 
   .title {
-    width: 55%;
+    width: calc(100% - 5em);
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     display: flex;
@@ -287,6 +307,7 @@
 
   .bar {
     height: 2em;
+    max-width: 100%;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
@@ -304,12 +325,14 @@
     transition: width 0s;
   }
 
-  .bar__toLimit {
+  .bar__toLimit,
+  .unbar__toLimit {
     display: flex;
     align-items: center;
   }
 
-  .bar__toLimit > div {
+  .bar__toLimit > div,
+  .unbar__toLimit > div {
     width: 100%;
     height: 1em;
     margin: 4px;
@@ -319,13 +342,15 @@
     border-right: 1px solid #2f9e9e;
   }
 
-  .bar__toLimit > div > div {
+  .bar__toLimit > div > div,
+  .unbar__toLimit > div > div {
     width: 100%;
     height: 0px;
     border-top: 1px dashed #2f9e9e;
   }
 
-  .bar__toLimit > div > div.detailed::before {
+  .bar__toLimit > div > div.detailed::before,
+  .unbar__toLimit > div > div.detailed::before {
     content: attr(data-value);
     font-size: 0.5em;
     color: #2f9e9e;
@@ -338,14 +363,21 @@
     padding: 1px 3px;
   }
 
+  .unbar__toLimit {
+    margin-top: -2em;
+    height: 2em;
+  }
+
   .detailed > .bars > .bar--previous {
     margin-top: 0.5em;
     margin-left: -0.5em;
   }
 
-  .detailed > .bars > .bar--current {
+  .detailed > .bars > .bar--current,
+  .detailed > .bars > .unbar__toLimit {
     margin-top: -1.5em;
     margin-left: -1em;
+    transition: margin 0.2s, width 0.5s ease;
   }
 
   .detailed > .limits:hover > .limit--red,
