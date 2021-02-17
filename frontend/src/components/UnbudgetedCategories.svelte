@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { fly, scale, slide } from 'svelte/transition';
-
+  import { fly } from 'svelte/transition';
   import type { ChartData } from '../types/Api';
 
   export let categories: ChartData[];
@@ -18,7 +17,7 @@
   $: if (!categories.length) isActive = false;
 </script>
 
-<div class=" text-gray-800">
+<div class="text-gray-800" data-automation-id="unbudgeted-categories">
   {#if isActive}
     <div
       class="flex rounded-2xl text-sm bg-coolGreen-light px-3 py-0.5 cursor-pointer items-center"
@@ -30,12 +29,12 @@
             class="pl-3 pr-1.5 py-1 hover:bg-coolGreen-lessLight rounded-3xl flex items-center justify-center"
             on:mouseenter={() => (activeCategotegory = category.title)}
             on:mouseleave={() => (activeCategotegory = null)}
+            on:click={handleClick(category)}
           >
             <div>{category.title}</div>
             <div
               class="ml-2 add opacity-0 mr-0.5"
               class:active={activeCategotegory === category.title}
-              on:click={handleClick(category)}
             >
               <img alt="add" src="images/add-small.svg" />
             </div>
