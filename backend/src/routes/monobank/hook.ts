@@ -37,7 +37,7 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(updateUserRawStatement)) {
-    console.log('LOGGGGGGGGGGING RAW UPDATE LOL');
+    console.log('LOGGGGGGGGGGING RAW UPDATE LOL', updateUserRawStatement);
     return respond.FailureResponse('Failed to update user raw statement');
   }
 
@@ -51,7 +51,7 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(inctementResponse)) {
-    console.log('LOGGGING INCREMENT LOL');
+    console.log('LOGGGING INCREMENT LOL', inctementResponse);
     return respond.FailureResponse('Failed to increment proccess');
   }
 

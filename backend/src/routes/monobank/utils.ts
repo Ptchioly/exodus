@@ -118,5 +118,5 @@ export const updateLimit = async (
         },
       }
     );
-  } else console.log('error');
+  }
 };
