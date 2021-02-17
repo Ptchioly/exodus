@@ -132,7 +132,7 @@ export const appendStatement = async (
     .catch((err) => err);
 };
 
-export const incrementStatemntSpendings = async (
+export const incrementStatementSpendings = async (
   table: string,
   keyData: { accountId: string },
   incValue: number,

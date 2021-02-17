@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { appendStatement, incrementStatemntSpendings } from '../../dynamoAPI';
+import { appendStatement, incrementStatementSpendings } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { isFailure } from '../types/guards';
 import { MonoStatement } from '../types/types';
@@ -41,7 +41,7 @@ hook.post('/hook', async (req: any, res) => {
     return respond.FailureResponse('Failed to update user raw statement');
   }
 
-  const inctementResponse = incrementStatemntSpendings(
+  const inctementResponse = incrementStatementSpendings(
     'statements',
     {
       accountId: account,
