@@ -10,13 +10,16 @@ export const telegramBot = Router().post('/telegram', async (req, res) => {
   const { message } = req.body;
   if (!message) return endpointRespond(res).SuccessResponse();
   if (message.text === '/start') {
-    return await sendTelegramMessage(res, message.chat.id)(
+    await sendTelegramMessage(message.chat.id)(
       'Send me a contact to receive statements and limit alerts. 🐝',
       startTelegramBody()
     );
+    return endpointRespond(res).SuccessResponse();
   }
   if (message.contact) {
     return await processContact(res, message);
   }
-  return await sendTelegramMessage(res, message.chat.id)(`🦜 ${message.text}`);
+
+  await sendTelegramMessage(message.chat.id)(`🦜 ${message.text}`);
+  return endpointRespond(res).SuccessResponse();
 });
