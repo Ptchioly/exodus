@@ -41,7 +41,7 @@ hook.post('/hook', async (req: any, res) => {
     return respond.FailureResponse('Failed to update user raw statement');
   }
 
-  const inctementResponse = incrementStatementSpendings(
+  const inctementResponse = await incrementStatementSpendings(
     'statements',
     {
       accountId: account,
