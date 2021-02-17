@@ -113,6 +113,7 @@
     currentP = percentOf(current);
     smol = isSmallEnough(currentElement);
     remainings = getRemainings();
+    maxValue = maxValue;
   }
 </script>
 
@@ -395,12 +396,10 @@
   }
 
   .bar--previous {
-    width: 50%;
     background-color: #a6d6d1;
   }
 
   .bar--current {
-    width: 30%;
     background-color: #2f9e9e;
     margin-top: -2em;
     display: flex;
