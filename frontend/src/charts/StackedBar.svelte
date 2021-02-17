@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
   export let title: string;
@@ -54,7 +54,7 @@
   };
 
   let timeoutId: any;
-  let delay = 5000;
+  let delay = 1500;
   let limitCallback: () => Promise<any> | null;
 
   const setLimit = () => {
