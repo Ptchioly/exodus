@@ -15,7 +15,8 @@
   let smol = false;
 
   const percentOf = (i) => (i * 100) / maxValue;
-  const getRemainings = () => percentOf((limit - current) * (maxValue / current));
+  const getRemainings = () =>
+    percentOf((limit - current) * (maxValue / current));
 
   let remainings = getRemainings();
 
@@ -27,7 +28,6 @@
     if (!bar || e.target.classList.contains('limit')) return;
     bar.classList.toggle('detailed');
   };
-
 
   const countOverlap = () => {
     return limit && current > limit
@@ -191,8 +191,10 @@
             </div>
           </div>
         {:else if limit && !current}
-          <div class='unbar__toLimit' style='width: {limitP}%'>
-            <div><div class:detailed={limit - current > 99} data-value={limit}></div></div>
+          <div class="unbar__toLimit" style="width: {limitP}%">
+            <div>
+              <div class:detailed={limit - current > 99} data-value={limit} />
+            </div>
           </div>
         {/if}
       </div>
