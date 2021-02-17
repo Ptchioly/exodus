@@ -157,7 +157,7 @@
         </div>
       </div>
     </div>
-    <section class="container">
+    <section class="container pb-20">
       {#if isEmpty}
         <h1 class="w-full flex items-start text-gray-700">
           You did not spend anything for current month
