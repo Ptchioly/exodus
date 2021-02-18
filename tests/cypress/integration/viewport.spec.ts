@@ -6,6 +6,7 @@ describe(`Login page visibility`, () => {
 
   before(function() {
     cy.deleteMyUserIfExists()
+    cy.waitInCIEnv()
     cy.registerUser()
   })
 

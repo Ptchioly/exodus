@@ -61,6 +61,13 @@ declare namespace Cypress {
     checkHomePageLoaded(): void
 
     // /**
+    //  * In CI env we need to wait before user registration to make sure tests don't fail.
+    // * This is a problem in Mono API
+    //  */
+
+    waitInCIEnv(): void
+
+    // /**
     //  * Gets JWT Token
     //  */
     // getLoginToken(username: string, password?: string): Chainable<Response>;

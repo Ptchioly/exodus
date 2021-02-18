@@ -4,6 +4,8 @@
 describe('sign up', () => {
   const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
 
+  before(() => cy.waitInCIEnv())
+
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.visit('/')
@@ -14,6 +16,8 @@ describe('sign up', () => {
       if (Cypress._.isArray(size)) {
         cy.viewport(size[0], size[1])
       } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         cy.viewport(size)
       }
       cy.getBySel('link-signup-button').click()

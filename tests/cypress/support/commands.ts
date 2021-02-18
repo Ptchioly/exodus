@@ -124,3 +124,11 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
 })
+
+Cypress.Commands.add('waitInCIEnv', () => {
+  if (Cypress.env('CIWait') === true) {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(120000)
+    console.log('WAIT FOR CI TEST')
+  }
+})
