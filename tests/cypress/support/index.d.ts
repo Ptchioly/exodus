@@ -59,51 +59,5 @@ declare namespace Cypress {
     deleteMyUserIfExists(options?: UserLoginInfo): Chainable<void>
 
     checkHomePageLoaded(): void
-
-    // /**
-    //  * Gets JWT Token
-    //  */
-    // getLoginToken(username: string, password?: string): Chainable<Response>;
-
-    // /**
-    //  * Sets JWT Token
-    //  */
-    // setToken(token: Response): void;
-
-    // /**
-    //  *  Cypress task for deleting user from database
-    //  */
-    // task(
-    //   event: "db:deleteUser",
-    //   arg: {
-    //     username: string,
-    //     accessKeyId: string,
-    //     secretAccessKey: string,
-    //     region: string
-    //   }
-    // ): Chainable<any>;
-
-    // /**
-    //  *  Cypress task for creating user in database
-    //  */
-
-    // task(
-    //   event: "db:createUser",
-    //   arg: { user: string, password: string }
-    // ): Chainable<any>;
-
-    // /**
-    //  *  Cypress task for quering user from database
-    //  */
-
-    // task(
-    //   event: "db:getUser",
-    //   arg: {
-    //     username: string,
-    //     accessKeyId: string,
-    //     secretAccessKey: string,
-    //     region: string
-    //   }
-    // ): Chainable<any>;
   }
 }

@@ -29,22 +29,6 @@ Cypress.Commands.add(
   }
 )
 
-// Cypress.Commands.add(
-//   "deleteMyUserIfExists",
-//   (user = { username: Cypress.env("username"), password: Cypress.env("password") }) => {
-//     cy.intercept(/login/).as("login")
-//     cy.loginByAPI(user)
-//     cy.wait("@login").then(interception =>
-//       interception.response?.statusCode === 200 ?
-//         cy.request({
-//           method: "DELETE",
-//           url: `${Cypress.env("apiUrl")}/deleteUser`,
-//         }) :
-//         cy.log(`Unable to login to delete user ${Cypress.env("username")}.`)
-//     )
-//   }
-// )
-
 Cypress.Commands.add(
   'deleteMyUserIfExists',
   (
@@ -67,7 +51,15 @@ Cypress.Commands.add(
   }
 )
 
+const waitInCIEnv = (): void => {
+  if (Cypress.env('CIWait') === 'true') {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(60000)
+  }
+}
+
 Cypress.Commands.add('registerUser', (options = {}) => {
+  waitInCIEnv()
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
@@ -140,8 +132,3 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
 })
-
-// Cypress.Commands.add('setToken', (response) => {
-//   const token = response.headers['set-cookie'][0].match(/jwt=([^;]+)/)[1];
-//   return cy.setCookie('jwt', token, { expiry: configs.MAX_AGE })
-// })
