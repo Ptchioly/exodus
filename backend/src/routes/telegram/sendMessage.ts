@@ -24,7 +24,6 @@ export const sendTelegramMessage = (chat_id: string) => async (
   text: string,
   startBody = {}
 ) => {
-  console.log('TG text', text);
   await fetch(`${telegramURL}/sendMessage`, {
     method: 'POST',
     headers: {
