@@ -3,7 +3,8 @@ import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from './config';
 import { startMonth } from './routes/monobank/utils';
 import { isFailure } from './routes/types/guards';
-import { GetOutput, MonoStatement } from './routes/types/types';
+import { GetOutput, MonoStatement, Statement } from './routes/types/types';
+import { AWSNotFound } from './utils';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,
@@ -19,6 +20,7 @@ export const getItem = async (
     TableName: table,
     Key: keyData,
   };
+  console.log('params', params);
 
   return await documentClient
     .get(params)
@@ -125,7 +127,6 @@ export const appendStatement = async (
       ':empty_list': [],
     },
   };
-  console.log(JSON.stringify(params));
 
   return await documentClient
     .update(params)
@@ -133,7 +134,7 @@ export const appendStatement = async (
     .catch((err) => err);
 };
 
-export const incrementStatemntSpendings = async (
+export const incrementStatementSpendings = async (
   table: string,
   keyData: { accountId: string },
   incValue: number,
@@ -164,3 +165,40 @@ export const deleteAccounts = async (table: string, accounts: string[]) =>
   Promise.allSettled(
     accounts.map((account) => deleteItem(table, { accountId: account }))
   ).then((results) => !results.some(isFailure));
+
+export const moneySpetToLimit = async (
+  TableName: string,
+  Key: { accountId: string },
+  categoryId: number
+): Promise<
+  AWSError | { limit?: number; moneySpent: number; username: string }
+> => {
+  const currentMounth = startMonth('cur');
+  const output: AWSError | { Item: Statement } = await documentClient
+    .get({
+      TableName,
+      Key,
+      AttributesToGet: [`${currentMounth}`, 'username'],
+    })
+    .promise()
+    .catch((e) => e);
+
+  if (isFailure(output)) return output;
+  const { username } = output.Item;
+  const categories = output.Item[currentMounth];
+  if (!categories)
+    return AWSNotFound('There are no categories for current mounth');
+
+  const category = categories.processedData.find(
+    (category) => category.id === categoryId
+  );
+
+  if (!category) return AWSNotFound('No such category');
+
+  const { limit, moneySpent } = category;
+  return {
+    limit,
+    moneySpent,
+    username,
+  };
+};

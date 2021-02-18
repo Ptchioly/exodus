@@ -24,7 +24,10 @@ describe(`Login page visibility`, () => {
         // @ts-ignore
         cy.viewport(size)
       }
-      cy.contains('h1', 'Sign in to Exodus').should('be.inViewport')
+      cy.visit('/')
+      cy.get('h1')
+        .should('contain', 'Sign in to Exodus')
+        .and('be.inViewport')
       cy.getBySel('phone-input').should('be.inViewport')
       cy.getBySel('pwd-input').should('be.inViewport')
       cy.getBySel('signin-button').should('be.inViewport')
@@ -49,23 +52,31 @@ describe(`Login page visibility`, () => {
       cy.getBySel('signup-button').should('be.inViewport')
     })
 
-    // it(`displays menu buttons and budget graphs on the home page using ${size} viewport`, () => {
-    //   if (Cypress._.isArray(size)) {
-    //     cy.viewport(size[0], size[1])
-    //   } else {
-    //     cy.viewport(size)
-    //   }
-    //   cy.loginByAPI()
-    //   cy.visit('/')
-    // //   cy.getBySel('telegram-button').should('be.visible')
-    //   cy.getBySel('menu-button').should('be.inViewport')
-    //   cy.getBySel('limit-button').first().should('be.inViewport')
-    //   cy.getBySel('limit-button').click()
-    //   cy.getBySel('limit-setter').should('be.inViewport')
-    //     // cy.getBySel('limit-input').clear()
-    //     // cy.get(':nth-child(1) > .top > .actions > .action').click()
-    //   cy.getBySel('limit-input').type('150')
-    //   cy.getBySel('limit-setter').first().should('be.inViewport')
-    // })
+    it(`displays menu buttons and budget graphs on the home page using ${size} viewport`, () => {
+      if (Cypress._.isArray(size)) {
+        cy.viewport(size[0], size[1])
+      } else {
+        cy.viewport(size)
+      }
+      cy.loginByAPI()
+      cy.visit('/')
+      cy.getBySel('telegram-link').should('be.visible')
+      // cy.getBySel('menu-button').should('be.inViewport')
+      cy.getBySel('limit-button')
+        .first()
+        .should('be.inViewport')
+      cy.getBySel('limit-button')
+        .first()
+        .click()
+      cy.getBySel('limit-setter')
+        .first()
+        .should('be.inViewport')
+      cy.getBySel('limit-input')
+        .first()
+        .type('1') // rewrite this with proper values when the field gets fixed, currently this results in value '501'
+      cy.getBySel('limit-setter')
+        .first()
+        .should('be.inViewport')
+    })
   })
 })

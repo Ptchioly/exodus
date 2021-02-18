@@ -3,8 +3,8 @@
   import type { UserInfo } from '../types/Api';
   import UserMenu from './UserMenu.svelte';
 
-  export let user: UserInfo;
-  $: name = user.name;
+  export let user: string;
+  $: name = user;
   const dispath = createEventDispatcher();
   let isOpen: boolean = false;
   $: [first, last] = name.split(' ');

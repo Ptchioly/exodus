@@ -24,6 +24,7 @@ export interface RequestsQueue {
 }
 
 export type ChartData = {
+  id: number;
   title: string;
   previous: number;
   current: number;

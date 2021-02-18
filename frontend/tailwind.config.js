@@ -1,5 +1,6 @@
 const production = !process.env.ROLLUP_WATCH;
 const colors = require('tailwindcss/colors');
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   theme: {
@@ -21,6 +22,10 @@ module.exports = {
       inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
       none: 'none',
     },
+    screens: {
+      xs: '300px',
+      ...defaultTheme.screens,
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
@@ -31,6 +36,8 @@ module.exports = {
       red: colors.rose,
       yellow: colors.amber,
       coolGreen: {
+        light: '#a6d6d1',
+        lessLight: 'rgb(47, 158, 158, .5)',
         default: '#2F9E9E',
         dark: '#2d9a9a',
         darkest: '#2b9090',

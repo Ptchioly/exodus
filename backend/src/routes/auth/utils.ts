@@ -1,4 +1,6 @@
 import { AES, enc } from 'crypto-js';
+import fetch from 'node-fetch';
+import { requests } from '../monobank/endpoints';
 import { MonoAccount } from '../types/types';
 
 export const encrypt = (password: string, key: string): string =>
@@ -27,3 +29,17 @@ export const isValidUsername = (username: string): boolean =>
 
 export const getAccounts = (accounts: MonoAccount[]): string[] =>
   accounts.filter((acc) => acc.balance !== 0).map((acc) => acc.id);
+
+export const setHook = async (xtoken: string): Promise<void> => {
+  return await fetch(requests.webhook(), {
+    method: 'POST',
+    headers: {
+      'X-Token': xtoken,
+    },
+    body: JSON.stringify({
+      webHookUrl: 'https://api.beeeee.es/hook',
+    }),
+  })
+    .then(console.log)
+    .catch(console.log);
+};

@@ -9,6 +9,7 @@
 const isInViewport = _chai => {
   function assertIsInViewport() {
     const subject = this._obj
+    // cy.state is undocumented and should probably not be used, but it's the only thing that works for now
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const bottom = Cypress.$(cy.state('window')).height()
