@@ -30,7 +30,7 @@ export const defineCategory = (payments: MonoStatements): Payment[] => {
   const initialCategories = getCategoriesTemplate(categories);
   return payments.reduce((accum, { mcc, amount }) => {
     const { id } = getMccCategory(mcc);
-    if (Math.sign(amount) === -1) return accum;
+    if (Math.sign(amount) === 1) return accum;
     return accum.map((pay) => {
       if (pay.categoryId !== id) return pay;
       return {
