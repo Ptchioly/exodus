@@ -15,7 +15,8 @@
   <div>
     <div
       data-automation-id="menu-button"
-      on:click={async () => {
+      on:click={(e) => {
+        e.stopPropagation();
         isOpen = !isOpen;
       }}
       class="bg-coolGreen-default w-8 h-8 rounded-full text-white small shadow-lg border-coolGreen-dark border-4 flex items-center justify-center flex-row cursor-pointer "
@@ -34,6 +35,8 @@
       />{/if}
   </div>
 </div>
+
+<svelte:window on:click={() => (isOpen = false)} />
 
 <style>
   .small {

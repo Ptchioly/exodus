@@ -81,7 +81,7 @@
             className={`${label} mt-3`}
           />
         {/if}
-        <div class="eye-icon leading-5">
+        <div class="eye-icon leading-5 mt-3">
           <div
             class:show
             on:click={() => (show = !show)}
@@ -109,7 +109,7 @@
             className={`${label} mt-3`}
           />
         {/if}
-        <div class="eye-icon leading-5">
+        <div class="eye-icon leading-5 mt-3">
           <div
             class:show
             on:click={() => (show = !show)}

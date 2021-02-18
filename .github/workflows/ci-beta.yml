@@ -48,7 +48,7 @@ jobs:
     strategy:
       matrix:
         node-version: ['12.x']
-    needs: setup-and-run-ui-tests
+    # needs: setup-and-run-ui-tests
     steps:
       - uses: actions/checkout@v2
 
