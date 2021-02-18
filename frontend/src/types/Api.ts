@@ -37,3 +37,5 @@ export type Statement = {
   limit: number;
   id: number;
 };
+
+export type StatementHandler = (statement: Statement) => number;

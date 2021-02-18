@@ -2,6 +2,8 @@
 /// <reference path="../support/index.d.ts" />
 
 describe.only('Login', () => {
+  const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
+
   before(function() {
     cy.deleteMyUserIfExists()
     cy.registerUser()
@@ -12,8 +14,21 @@ describe.only('Login', () => {
     cy.visit('/')
   })
 
-  it('displays "Sign in to Exodus" on the login page', () => {
-    cy.contains('h1', 'Sign in to Exodus').should('be.visible')
+  sizes.forEach(size => {
+    it(`displays "Sign In" greeting and login forms on the login page using ${size} viewport`, () => {
+      if (Cypress._.isArray(size)) {
+        cy.viewport(size[0], size[1])
+      } else {
+        cy.viewport(size)
+      }
+      cy.visit('/')
+      cy.get('h1')
+        .should('contain', 'Sign in to Exodus')
+        .and('be.inViewport')
+      cy.getBySel('phone-input').should('be.inViewport')
+      cy.getBySel('pwd-input').should('be.inViewport')
+      cy.getBySel('signin-button').should('be.inViewport')
+    })
   })
 
   it('displays register page on "Join now" click', () => {
