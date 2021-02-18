@@ -43,20 +43,20 @@ declare namespace Cypress {
     // /**
     //  * Logs user in manually via app UI
     //  */
-    manualLogin(options?: UserLoginInfo): Chainable<any>
+    manualLogin(options?: UserLoginInfo): void
 
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */
-    registerUser(options?: UserSignupInfo): Chainable<any>
+    registerUser(options?: UserSignupInfo): Chainable<Chai.Assertion>
 
-    manualRegisterUser(options?: manualSignupInfo): Chainable<any>
+    manualRegisterUser(options?: manualSignupInfo): void
 
     // /**
     //  *  logs in to get JWT with creds defined in cypress.env.json
     //  *  then deletes a user from inside his own account
     //  */
-    deleteMyUserIfExists(options?: UserLoginInfo): Chainable<any>
+    deleteMyUserIfExists(options?: UserLoginInfo): Chainable<void>
 
     checkHomePageLoaded(): void
 

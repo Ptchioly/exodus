@@ -119,7 +119,6 @@ Cypress.Commands.add('manualLogin', (user = {}) => {
   cy.getBySel('pwd-input').type(userInfo.password)
   cy.intercept('POST', 'login').as('login')
   cy.getBySel('signin-button').click()
-  return cy.wait('@login')
 })
 
 // /**
@@ -140,8 +139,6 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('xtoken-input').type(userInfo.xtoken)
   cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
-  return cy.wait('@signup')
-  // cy.checkHomePageLoaded();
 })
 
 // Cypress.Commands.add('setToken', (response) => {
