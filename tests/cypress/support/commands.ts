@@ -51,7 +51,15 @@ Cypress.Commands.add(
   }
 )
 
+const waitInCIEnv = (): void => {
+  if (Cypress.env('CIWait') === 'true') {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(60000)
+  }
+}
+
 Cypress.Commands.add('registerUser', (options = {}) => {
+  waitInCIEnv()
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
@@ -123,12 +131,4 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('xtoken-input').type(userInfo.xtoken)
   cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
-})
-
-Cypress.Commands.add('waitInCIEnv', () => {
-  if (Cypress.env('CIWait') === 'true') {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(120000)
-    console.log('WAIT FOR CI TEST')
-  }
 })

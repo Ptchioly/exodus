@@ -4,8 +4,6 @@
 describe('sign up', () => {
   const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
 
-  before(() => cy.waitInCIEnv())
-
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.visit('/')
