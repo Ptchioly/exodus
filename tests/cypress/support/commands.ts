@@ -126,7 +126,7 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
 })
 
 Cypress.Commands.add('waitInCIEnv', () => {
-  if (Cypress.env('CIWait') === true) {
+  if (Cypress.env('CIWait') === 'true') {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(120000)
     console.log('WAIT FOR CI TEST')
