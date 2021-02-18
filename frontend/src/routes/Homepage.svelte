@@ -155,6 +155,8 @@
   const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
     chartStatements = [...chartStatements, detail];
   };
+  const sorted = (d) =>
+    d.sort((a, b) => b.current - a.current || b.previous - a.previous);
 
   const init = async () => {
     // let tokenCheck = localStorage.getItem('hookCheck');
