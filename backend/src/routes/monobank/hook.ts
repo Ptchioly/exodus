@@ -54,7 +54,6 @@ hook.post('/hook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
   if (!req.body) {
-    console.log('LOGGGGGGGING EMPTY BODY LOL');
     return respond.FailureResponse('Empty body.');
   } // dunno if it's necessary
 
@@ -72,7 +71,6 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(updateUserRawStatement)) {
-    console.log('LOGGGGGGGGGGING RAW UPDATE LOL', updateUserRawStatement);
     return respond.FailureResponse('Failed to update user raw statement');
   }
 
@@ -86,7 +84,6 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(inctementResponse)) {
-    console.log('LOGGGING INCREMENT LOL', inctementResponse);
     return respond.FailureResponse('Failed to increment proccess');
   }
 
