@@ -6,10 +6,11 @@
   export let error: boolean;
   export let errorMessage: string;
 
-  let currentPass = '';
-  let newPass = '';
-  let confirmPass = '';
+  let currentPass: string;
+  let newPass: string;
+  let confirmPass: string;
   let show = false;
+  let label = 'ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5';
 
   const changePassword = async (
     current: string,
@@ -34,38 +35,86 @@
       <div class="mt-4">Confirm Password</div>
     </div>
     <div class="flex flex-col">
-      <div class='relative'>
+      <div class="relative">
         {#if show}
-          <Input type='text' bind:value={currentPass} placeholder="Current" dataAutomationId="current-password" klass="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-"/>
+          <Input
+            type="text"
+            bind:value={currentPass}
+            placeholder="Current"
+            dataAutomationId="current-password"
+            className={label}
+          />
         {:else}
-          <Input type='password' bind:value={currentPass} placeholder="Current" dataAutomationId="current-password" klass="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 max-w-"/>
+          <Input
+            type="password"
+            bind:value={currentPass}
+            placeholder="Current"
+            dataAutomationId="current-password"
+            className={label}
+          />
         {/if}
-        <div class="absolute inset-y-0 right-4 pr-3 flex items-center text-sm leading-5">
-          <div class:show on:click={() => (show = !show)} class="px-1 rounded-md">
+        <div class="eye-icon leading-5">
+          <div
+            class:show
+            on:click={() => (show = !show)}
+            class="px-1 rounded-md"
+          >
             <img src="images/show-password.svg" alt="show-password" />
           </div>
         </div>
       </div>
       <div class="relative">
         {#if show}
-          <Input type='text' bind:value={newPass} placeholder="New" dataAutomationId="new-password" klass="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"/>
+          <Input
+            type="text"
+            bind:value={newPass}
+            placeholder="New"
+            dataAutomationId="new-password"
+            className="label mt-3"
+          />
         {:else}
-          <Input type='password' bind:value={newPass} placeholder="New" dataAutomationId="new-password" klass="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"/>
+          <Input
+            type="password"
+            bind:value={newPass}
+            placeholder="New"
+            dataAutomationId="new-password"
+            className="label mt-3"
+          />
         {/if}
-        <div class="absolute inset-y-0 right-4 pr-3 flex items-center text-sm leading-5 mt-3">
-          <div class:show on:click={() => (show = !show)} class="px-1 rounded-md">
+        <div class="label mt-3">
+          <div
+            class:show
+            on:click={() => (show = !show)}
+            class="px-1 rounded-md"
+          >
             <img src="images/show-password.svg" alt="show-password" />
           </div>
         </div>
       </div>
       <div class="relative">
         {#if show}
-          <Input type='text' bind:value={confirmPass} placeholder="Confirm" dataAutomationId="password-check" klass="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"/>
+          <Input
+            type="text"
+            bind:value={confirmPass}
+            placeholder="Confirm"
+            dataAutomationId="password-check"
+            className={`${label}mt-3`}
+          />
         {:else}
-          <Input type='password' bind:value={confirmPass} placeholder="Confirm" dataAutomationId="password-check" klass="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 mt-3"/>
+          <Input
+            type="password"
+            bind:value={confirmPass}
+            placeholder="Confirm"
+            dataAutomationId="password-check"
+            className={`${label}mt-3`}
+          />
         {/if}
-        <div class="absolute inset-y-0 right-4 pr-3 flex items-center text-sm leading-5 mt-3">
-          <div class:show on:click={() => (show = !show)} class="px-1 rounded-md">
+        <div class="eye-icon mt-3">
+          <div
+            class:show
+            on:click={() => (show = !show)}
+            class="px-1 rounded-md"
+          >
             <img src="images/show-password.svg" alt="show-password" />
           </div>
         </div>
@@ -80,9 +129,16 @@
   >
 </div>
 
-
-<style>
+<style lang="postcss">
   div.show {
     background-color: #ccc;
+  }
+
+  .label {
+    @apply ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5;
+  }
+
+  .eye-icon {
+    @apply absolute inset-y-0 right-4 pr-3 flex items-center text-sm leading-5;
   }
 </style>

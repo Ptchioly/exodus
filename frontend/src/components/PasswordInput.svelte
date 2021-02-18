@@ -18,7 +18,7 @@
   <div class="relative w-full">
     {#if show}
       <input
-        class="text-md text-gray-700 placeholder-gray-500 border-gray-200  border-2  pl-2  block px-3 mt-5 py-2 rounded-lg w-full"
+        class="pwd-input text-md"
         data-automation-id={dataAut}
         type="text"
         {placeholder}
@@ -27,7 +27,7 @@
       />
     {:else}
       <input
-        class="text-md text-gray-700 placeholder-gray-500 border-gray-200  border-2  pl-2  block px-3 mt-5 py-2 rounded-lg w-full"
+        class="pwd-input text-md"
         data-automation-id={dataAut}
         type="password"
         {placeholder}
@@ -48,5 +48,9 @@
 <style lang="postcss">
   .show {
     @apply rounded-2xl bg-gray-300;
+  }
+
+  .pwd-input {
+    @apply text-gray-700 placeholder-gray-500 border-gray-200  border-2  pl-2  block px-3 mt-5 py-2 rounded-lg w-full;
   }
 </style>
