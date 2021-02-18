@@ -59,7 +59,7 @@ const waitInCIEnv = (): void => {
 }
 
 Cypress.Commands.add('registerUser', (options = {}) => {
-  waitInCIEnv()
+  // waitInCIEnv()
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),

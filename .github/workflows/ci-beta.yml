@@ -28,7 +28,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           config: 'baseUrl=http://localhost:5000'
-          env: 'username="${{ secrets.TEST_USERNAME }}",password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080,CIWait="true"'
+          env: 'username="${{ secrets.TEST_USERNAME }}",password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080'
           # config: 'viewportWidth=375,viewportHeight=812,baseUrl=http://localhost:5000'
           start: npm run frontend:start
           wait-on: 'http://localhost:5000, http://localhost:8080/'
