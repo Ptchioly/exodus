@@ -70,7 +70,7 @@
             bind:value={newPass}
             placeholder="New"
             dataAutomationId="new-password"
-            className="label mt-3"
+            className={`${label} mt-3`}
           />
         {:else}
           <Input
@@ -78,10 +78,10 @@
             bind:value={newPass}
             placeholder="New"
             dataAutomationId="new-password"
-            className="label mt-3"
+            className={`${label} mt-3`}
           />
         {/if}
-        <div class="label mt-3">
+        <div class="eye-icon leading-5">
           <div
             class:show
             on:click={() => (show = !show)}
@@ -98,7 +98,7 @@
             bind:value={confirmPass}
             placeholder="Confirm"
             dataAutomationId="password-check"
-            className={`${label}mt-3`}
+            className={`${label} mt-3`}
           />
         {:else}
           <Input
@@ -106,10 +106,10 @@
             bind:value={confirmPass}
             placeholder="Confirm"
             dataAutomationId="password-check"
-            className={`${label}mt-3`}
+            className={`${label} mt-3`}
           />
         {/if}
-        <div class="eye-icon mt-3">
+        <div class="eye-icon leading-5">
           <div
             class:show
             on:click={() => (show = !show)}
