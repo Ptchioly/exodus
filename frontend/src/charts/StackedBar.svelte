@@ -185,7 +185,7 @@
                 <div>
                   <div
                     class:detailed={limit - current > 99}
-                    data-value={limit - current}
+                    data-value={Math.ceil(limit - current)}
                   />
                 </div>
               {/if}
