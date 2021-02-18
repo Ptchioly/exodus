@@ -11,7 +11,6 @@ describe(`Login page visibility`, () => {
   })
 
   beforeEach(() => {
-    cy.clearCookies()
     cy.visit('/')
   })
 
@@ -24,8 +23,6 @@ describe(`Login page visibility`, () => {
         // @ts-ignore
         cy.viewport(size)
       }
-      cy.loginByAPI()
-      cy.visit('/')
       cy.getBySel('telegram-link').should('be.visible')
       cy.getBySel('menu-button').should('be.inViewport')
       cy.getBySel('limit-button')
