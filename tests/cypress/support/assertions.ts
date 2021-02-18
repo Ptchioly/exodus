@@ -9,8 +9,11 @@
 const isInViewport = _chai => {
   function assertIsInViewport() {
     const subject = this._obj
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const bottom = Cypress.$(cy.state('window')).height()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const right = Cypress.$(cy.state('window')).width()
     const rect = subject[0].getBoundingClientRect()
 

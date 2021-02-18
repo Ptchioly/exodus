@@ -12,7 +12,7 @@ describe(`Login page visibility`, () => {
 
   beforeEach(() => {
     cy.clearCookies()
-    // cy.visit('/')
+    cy.visit('/')
   })
 
   sizes.forEach(size => {
@@ -20,9 +20,10 @@ describe(`Login page visibility`, () => {
       if (Cypress._.isArray(size)) {
         cy.viewport(size[0], size[1])
       } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         cy.viewport(size)
       }
-      cy.visit('/')
       cy.contains('h1', 'Sign in to Exodus').should('be.inViewport')
       cy.getBySel('phone-input').should('be.inViewport')
       cy.getBySel('pwd-input').should('be.inViewport')
@@ -33,6 +34,8 @@ describe(`Login page visibility`, () => {
       if (Cypress._.isArray(size)) {
         cy.viewport(size[0], size[1])
       } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         cy.viewport(size)
       }
       cy.getBySel('link-signup-button').click()

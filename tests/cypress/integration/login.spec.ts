@@ -41,6 +41,7 @@ describe.only('Login', () => {
 
   it('should error for an invalid user', () => {
     cy.manualLogin({ username: `123456789123` })
+    cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 400)
     cy.getBySel('login-error-message')
@@ -50,6 +51,7 @@ describe.only('Login', () => {
 
   it('should error for an invalid password for existing user', () => {
     cy.manualLogin({ password: `Wr0ngPa$$word` })
+    cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 400)
     cy.getBySel('login-error-message')
@@ -59,6 +61,7 @@ describe.only('Login', () => {
 
   it('displays home page on successful login', () => {
     cy.manualLogin()
+    cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 200)
     cy.getBySel('menu-button').should('be.visible')

@@ -9,6 +9,7 @@ describe('sign up', () => {
 
   it('registers new user', () => {
     cy.manualRegisterUser()
+    cy.wait('@signup')
       .its('response.statusCode')
       .should('eq', 200)
     cy.checkHomePageLoaded()
