@@ -2,9 +2,30 @@
 /// <reference path="../support/index.d.ts" />
 
 describe('sign up', () => {
+  const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
+
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.visit('/')
+  })
+
+  sizes.forEach(size => {
+    it(`displays "Sign Up" greeting and registration forms on the sign up page using ${size} viewport`, () => {
+      if (Cypress._.isArray(size)) {
+        cy.viewport(size[0], size[1])
+      } else {
+        cy.viewport(size)
+      }
+      cy.getBySel('link-signup-button').click()
+      cy.get('h1')
+        .should('contain', 'Sign Up')
+        .and('be.inViewport')
+      cy.getBySel('phone-input').should('be.inViewport')
+      cy.getBySel('pwd-input').should('be.inViewport')
+      cy.getBySel('confirm-pwd-input').should('be.inViewport')
+      cy.getBySel('xtoken-input').should('be.inViewport')
+      cy.getBySel('signup-button').should('be.inViewport')
+    })
   })
 
   it('registers new user', () => {
