@@ -124,8 +124,7 @@
 
   const sorted = (d) =>
     d.sort(
-      (a, b) =>
-        b.limit - a.limit || b.current - a.current || b.previous - a.previous
+      (a, b) => b.current - a.current || b.previous - a.previous
     );
 
   const handleAddCategory = (e: CustomEvent<ChartData>) => {
