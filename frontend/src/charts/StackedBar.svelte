@@ -1,72 +1,110 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
-  export let title;
-  export let current;
-  export let previous;
-  export let limit;
+  export let title: string;
+  export let current: number;
+  export let previous: number;
+  export let limit: number;
   export let maxValue = 4000;
 
-  let currentP = 0;
-  let previousP = 0;
-  let limitP = 0;
-  let overlap;
-  let smol = false;
-  let timeoutId;
+  const percentage = {
+    current: 0,
+    previous: 0,
+    limit: 0,
+  }
 
-  let bar;
-  let limits;
-  let currentElement;
+  const props = {
+    hideValue: false,
+    activeInput: limit > 0,
+    overlap: 0,
+    remainings: 0,
+  }
 
+  let barContainer: HTMLElement;
+  let limits: HTMLElement;
+  let currentBar: HTMLElement;
+  let inputLimit: HTMLElement;
+  
+  const percentOf = (value: number): number => (value * 100) / maxValue;
 
-
-  const detailed = (e) => {
-    if (!bar || e.target.classList.contains('limit')) return;
-    bar.classList.toggle('detailed');
+  const getRemainingsPercent = () => percentOf((limit - current) * (maxValue / current));
+  
+  const getOverlapPercent = () => {
+    return limit && current > limit
+      ? (maxValue / current) * (percentOf(current) - percentage.limit)
+      : 0;
   };
 
-  const percentOf = (i) => (i * 100) / maxValue;
+  const isSmallEnough = (elem: HTMLElement) => {
+    if (elem) {
+      const barRect = barContainer.getBoundingClientRect();
+      return (percentage.current * barRect.width) / 100 < 60;
+    }
+  };
 
-  const countOverlap = () => {
-    return limit && current > limit
-      ? (maxValue / current) * (percentOf(current) - limitP)
-      : 0;
+  let timeoutId: any;
+  let delay = 1500;
+  let limitCallback: () => Promise<any> | null;
+
+  const handleChange = () => {
+    if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
+    if (limit <= 0) props.activeInput = false;
+    if (typeof +limit === 'number' && +limit >= 0) setLimit()
+  }
+
+  const setLimit = () => {
+    if (timeoutId) clearInterval(timeoutId);
+    limitCallback = () => updateLimit(title, limit);
+    timeoutId = setTimeout(async () => {
+      await limitCallback();
+      limitCallback = null;
+    }, delay);
+  };
+
+  window.onbeforeunload = () => {
+    limitCallback && limitCallback();
   };
 
   const handlePress = (e) => {
     const step = 50;
+
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
+      handleChange();
+
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
+      handleChange();
     }
   };
 
-  const handleLimitSet = async (value) => {
-    updateLimit(title, value);
+  const handleDetailedView = (e) => {
+    if (!barContainer || e.target.classList.contains('limit')) return;
+    barContainer.classList.toggle('detailed');
   };
 
-  const isSmallEnough = (elem) => {
-    if (elem) {
-      const barRect = bar.getBoundingClientRect();
-      return (currentP * barRect.width) / 100 < 60;
-    }
-  };
+  const handleInitLimit = () => {
+    limit = current ? Math.ceil(current * 1.1) : 50;
+    props.activeInput = true;
+    window.setTimeout(() => { 
+      inputLimit.focus();
+    }, 1)
+    handleChange();
+  }
 
-  const move = (e) => {
+  const handleDragLimit = (e) => {
     const node = e.target;
     node.classList.add('moveable');
-    const overlap = bar.querySelector('.bar__over');
+    const overlap = barContainer.querySelector('.bar__over');
     overlap && overlap.classList.add('moveable');
 
     const handleMove = (e) => {
       const limitsRect = limits.getBoundingClientRect();
-      const movePercent = Math.round(
+      const moveToPercent = Math.round(
         ((e.clientX - limitsRect.left) * 100) / limitsRect.width
       );
-      if (movePercent >= 0 && movePercent <= 100) {
-        limit = Math.round((movePercent * maxValue) / 100);
+      if (moveToPercent >= 0 && moveToPercent <= 100) {
+        limit = Math.round((moveToPercent * maxValue) / 100);
       }
     };
 
@@ -74,41 +112,36 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
-      handleLimitSet(limit);
+      handleChange();
     };
 
     window.addEventListener('mouseup', handleEnd);
     window.addEventListener('mousemove', handleMove);
   };
 
-  onMount(() => {
-    setTimeout(() => {
-      currentP = percentOf(current);
-      previousP = percentOf(previous);
-      console.log('Chart mount');
-      limitP = percentOf(limit);
-      smol = isSmallEnough(currentElement);
-    }, 20);
-  });
-
   $: {
-    limitP = percentOf(limit);
-    overlap = countOverlap();
-    previousP = percentOf(previous);
-    currentP = percentOf(current);
+    percentage.current = percentOf(current);
+    percentage.previous = percentOf(previous);
+    percentage.limit = percentOf(limit);
+
+    props.overlap = getOverlapPercent();
+    props.remainings = getRemainingsPercent();
+    props.hideValue = isSmallEnough(currentBar);
+
+    // Force reload for cases where there are no new values for prev, limit, or curr fields
+    maxValue = maxValue;
   }
 </script>
 
 <div class="wrapper">
+
   <div class="top">
     <section class="actions">
-      {#if limit <= 0}
+      {#if !props.activeInput}
         <button
+          data-automation-id="limit-button"
           class="action action--addLimit"
-          on:click={() => {
-            limit = 50;
-            handleLimitSet(limit);
-          }}
+          on:click={handleInitLimit}
         >
           <img src="/images/add.svg" alt="+" />
         </button>
@@ -116,8 +149,9 @@
         <input
           type="text"
           bind:value={limit}
+          on:change={handleChange}
           on:keydown={handlePress}
-          pattern="\d+"
+          bind:this={inputLimit}
           data-automation-id="limit-input"
           class="action action--setLimit"
         />
@@ -125,9 +159,7 @@
     </section>
 
     <section class="title">
-      <div class="title__name">
-        {title}
-      </div>
+      <div class="title__name">{title}</div>
     </section>
   </div>
 
@@ -135,44 +167,46 @@
     <section
       class="bar__container"
       class:detailed={false}
-      bind:this={bar}
-      on:mousedown={detailed}
+      bind:this={barContainer}
+      on:mousedown={handleDetailedView}
     >
       <div class="bars">
         <div
           class="bar bar--previous"
           data-value={`₴${previous}`}
-          style={`width: ${previousP}%`}
+          style={`width: ${percentage.previous}%`}
         />
         {#if current > 0}
           <div
             class="bar bar--current"
-            style={`width: ${currentP}%`}
+            style={`width: ${percentage.current}%`}
             data-value={`₴${current}`}
-            bind:this={currentElement}
-            data-hiddenValue={smol}
+            bind:this={currentBar}
+            data-hiddenValue={props.hideValue}
           >
             <div
               class="bar__over"
               class:moveable={false}
-              style={`width: ${overlap}%`}
+              style={`width: ${limit > 0 && props.overlap}%`}
             />
             <div
               class="bar__toLimit"
-              style={`width: ${percentOf(
-                (limit - current) * (maxValue / current)
-              )}%; margin-right: -${
-                (limitP - currentP) * (maxValue / current)
-              }%`}
+              style={`width: ${props.remainings}%; margin-right: -${props.remainings}%;`}
             >
-              {#if limit && limit > current + 20}
+              {#if limit > 0 && limit > current + 20}
                 <div>
                   <div
                     class:detailed={limit - current > 99}
-                    data-value={limit - current}
+                    data-value={Math.ceil(limit - current)}
                   />
                 </div>
               {/if}
+            </div>
+          </div>
+        {:else if limit > 0 && !current}
+          <div class="unbar__toLimit" style="width: {percentage.limit}%">
+            <div>
+              <div class:detailed={limit - current > 99} data-value={limit} />
             </div>
           </div>
         {/if}
@@ -181,12 +215,12 @@
       <div class="limits" bind:this={limits}>
         <div
           class="limit limit--red"
-          on:mousedown={move}
+          on:mousedown={handleDragLimit}
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
           data-automation-id="limit-setter"
-          style={`left: ${limitP}%`}
+          style={`left: ${percentage.limit}%`}
         />
       </div>
     </section>
@@ -217,7 +251,7 @@
   }
 
   .actions {
-    width: 45%;
+    width: 5em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -256,7 +290,7 @@
   }
 
   .title {
-    width: 55%;
+    width: calc(100% - 5em);
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     display: flex;
@@ -287,6 +321,7 @@
 
   .bar {
     height: 2em;
+    max-width: 100%;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
@@ -304,12 +339,14 @@
     transition: width 0s;
   }
 
-  .bar__toLimit {
+  .bar__toLimit,
+  .unbar__toLimit {
     display: flex;
     align-items: center;
   }
 
-  .bar__toLimit > div {
+  .bar__toLimit > div,
+  .unbar__toLimit > div {
     width: 100%;
     height: 1em;
     margin: 4px;
@@ -319,13 +356,15 @@
     border-right: 1px solid #2f9e9e;
   }
 
-  .bar__toLimit > div > div {
+  .bar__toLimit > div > div,
+  .unbar__toLimit > div > div {
     width: 100%;
     height: 0px;
     border-top: 1px dashed #2f9e9e;
   }
 
-  .bar__toLimit > div > div.detailed::before {
+  .bar__toLimit > div > div.detailed::before,
+  .unbar__toLimit > div > div.detailed::before {
     content: attr(data-value);
     font-size: 0.5em;
     color: #2f9e9e;
@@ -338,14 +377,21 @@
     padding: 1px 3px;
   }
 
+  .unbar__toLimit {
+    margin-top: -2em;
+    height: 2em;
+  }
+
   .detailed > .bars > .bar--previous {
     margin-top: 0.5em;
     margin-left: -0.5em;
   }
 
-  .detailed > .bars > .bar--current {
+  .detailed > .bars > .bar--current,
+  .detailed > .bars > .unbar__toLimit {
     margin-top: -1.5em;
     margin-left: -1em;
+    transition: margin 0.2s, width 0.5s ease;
   }
 
   .detailed > .limits:hover > .limit--red,
@@ -362,12 +408,10 @@
   }
 
   .bar--previous {
-    width: 50%;
     background-color: #a6d6d1;
   }
 
   .bar--current {
-    width: 30%;
     background-color: #2f9e9e;
     margin-top: -2em;
     display: flex;

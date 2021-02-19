@@ -1,14 +1,15 @@
-import type { APIResponse, UserInfo } from './types/Api';
+import type { APIResponse, ChartData, Statement, UserInfo } from './types/Api';
 
 const baseUrl: string = process.env.host;
-const loginEndpoint = baseUrl.concat('/login');
-const authEndpoint = baseUrl.concat('/authentication');
-const signupEndpoint = baseUrl.concat('/signup');
-const logoutEndpoint = baseUrl.concat('/logout');
-const statementsEndpoint = baseUrl.concat('/statement');
-const limitsEndpoint = baseUrl.concat('/limit');
-const updateInfoEndpoint = baseUrl.concat('/updateInfo');
-const deleteUserEndpoint = baseUrl.concat('/deleteUser');
+const loginEndpoint = `${baseUrl}/login`;
+const authEndpoint = `${baseUrl}/authentication`;
+const signupEndpoint = `${baseUrl}/signup`;
+const logoutEndpoint = `${baseUrl}/logout`;
+const statementsEndpoint = `${baseUrl}/statement`;
+const limitsEndpoint = `${baseUrl}/limit`;
+const updateInfoEndpoint = `${baseUrl}/updateInfo`;
+const deleteUserEndpoint = `${baseUrl}/deleteUser`;
+const personalEndpoint = `${baseUrl}/personal`;
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -17,10 +18,22 @@ const defaultInit: RequestInit = {
   },
 };
 
+const statusCheck = async (
+  response: Response
+): Promise<APIResponse<{ name: string }>> => {
+  const { status } = response;
+  if (status === 200) {
+    const { name } = await response.json();
+    return { status, data: { name } };
+  }
+  const { message } = await response.json();
+  return { status, message };
+};
+
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<APIResponse<{ user_id: string }>> => {
+): Promise<APIResponse<{ name: string }>> => {
   const response = await fetch(loginEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -29,16 +42,7 @@ export const signIn = async (
       password: pwd,
     }),
   });
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  } else {
-    const { message } = await response.json();
-    return { status, message };
-  }
+  return await statusCheck(response);
 };
 
 export const isAuthenticated = async (): Promise<boolean> => {
@@ -54,8 +58,8 @@ export const signUp = async (
   username: string,
   password: string,
   xtoken: string
-): Promise<APIResponse<{ user_id: string }>> => {
-  const t = {
+): Promise<APIResponse<{ name: string }>> => {
+  const response = await fetch(signupEndpoint, {
     ...defaultInit,
     method: 'POST',
     body: JSON.stringify({
@@ -63,75 +67,30 @@ export const signUp = async (
       password,
       xtoken,
     }),
-  };
-  const response = await fetch(signupEndpoint, t);
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  }
-
-  const { message } = await response.json();
-  return { status, message };
+  });
+  return await statusCheck(response);
 };
 
 export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
-  const response = await fetch(baseUrl.concat('/personal'), defaultInit);
-
+  const response = await fetch(personalEndpoint, defaultInit);
   const { status } = response;
-
   if (status === 200) {
     const userInfo: UserInfo = await response.json();
     return { status, data: userInfo };
   }
-
   const { message } = await response.json();
   return { status, message };
 };
 
-const getPreviousMonth = (
-  currentMonth: number,
-  currentYear: number
-): { from: number; to: number } => {
-  const previousMonth = currentMonth > 0 ? currentMonth - 1 : 11;
-  const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
-  return {
-    from: new Date(yearCheck, previousMonth).valueOf(),
-    to: new Date(currentYear, currentMonth).valueOf(),
-  };
-};
-
-const getDateRange = (
-  currentDate: number,
-  month: 'previous' | 'current'
-): { from: number; to: number } => {
-  const date = new Date(currentDate);
-  const currentMonth = date.getMonth();
-  const currentYear = date.getFullYear();
-  if (month === 'current')
-    return {
-      from: new Date(currentYear, currentMonth).valueOf(),
-      to: currentDate,
-    };
-  else return getPreviousMonth(currentMonth, currentYear);
-};
-
-export const getStatement = async (
-  date: number,
-  mounth: 'previous' | 'current'
-): Promise<APIResponse> => {
+export const getStatement = async (): Promise<
+  APIResponse<{ statements: ChartData[]; synced: boolean }>
+> => {
   const response = await fetch(statementsEndpoint, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
     },
-    method: 'POST',
-    body: JSON.stringify({
-      mounth,
-    }),
   });
 
   const resp: APIResponse = response.ok
@@ -141,7 +100,10 @@ export const getStatement = async (
   return resp;
 };
 
-export const updateLimit = async (category: string, value: number) => {
+export const updateLimit = async (
+  category: string,
+  value: number
+): Promise<void> => {
   await fetch(limitsEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -152,28 +114,24 @@ export const updateLimit = async (category: string, value: number) => {
   });
 };
 
-export const updatePassword = async (current, newPass) => {
+export const updatePassword = async (
+  oldPassword: string,
+  newPassword: string
+): Promise<APIResponse<{ user_id: string }>> => {
   const response = await fetch(updateInfoEndpoint, {
     method: 'POST',
     ...defaultInit,
     body: JSON.stringify({
-      oldPassword: current,
-      newPassword: newPass,
+      oldPassword,
+      newPassword,
     }),
   });
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  } else {
-    const { message } = await response.json();
-    return { status, message };
-  }
+  return await statusCheck(response);
 };
 
-export const updateXToken = async (newXtoken) => {
+export const updateXToken = async (
+  newXtoken: string
+): Promise<APIResponse<{ user_id: string }>> => {
   const response = await fetch(updateInfoEndpoint, {
     method: 'POST',
     ...defaultInit,
@@ -181,31 +139,15 @@ export const updateXToken = async (newXtoken) => {
       newXtoken,
     }),
   });
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  } else {
-    const { message } = await response.json();
-    return { status, message };
-  }
+  return await statusCheck(response);
 };
 
-export const deleteUser = async () => {
+export const deleteUser = async (): Promise<
+  APIResponse<{ user_id: string }>
+> => {
   const response = await fetch(deleteUserEndpoint, {
     ...defaultInit,
     method: 'DELETE',
   });
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  } else {
-    const { message } = await response.json();
-    return { status, message };
-  }
+  return await statusCheck(response);
 };

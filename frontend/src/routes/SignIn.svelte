@@ -19,12 +19,12 @@
   const signInButton = {
     label: 'Sign In',
     onclick: async () => {
-      const resp = await signIn(summaryPhone, pwd);
-      if (!isSuccessResponse(resp)) {
-        errorMessage = resp.message;
+      const reponse = await signIn(summaryPhone, pwd);
+      if (!isSuccessResponse(reponse)) {
+        errorMessage = reponse.message;
         error = true;
       }
-      dispatch('login', resp);
+      dispatch('login', reponse);
     },
     dataAut: 'signin-button',
   };
@@ -36,7 +36,6 @@
   };
 
   $: summaryPhone = countryCode + phoneNumber;
-  // $: summaryPhone = phoneNumber;
 </script>
 
 {#if error}
@@ -62,7 +61,7 @@
   .login-input {
     @apply w-3/4 text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
   }
-  .login-input:focus {
+  .login-input.tel:focus {
     @apply border-gray-400 border-2;
   }
 

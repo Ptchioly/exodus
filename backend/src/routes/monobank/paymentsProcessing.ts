@@ -28,9 +28,9 @@ const getCategoriesTemplate = (categories: Category[]): Payment[] => {
 
 export const defineCategory = (payments: MonoStatements): Payment[] => {
   const initialCategories = getCategoriesTemplate(categories);
-  console.log('defineCategory => initialCategories', initialCategories);
   return payments.reduce((accum, { mcc, amount }) => {
     const { id } = getMccCategory(mcc);
+    if (Math.sign(amount) === 1) return accum;
     return accum.map((pay) => {
       if (pay.categoryId !== id) return pay;
       return {
@@ -55,7 +55,7 @@ export const categorize = (payments: MonoStatements): LimitCategory[] => {
 
   return Object.keys(categoryObj).map(
     (e): LimitCategory => {
-      const { category } = categories.find(({ id }) => +e === id) as Category;
+      const { category } = categories.find(({ id }) => +e === id)!;
       return {
         category,
         moneySpent: categoryObj[e],

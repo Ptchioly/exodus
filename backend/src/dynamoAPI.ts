@@ -1,9 +1,20 @@
-import { DocumentClient, PutItemOutput } from 'aws-sdk/clients/dynamodb';
+import {
+  DeleteItemOutput,
+  DocumentClient,
+  PutItemOutput,
+  ScanOutput,
+} from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from './config';
 import { startMonth } from './routes/monobank/utils';
-import { isFailure } from './routes/types/guards';
-import { GetOutput, MonoStatement } from './routes/types/types';
+import {
+  GetOutput,
+  KeyData,
+  MonoStatement,
+  PartialOutput,
+  Schema,
+  Tables,
+} from './routes/types/types';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,
@@ -11,10 +22,10 @@ const documentClient = new DocumentClient({
   region: secrets.REGION,
 });
 
-export const getItem = async (
-  table: string,
-  keyData: any
-): Promise<GetOutput | AWSError> => {
+export const getItem = async <T extends Tables>(
+  table: T,
+  keyData: KeyData<T>
+): Promise<GetOutput<T> | AWSError> => {
   const params = {
     TableName: table,
     Key: keyData,
@@ -26,7 +37,25 @@ export const getItem = async (
     .catch((err) => err);
 };
 
-export const getTokens = async (table: string) => {
+export const putItem = async <T extends Tables>(
+  table: T,
+  keyData: KeyData<T>
+): Promise<PutItemOutput | AWSError> => {
+  const params = {
+    TableName: table,
+    Item: keyData,
+  };
+
+  return await documentClient
+    .put(params)
+    .promise()
+    .catch((err) => err);
+};
+
+// refactor to query
+export const getTokens = async (
+  table: string
+): Promise<ScanOutput | AWSError> => {
   const params = {
     ExpressionAttributeNames: {
       '#XT': 'xtoken',
@@ -40,25 +69,29 @@ export const getTokens = async (table: string) => {
     .catch((err) => err);
 };
 
-export const putItem = async (
-  table: string,
-  keyData: any
-): Promise<PutItemOutput | AWSError> => {
+export const getAttributesFromTable = async <
+  T extends Tables,
+  K extends keyof Schema[T]
+>(
+  table: T,
+  keyData: KeyData<T>,
+  attributes: Array<K>
+): Promise<AWSError | PartialOutput<T, K>> => {
   const params = {
     TableName: table,
-    Item: keyData,
+    Key: keyData,
+    AttributesToGet: attributes.map((attr) => attr.toString()),
   };
-
   return await documentClient
-    .put(params)
+    .get(params)
     .promise()
-    .catch((err) => err);
+    .catch((e) => e);
 };
 
-export const deleteItem = async (
-  table: string,
-  keyData: any
-): Promise<PutItemOutput | AWSError> => {
+export const deleteItem = async <T extends Tables>(
+  table: T,
+  keyData: KeyData<T>
+): Promise<DeleteItemOutput | AWSError> => {
   const params = {
     TableName: table,
     Key: keyData,
@@ -86,9 +119,9 @@ const buildUpdateParam = (obj: Record<string, any>) => {
   };
 };
 
-export const updateItem = async (
-  table: string,
-  keyData: any,
+export const updateItem = async <T extends Tables>(
+  table: T,
+  keyData: KeyData<T>,
   obj: Record<string, any>
 ): Promise<PutItemOutput | AWSError> => {
   const params = {
@@ -104,16 +137,15 @@ export const updateItem = async (
     .catch((err) => err);
 };
 
-export const appendStatement = async (
-  table: string,
-  keyData: { accountId: string },
+export const appendStatement = async <T extends Tables.STATEMENTS>(
+  keyData: KeyData<T>,
   statementItem: MonoStatement,
   keyPath?: string
 ): Promise<PutItemOutput | AWSError> => {
-  const startDate = startMonth('cur').getTime();
+  const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
-    TableName: table,
+    TableName: Tables.STATEMENTS,
     Key: keyData,
     ReturnValues: 'ALL_NEW',
     UpdateExpression: `set #${startDate}.${keyPath} = list_append(if_not_exists(#${startDate}.${keyPath}, :empty_list), :statementItem)`,
@@ -125,7 +157,6 @@ export const appendStatement = async (
       ':empty_list': [],
     },
   };
-  console.log(JSON.stringify(params));
 
   return await documentClient
     .update(params)
@@ -133,16 +164,15 @@ export const appendStatement = async (
     .catch((err) => err);
 };
 
-export const incrementStatemntSpendings = async (
-  table: string,
-  keyData: { accountId: string },
+export const incrementStatementSpendings = async <T extends Tables.STATEMENTS>(
+  keyData: KeyData<T>,
   incValue: number,
   index: number
 ): Promise<PutItemOutput | AWSError> => {
-  const startDate = startMonth('cur').getTime();
+  const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
-    TableName: table,
+    TableName: Tables.STATEMENTS,
     Key: keyData,
     UpdateExpression: `set ${k}.processedData[${index}].moneySpent = ${k}.processedData[${index}].moneySpent + :val`,
     ExpressionAttributeNames: {
@@ -159,8 +189,3 @@ export const incrementStatemntSpendings = async (
     .promise()
     .catch((err) => err);
 };
-
-export const deleteAccounts = async (table: string, accounts: string[]) =>
-  Promise.allSettled(
-    accounts.map((account) => deleteItem(table, { accountId: account }))
-  ).then((results) => !results.some(isFailure));

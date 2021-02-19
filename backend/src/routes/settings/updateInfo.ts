@@ -1,19 +1,17 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem, updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { decrypt, encrypt, isValidPassword } from '../auth/utils';
-import { authenticateToken, validateUserInfo } from '../auth/validate';
+import { hash, isValidPassword } from '../auth/utils';
+import { authenticateToken } from '../auth/validate';
 import { getClientInfo } from '../monobank/endpoints';
-import { atLeast, isFailure } from '../types/guards';
+import { atLeast, isFailedFetchMono, isFailure } from '../types/guards';
+import { Tables } from '../types/types';
 
 export const updateInfo = Router();
 
 updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
-  const { username, xtoken } = req.user.data;
-  console.log(req.user.data);
+  const { username } = req.user.data;
   const respond = endpointRespond(res);
-  console.log(xtoken);
 
   if (!req.body) return respond.FailureResponse('Empty body.');
 
@@ -22,7 +20,7 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
   if (!atLeast(newPassword, newXtoken, telegramId))
     return respond.FailureResponse('Required at least one field');
 
-  const userFromDB = await getItem(configs.USER_TABLE, {
+  const userFromDB = await getItem(Tables.USERS, {
     username,
   });
   if (!isFailure(userFromDB)) {
@@ -33,14 +31,14 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
           'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
         );
 
-      const decryptedCurrent = decrypt(user.password, user.key);
-      if (decryptedCurrent !== oldPassword)
+      const oldHash = hash(oldPassword, user.key);
+      if (oldHash !== user.password)
         return respond.FailureResponse('Old password is incorrect');
 
-      const encryptedPass = encrypt(newPassword, userFromDB.Item.key);
+      const encryptedPass = hash(newPassword, userFromDB.Item.key);
 
       const updateUserResponse = await updateItem(
-        configs.USER_TABLE,
+        Tables.USERS,
         { username },
         { password: encryptedPass }
       );
@@ -49,9 +47,9 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
       return respond.SuccessResponse();
     } else if (newXtoken !== undefined) {
       const tokenCheck = await getClientInfo(newXtoken);
-      if (!isFailure(tokenCheck) && tokenCheck.errorDescription === undefined) {
+      if (!isFailure(tokenCheck) && !isFailedFetchMono(tokenCheck)) {
         const updateUserResponse = await updateItem(
-          configs.USER_TABLE,
+          Tables.USERS,
           { username },
           { xtoken: newXtoken }
         );

@@ -1,41 +1,28 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
+import { Tables } from '../types/types';
 import { updateLimit } from './utils';
 
-export const limit = Router();
+export const limit = Router().post(
+  '/limit',
+  authenticateToken,
+  async (req: any, res) => {
+    const { username } = req.user.data;
+    const respond = endpointRespond(res);
 
-const timeOut: { id: NodeJS.Timeout | null } = {
-  id: null,
-};
+    const userFromDB = await getItem(Tables.USERS, { username });
 
-const defaultDelay = 5000;
+    const { category, value } = req.body;
 
-limit.post('/limit', authenticateToken, async (req: any, res) => {
-  const { username } = req.user.data;
-  const respond = endpointRespond(res);
+    if (!isFailure(userFromDB)) {
+      const accountId = userFromDB.Item.accounts[0];
+      await updateLimit(accountId, category, value);
 
-  const userFromDB = await getItem(configs.USER_TABLE, { username });
-
-  const { category, value, delay = defaultDelay } = req.body;
-
-  if (!isFailure(userFromDB)) {
-    const accountId = userFromDB.Item.accounts[0] as any;
-    if (timeOut.id) clearTimeout(timeOut.id);
-    timeOut.id = setTimeout(
-      async () =>
-        updateLimit(
-          accountId,
-          new Date(2021, new Date(Date.now()).getMonth()).valueOf(),
-          category,
-          value
-        ),
-      delay
-    );
-
-    return respond.SuccessResponse('Limit was set');
+      return respond.SuccessResponse({ newLimit: value, category });
+    }
+    return respond.FailureResponse('Failed to get user from db');
   }
-});
+);

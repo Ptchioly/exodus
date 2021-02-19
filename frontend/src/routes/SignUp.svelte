@@ -6,6 +6,7 @@
   import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
   import MonoLogo from '../components/MonoLogo.svelte';
   import ErrorMessage from '../components/ErrorMessage.svelte';
+  import { isSuccessResponse } from '../types/guards';
 
   export let error: boolean = false;
 
@@ -29,12 +30,8 @@
     onclick: async () => {
       pwdCheck = checkPwd(pwd, confirmPwd);
       if (pwdCheck) {
-        const resp = (await signUp(
-          countryCode + phoneNumber,
-          pwd,
-          token
-        )) as any;
-        if (resp.message !== undefined) {
+        const resp = await signUp(countryCode + phoneNumber, pwd, token);
+        if (!isSuccessResponse(resp)) {
           errorMessage = resp.message;
           error = true;
         }
@@ -68,10 +65,10 @@
       <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
     </div>
 
-    <div class="flex items-center justify-center w-full relative">
+    <div class="password-input">
       <PasswordInput placeholder="Password" bind:value={pwd} />
     </div>
-    <div class="flex items-center justify-center w-full relative">
+    <div class="password-input">
       <PasswordInput
         placeholder="Confirm Password"
         bind:value={confirmPwd}
@@ -94,3 +91,9 @@
     </div>
   </div>
 </LoginForm>
+
+<style lang="postcss">
+  .password-input {
+    @apply flex items-center justify-center w-full relative;
+  }
+</style>

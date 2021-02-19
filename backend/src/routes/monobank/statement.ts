@@ -1,24 +1,22 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
-import { hasKey, isFailure, isValidMonthVariant } from '../types/guards';
-import { statementStartDate } from './utils';
+import { hasKey, isFailure } from '../types/guards';
+import { Tables } from '../types/types';
+import mergeStatements from './mergeStatements';
+import { startMonth } from './utils';
 
 export const statement = Router();
 
-statement.post('/statement', authenticateToken, async (req: any, res) => {
+statement.get('/statement', authenticateToken, async (req: any, res) => {
   const { username } = req.user.data;
   const respond = endpointRespond(res);
 
-  const { mounth } = req.body;
-  if (!isValidMonthVariant(mounth))
-    return respond.FailureResponse('Invalid mounth variant');
+  const current = startMonth('cur');
+  const previous = startMonth('prev');
 
-  const from = statementStartDate(mounth).getTime();
-
-  const userFromDB = await getItem(configs.USER_TABLE, {
+  const userFromDB = await getItem(Tables.USERS, {
     username,
   });
 
@@ -26,20 +24,28 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
     if (!userFromDB.Item)
       return respond.FailureResponse('User from DB is empty');
 
-    const statement = await getItem(configs.STATEMENTS_TABLE, {
+    const statement = await getItem(Tables.STATEMENTS, {
       accountId: userFromDB.Item.accounts[0],
     });
-    if (isFailure(statement)) return respond.FailureResponse(statement.message);
 
+    if (isFailure(statement)) return respond.FailureResponse(statement.message);
     if (!statement.Item) return respond.FailureResponse('Statement is empty');
 
-    if (hasKey(statement.Item, from) && statement.Item[from].processedData)
-      return respond.SuccessResponse(statement.Item[from].processedData);
+    if (
+      hasKey(statement.Item, current) &&
+      hasKey(statement.Item[current], 'processedData')
+    ) {
+      const currentStatement = statement.Item[current].processedData;
+      const previousStatement = statement.Item[previous]?.processedData;
+      const merged = mergeStatements(currentStatement, previousStatement);
 
-    return respond.FailureResponse(
-      'Data is not available. Wait for a 60s.',
-      404
-    );
+      return respond.SuccessResponse({
+        statements: merged,
+        synced: !!previousStatement,
+      });
+    }
+
+    return respond.FailureResponse('Not Found', 404);
   }
   return respond.FailureResponse(
     'Failed to get statement. ' + userFromDB.message

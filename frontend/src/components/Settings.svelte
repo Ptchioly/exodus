@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { updatePassword, deleteUser } from '../endpointApi';
-  import { isSuccessResponse } from '../types/guards';
   import DeleteUser from './DeleteUser.svelte';
   import ErrorMessage from './ErrorMessage.svelte';
   import PasswordChange from './PasswordChange.svelte';
@@ -17,33 +15,36 @@
   {#if error}
     <ErrorMessage bind:visible={error} {errorMessage} />
   {/if}
-  <div id="content" class="flex flex-row bg-white rounded-lg min-w-max-content">
+  <div
+    id="content"
+    class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay"
+  >
     <div
-      class="flex-col px-5 text-left border-r-2 border-gray-600 min-w-max-content relative"
+      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-r-2 border-gray-600 relative"
     >
       <div
-        class="cursor-pointer mt-5"
+        class="nav-button"
         on:click={() => (state = 'password')}
         data-automation-id="change-password-nav"
       >
         Change password
       </div>
       <div
-        class="cursor-pointer mt-5"
+        class="nav-button"
         on:click={() => (state = 'x-token')}
         data-automation-id="change-token-nav"
       >
         Change X-Token
       </div>
       <div
-        class="cursor-pointer mt-5"
+        class="nav-button"
         on:click={() => (state = 'deleteUser')}
         data-automation-id="delete-user-nav"
       >
         Delete User
       </div>
       <div
-        class="cursor-pointer absolute bottom-5 bg-coolGreen-default py-1 px-3 rounded-md text-white"
+        class="cursor-pointer sm:absolute xs:mt-2 sm:bottom-5 sm:bg-coolGreen-default sm:py-1 sm:px-3 sm:rounded-md sm:text-white"
         on:click={() => (showSettings = false)}
         data-automation-id="close-settings"
       >
@@ -62,7 +63,7 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   #bg {
     position: fixed;
     height: 100%;
@@ -71,7 +72,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 300;
+    z-index: 4000;
     display: flex;
     flex-direction: column;
     padding-top: 32px;
@@ -82,7 +83,15 @@
   }
 
   #content {
-    min-width: 60%;
+    min-width: 38rem;
     min-height: 20rem;
+  }
+
+  .overlay {
+    z-index: 4000;
+  }
+
+  .nav-button {
+    @apply cursor-pointer xs:mt-2 sm:mt-5;
   }
 </style>

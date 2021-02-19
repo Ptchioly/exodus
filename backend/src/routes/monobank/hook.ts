@@ -1,9 +1,15 @@
 import { Router } from 'express';
-import { appendStatement, incrementStatemntSpendings } from '../../dynamoAPI';
+import {
+  appendStatement,
+  getItem,
+  incrementStatementSpendings,
+} from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
+import { sendTelegramMessage } from '../telegram/sendMessage';
 import { isFailure } from '../types/guards';
-import { MonoStatement } from '../types/types';
+import { MonoStatement, Tables } from '../types/types';
 import { getMccCategory } from './paymentsProcessing';
+import { moneySpentToLimit } from './utils';
 
 export const hook = Router();
 
@@ -15,17 +21,42 @@ type StatementItems = {
   };
 };
 
+const pushNotificationIfLimitReached = async (
+  accountId: string,
+  categoryId: number,
+  categoryTitle: string
+): Promise<void> => {
+  const limits = await moneySpentToLimit({ accountId }, categoryId);
+
+  if (!isFailure(limits)) {
+    const { limit, moneySpent, username } = limits;
+    const limitReached = limit && limit <= moneySpent;
+    const userFromDB = await getItem(Tables.USERS, {
+      username,
+    });
+    if (!isFailure(userFromDB)) {
+      const { telegramId } = userFromDB.Item;
+      if (telegramId && limitReached) {
+        await sendTelegramMessage(telegramId)(
+          `You have exceeded the limit ${limit} for category ${categoryTitle}`
+        );
+      }
+    }
+  }
+};
+
 hook.post('/hook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
-  if (!req.body) return respond.FailureResponse('Empty body.'); // dunno if it's necessary
+  if (!req.body) {
+    return respond.FailureResponse('Empty body.');
+  }
 
   const { account, statementItem } = (req.body as StatementItems).data;
 
-  const { id } = getMccCategory(statementItem.mcc);
+  const { id, category } = getMccCategory(statementItem.mcc);
 
   const updateUserRawStatement = await appendStatement(
-    'statements',
     {
       accountId: account,
     },
@@ -34,11 +65,11 @@ hook.post('/hook', async (req: any, res) => {
   );
 
   if (isFailure(updateUserRawStatement)) {
-    return respond.FailureResponse('Failed to update user raw statement');
+    console.log('Failed to update user raw statement', updateUserRawStatement);
+    return respond.SuccessResponse();
   }
 
-  const inctementResponse = incrementStatemntSpendings(
-    'statements',
+  const incrementResponse = await incrementStatementSpendings(
     {
       accountId: account,
     },
@@ -46,9 +77,12 @@ hook.post('/hook', async (req: any, res) => {
     id
   );
 
-  if (isFailure(inctementResponse)) {
-    return respond.FailureResponse('Failed to increment proccess');
+  if (isFailure(incrementResponse)) {
+    console.log('Failed to increment proccess', incrementResponse);
+    return respond.SuccessResponse();
   }
+
+  pushNotificationIfLimitReached(account, id, category);
 
   return respond.SuccessResponse(updateUserRawStatement);
 });
