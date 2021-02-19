@@ -2,6 +2,10 @@ export type GetOutput = {
   Item: Users;
 };
 
+export type ScanOutput = {
+  Items: Users[];
+};
+
 export type Users = {
   id: string;
   key: string;

@@ -1,10 +1,11 @@
+import fetch from 'node-fetch';
 import { configs } from '../../config';
-import { getItem, putItem, updateItem } from '../../dynamoAPI';
+import { getItem, putItem, scanTable, updateItem } from '../../dynamoAPI';
+import { setHook } from '../auth/utils';
 import { isFailure } from '../types/guards';
-import { GetOutput, LimitCategory, StatementRequest } from '../types/types';
+import { GetOutput, LimitCategory } from '../types/types';
 import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
-import fetch from 'node-fetch';
 
 export const statementStartDate = (month: 'previous' | 'current'): number => {
   return month === 'current' ? startMonth('cur') : startMonth('prev');
@@ -118,5 +119,16 @@ export const updateLimit = async (
         },
       }
     );
+  }
+};
+
+export const setAllMonoTokens = async (): Promise<void> => {
+  const scanResponse = await scanTable('users');
+
+  if (isFailure(scanResponse)) {
+    console.log('Failed to scan table');
+  } else {
+    const { Items: users } = scanResponse;
+    users.forEach(({ xtoken }) => setHook(xtoken));
   }
 };

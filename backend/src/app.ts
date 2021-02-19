@@ -11,6 +11,7 @@ import { hook } from './routes/monobank/hook';
 import { limit } from './routes/monobank/limits';
 import { personalInfo } from './routes/monobank/personal';
 import { statement } from './routes/monobank/statement';
+import { setAllMonoTokens } from './routes/monobank/utils';
 import { deleteUser } from './routes/settings/deleteUser';
 import { updateInfo } from './routes/settings/updateInfo';
 import { initTelegramBot } from './routes/telegram/initTelegram';
@@ -46,6 +47,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 initTelegramBot();
+// setAllMonoTokens(); // for better times
 
 app.use(logging);
 app.use(login);

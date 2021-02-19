@@ -3,7 +3,12 @@ import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from './config';
 import { startMonth } from './routes/monobank/utils';
 import { isFailure } from './routes/types/guards';
-import { GetOutput, MonoStatement, Statement } from './routes/types/types';
+import {
+  GetOutput,
+  MonoStatement,
+  ScanOutput,
+  Statement,
+} from './routes/types/types';
 import { AWSNotFound } from './utils';
 
 const documentClient = new DocumentClient({
@@ -200,4 +205,17 @@ export const moneySpetToLimit = async (
     moneySpent,
     username,
   };
+};
+
+export const scanTable = async (
+  table: string
+): Promise<ScanOutput | AWSError> => {
+  const scanParams = {
+    TableName: table,
+  };
+
+  return await documentClient
+    .scan(scanParams)
+    .promise()
+    .catch((err) => err);
 };
