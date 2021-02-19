@@ -4,6 +4,10 @@
 describe('sign up', () => {
   const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
 
+  before(() => {
+    cy.waitInCIEnv()
+  })
+
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.visit('/')
@@ -21,12 +25,12 @@ describe('sign up', () => {
       cy.getBySel('link-signup-button').click()
       cy.get('h1')
         .should('contain', 'Sign Up')
-        .and('be.inViewport')
-      cy.getBySel('phone-input').should('be.inViewport')
-      cy.getBySel('pwd-input').should('be.inViewport')
-      cy.getBySel('confirm-pwd-input').should('be.inViewport')
-      cy.getBySel('xtoken-input').should('be.inViewport')
-      cy.getBySel('signup-button').should('be.inViewport')
+        .and('beInViewport')
+      cy.getBySel('phone-input').should('beInViewport')
+      cy.getBySel('pwd-input').should('beInViewport')
+      cy.getBySel('confirm-pwd-input').should('beInViewport')
+      cy.getBySel('xtoken-input').should('beInViewport')
+      cy.getBySel('signup-button').should('beInViewport')
     })
   })
 

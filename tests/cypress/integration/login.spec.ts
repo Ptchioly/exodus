@@ -5,6 +5,7 @@ describe.only('Login', () => {
   const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
 
   before(function() {
+    cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
     cy.registerUser()
   })
@@ -26,10 +27,10 @@ describe.only('Login', () => {
       cy.visit('/')
       cy.get('h1')
         .should('contain', 'Sign in to Exodus')
-        .and('be.inViewport')
-      cy.getBySel('phone-input').should('be.inViewport')
-      cy.getBySel('pwd-input').should('be.inViewport')
-      cy.getBySel('signin-button').should('be.inViewport')
+        .and('beInViewport')
+      cy.getBySel('phone-input').should('beInViewport')
+      cy.getBySel('pwd-input').should('beInViewport')
+      cy.getBySel('signin-button').should('beInViewport')
     })
   })
 

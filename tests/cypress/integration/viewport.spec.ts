@@ -5,6 +5,7 @@ describe(`Login page visibility`, () => {
   const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
 
   before(function() {
+    cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
     cy.registerUser()
   })
@@ -23,22 +24,22 @@ describe(`Login page visibility`, () => {
         cy.viewport(size)
       }
       cy.getBySel('telegram-link').should('be.visible')
-      cy.getBySel('menu-button').should('be.inViewport')
+      cy.getBySel('menu-button').should('beInViewport')
       cy.getBySel('limit-button')
         .first()
-        .should('be.inViewport')
+        .should('beInViewport')
       cy.getBySel('limit-button')
         .first()
         .click()
       cy.getBySel('limit-setter')
         .first()
-        .should('be.inViewport')
+        .should('beInViewport')
       cy.getBySel('limit-input')
         .first()
         .type('1') // rewrite this with proper values when the field gets fixed, currently this results in value '501'
       cy.getBySel('limit-setter')
         .first()
-        .should('be.inViewport')
+        .should('beInViewport')
     })
   })
 })
