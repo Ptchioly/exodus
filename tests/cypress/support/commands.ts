@@ -58,7 +58,7 @@ Cypress.Commands.add('waitInCIEnv', () => {
   }
 })
 
-Cypress.Commands.add('registerUser', (options = {}) => {
+Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
@@ -67,15 +67,16 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }
 
   const user = Cypress._.defaults({}, options, defaults)
-  return cy
-    .request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/signup`,
-      body: {
-        ...user
-      }
-    })
-    .then(response => expect(response.status).to.eq(200))
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/signup`,
+    body: {
+      ...user
+    }
+  }).then(response => {
+    expect(response.status).to.eq(200)
+    cy.clearCookie('jwt')
+  })
 })
 
 // /**

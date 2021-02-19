@@ -7,11 +7,10 @@ describe.only('Login', () => {
   before(function() {
     cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
-    cy.registerUser()
+    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
-    cy.clearCookies()
     cy.visit('/')
   })
 
