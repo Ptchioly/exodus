@@ -1,15 +1,14 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import {
   appendStatement,
   getItem,
   incrementStatementSpendings,
-  moneySpetToLimit,
+  moneySpentToLimit,
 } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { sendTelegramMessage } from '../telegram/sendMessage';
 import { isFailure } from '../types/guards';
-import { MonoStatement } from '../types/types';
+import { MonoStatement, Tables } from '../types/types';
 import { getMccCategory } from './paymentsProcessing';
 
 export const hook = Router();
@@ -27,16 +26,12 @@ const pushNotificationIfLimitReached = async (
   categoryId: number,
   categoryTitle: string
 ): Promise<void> => {
-  const limits = await moneySpetToLimit(
-    configs.STATEMENTS_TABLE,
-    { accountId },
-    categoryId
-  );
+  const limits = await moneySpentToLimit({ accountId }, categoryId);
 
   if (!isFailure(limits)) {
     const { limit, moneySpent, username } = limits;
     const limitReached = limit && limit <= moneySpent;
-    const userFromDB = await getItem(configs.USER_TABLE, {
+    const userFromDB = await getItem(Tables.USERS, {
       username,
     });
     if (!isFailure(userFromDB)) {
@@ -55,14 +50,13 @@ hook.post('/hook', async (req: any, res) => {
 
   if (!req.body) {
     return respond.FailureResponse('Empty body.');
-  } // dunno if it's necessary
+  }
 
   const { account, statementItem } = (req.body as StatementItems).data;
 
   const { id, category } = getMccCategory(statementItem.mcc);
 
   const updateUserRawStatement = await appendStatement(
-    configs.STATEMENTS_TABLE,
     {
       accountId: account,
     },
@@ -75,7 +69,6 @@ hook.post('/hook', async (req: any, res) => {
   }
 
   const inctementResponse = await incrementStatementSpendings(
-    configs.STATEMENTS_TABLE,
     {
       accountId: account,
     },
