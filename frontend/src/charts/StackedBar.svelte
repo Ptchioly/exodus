@@ -70,11 +70,11 @@
 
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
-      setLimit();
+      handleChange();
 
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
-      setLimit();
+      handleChange();
     }
   };
 
@@ -89,7 +89,7 @@
     window.setTimeout(() => { 
       inputLimit.focus();
     }, 1)
-    setLimit();
+    handleChange();
   }
 
   const handleDragLimit = (e) => {
@@ -112,7 +112,7 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
-      setLimit();
+      handleChange();
     };
 
     window.addEventListener('mouseup', handleEnd);
