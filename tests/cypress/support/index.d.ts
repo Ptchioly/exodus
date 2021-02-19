@@ -46,9 +46,9 @@ declare namespace Cypress {
     manualLogin(options?: UserLoginInfo): void
 
     // /**
-    //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
+    //  * API request - creates a user with phone, xtoken and password, deletes JWT cookie after
     //  */
-    registerUser(options?: UserSignupInfo): Chainable<Subject>
+    registerUserbyAPI(options?: UserSignupInfo): Chainable<Subject>
 
     manualRegisterUser(options?: manualSignupInfo): void
 

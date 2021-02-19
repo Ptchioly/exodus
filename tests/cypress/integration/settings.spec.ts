@@ -5,10 +5,11 @@ describe('settings actions', () => {
   before(function() {
     cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
-    cy.registerUser()
+    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
+    cy.loginByAPI()
     cy.visit('/')
   })
 

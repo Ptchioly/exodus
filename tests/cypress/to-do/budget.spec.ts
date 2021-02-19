@@ -4,7 +4,7 @@
 // describe('budget actions', () => {
 //     before(function() {
 // cy.deleteMyUserIfExists()
-// cy.registerUser()
+// cy.registerUserbyAPI()
 //     })
 
 // beforeEach(() => {
