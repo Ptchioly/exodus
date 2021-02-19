@@ -3,6 +3,7 @@
 
 describe('settings actions', () => {
   before(function() {
+    cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
     cy.registerUser()
   })
