@@ -1,6 +1,31 @@
-export type GetOutput = {
-  Item: Users;
+export type GetOutput<T extends Tables> = {
+  Item: Schema[T];
 };
+export type PartialOutput<T extends Tables, K extends keyof Schema[T]> = {
+  Item: Pick<Schema[T], K>;
+};
+
+export type PrimaryKey = {
+  [Tables.STATEMEN]: 'accountId';
+  [Tables.USERS]: 'username';
+};
+
+export enum Tables {
+  STATEMEN = 'statement',
+  USERS = 'users',
+}
+export type Schema = {
+  [Tables.STATEMEN]: Statement;
+  [Tables.USERS]: Users;
+};
+
+export type KeyData<T extends Tables> = Record<PrimaryKey[T], string> &
+  Partial<Schema[T]>;
+
+export enum ResponseType {
+  LOGIN = 'login',
+  SIGNUP = 'signup',
+}
 
 export type Users = {
   id: string;
@@ -59,6 +84,10 @@ export type MonoClientInfo = {
   name: string;
   webHookUrl: string;
   accounts: MonoAccount[];
+};
+
+export type MonoFailedFetch = {
+  errorDescription: string;
 };
 
 export type MonoAccount = {

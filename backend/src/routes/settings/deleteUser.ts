@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { configs } from '../../config';
-import { deleteAccounts, deleteItem, getItem } from '../../dynamoAPI';
+import { deleteItem, getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
+import { Tables } from '../types/types';
+import { deleteAccounts } from './settingUtils';
 
 export const deleteUser = Router();
 
@@ -11,13 +12,13 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
   const { username } = req.user.data;
   const respond = endpointRespond(res);
 
-  const userResponse = await getItem(configs.USER_TABLE, { username });
+  const userResponse = await getItem(Tables.USERS, { username });
 
-  const updateResponse = await deleteItem(configs.USER_TABLE, { username });
+  const updateResponse = await deleteItem(Tables.USERS, { username });
 
   if (!isFailure(updateResponse) && !isFailure(userResponse) && userResponse) {
     const isDeleted = await deleteAccounts(
-      configs.STATEMENTS_TABLE,
+      Tables.STATEMEN,
       userResponse.Item.accounts
     );
     if (isDeleted) {

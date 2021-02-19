@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem, updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { decrypt, encrypt, isValidPassword } from '../auth/utils';
 import { authenticateToken } from '../auth/validate';
 import { getClientInfo } from '../monobank/endpoints';
-import { atLeast, isFailure } from '../types/guards';
+import { atLeast, isFailedFetchMono, isFailure } from '../types/guards';
+import { Tables } from '../types/types';
 
 export const updateInfo = Router();
 
@@ -20,7 +20,7 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
   if (!atLeast(newPassword, newXtoken, telegramId))
     return respond.FailureResponse('Required at least one field');
 
-  const userFromDB = await getItem(configs.USER_TABLE, {
+  const userFromDB = await getItem(Tables.USERS, {
     username,
   });
   if (!isFailure(userFromDB)) {
@@ -38,7 +38,7 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
       const encryptedPass = encrypt(newPassword, userFromDB.Item.key);
 
       const updateUserResponse = await updateItem(
-        configs.USER_TABLE,
+        Tables.USERS,
         { username },
         { password: encryptedPass }
       );
@@ -47,9 +47,9 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
       return respond.SuccessResponse();
     } else if (newXtoken !== undefined) {
       const tokenCheck = await getClientInfo(newXtoken);
-      if (!isFailure(tokenCheck) && tokenCheck.errorDescription === undefined) {
+      if (!isFailure(tokenCheck) && !isFailedFetchMono(tokenCheck)) {
         const updateUserResponse = await updateItem(
-          configs.USER_TABLE,
+          Tables.USERS,
           { username },
           { xtoken: newXtoken }
         );

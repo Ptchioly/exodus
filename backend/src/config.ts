@@ -12,8 +12,6 @@ export const secrets = {
 
 export const configs = {
   HTTP_PORT: 8080,
-  USER_TABLE: 'users',
-  STATEMENTS_TABLE: 'statements',
   MAX_AGE: 86400000,
   CURRENCY_CODE: {
     980: 'UAH',

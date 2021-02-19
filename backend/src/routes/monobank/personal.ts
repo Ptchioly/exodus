@@ -1,12 +1,9 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { setHook } from '../auth/utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
-import { getClientInfo } from './endpoints';
-import { syncStatements } from './utils';
+import { Tables } from '../types/types';
 
 export const personalInfo = Router();
 
@@ -14,7 +11,7 @@ personalInfo.get('/personal', authenticateToken, async (req: any, res) => {
   const { username, xtoken } = req.user.data;
   const respond = endpointRespond(res);
 
-  const userFromDB = await getItem(configs.USER_TABLE, {
+  const userFromDB = await getItem(Tables.USERS, {
     username,
   });
 

@@ -1,24 +1,21 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
-import { hasKey, isFailure, isValidMonthVariant } from '../types/guards';
-import { statementStartDate } from './utils';
+import { hasKey, isFailure } from '../types/guards';
+import { Tables } from '../types/types';
+import { startMonth } from './utils';
 
 export const statement = Router();
 
-statement.post('/statement', authenticateToken, async (req: any, res) => {
+statement.get('/statement', authenticateToken, async (req: any, res) => {
   const { username } = req.user.data;
   const respond = endpointRespond(res);
 
-  const { month } = req.body;
-  if (!isValidMonthVariant(month))
-    return respond.FailureResponse('Invalid month variant');
+  const current = startMonth('cur');
+  const previous = startMonth('prev');
 
-  const from = statementStartDate(month);
-
-  const userFromDB = await getItem(configs.USER_TABLE, {
+  const userFromDB = await getItem(Tables.USERS, {
     username,
   });
 
@@ -26,20 +23,24 @@ statement.post('/statement', authenticateToken, async (req: any, res) => {
     if (!userFromDB.Item)
       return respond.FailureResponse('User from DB is empty');
 
-    const statement = await getItem(configs.STATEMENTS_TABLE, {
+    const statement = await getItem(Tables.STATEMEN, {
       accountId: userFromDB.Item.accounts[0],
     });
-    if (isFailure(statement)) return respond.FailureResponse(statement.message);
 
+    if (isFailure(statement)) return respond.FailureResponse(statement.message);
     if (!statement.Item) return respond.FailureResponse('Statement is empty');
 
-    if (hasKey(statement.Item, from) && statement.Item[from].processedData)
-      return respond.SuccessResponse(statement.Item[from].processedData);
+    if (
+      hasKey(statement.Item, current) &&
+      hasKey(statement.Item[current], 'processedData')
+    ) {
+      return respond.SuccessResponse({
+        current: statement.Item[current].processedData,
+        previous: statement.Item[previous]?.processedData,
+      });
+    }
 
-    return respond.FailureResponse(
-      'Data is not available. Wait for a 60s.',
-      404
-    );
+    return respond.FailureResponse('Not Found', 404);
   }
   return respond.FailureResponse(
     'Failed to get statement. ' + userFromDB.message
