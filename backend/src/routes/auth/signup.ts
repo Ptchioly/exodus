@@ -69,5 +69,5 @@ signup.post('/signup', async (req, res) => {
 
   await syncStatements({ Item: user });
 
-  return respond.SuccessResponse({ responseType: ResponseType.SIGNUP, name });
+  return respond.SuccessResponse({ name });
 });
