@@ -20,11 +20,11 @@ const defaultInit: RequestInit = {
 
 const statusCheck = async (
   response: Response
-): Promise<APIResponse<{ user_id: string }>> => {
+): Promise<APIResponse<{ name: string }>> => {
   const { status } = response;
   if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
+    const { name } = await response.json();
+    return { status, data: { name } };
   }
   const { message } = await response.json();
   return { status, message };
@@ -33,7 +33,7 @@ const statusCheck = async (
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<APIResponse<{ user_id: string }>> => {
+): Promise<APIResponse<{ name: string }>> => {
   const response = await fetch(loginEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -58,7 +58,7 @@ export const signUp = async (
   username: string,
   password: string,
   xtoken: string
-): Promise<APIResponse<{ user_id: string }>> => {
+): Promise<APIResponse<{ name: string }>> => {
   const response = await fetch(signupEndpoint, {
     ...defaultInit,
     method: 'POST',
