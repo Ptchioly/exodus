@@ -18,7 +18,7 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
 
   if (!isFailure(updateResponse) && !isFailure(userResponse) && userResponse) {
     const isDeleted = await deleteAccounts(
-      Tables.STATEMEN,
+      Tables.STATEMENTS,
       userResponse.Item.accounts
     );
     if (isDeleted) {

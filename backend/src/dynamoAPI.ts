@@ -139,7 +139,7 @@ export const updateItem = async <T extends Tables>(
     .catch((err) => err);
 };
 
-export const appendStatement = async <T extends Tables.STATEMEN>(
+export const appendStatement = async <T extends Tables.STATEMENTS>(
   keyData: KeyData<T>,
   statementItem: MonoStatement,
   keyPath?: string
@@ -147,7 +147,7 @@ export const appendStatement = async <T extends Tables.STATEMEN>(
   const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
-    TableName: Tables.STATEMEN,
+    TableName: Tables.STATEMENTS,
     Key: keyData,
     ReturnValues: 'ALL_NEW',
     UpdateExpression: `set #${startDate}.${keyPath} = list_append(if_not_exists(#${startDate}.${keyPath}, :empty_list), :statementItem)`,
@@ -166,7 +166,7 @@ export const appendStatement = async <T extends Tables.STATEMEN>(
     .catch((err) => err);
 };
 
-export const incrementStatementSpendings = async <T extends Tables.STATEMEN>(
+export const incrementStatementSpendings = async <T extends Tables.STATEMENTS>(
   keyData: KeyData<T>,
   incValue: number,
   index: number
@@ -174,7 +174,7 @@ export const incrementStatementSpendings = async <T extends Tables.STATEMEN>(
   const startDate = startMonth('cur');
   const k = `#${startDate}`;
   const params = {
-    TableName: Tables.STATEMEN,
+    TableName: Tables.STATEMENTS,
     Key: keyData,
     UpdateExpression: `set ${k}.processedData[${index}].moneySpent = ${k}.processedData[${index}].moneySpent + :val`,
     ExpressionAttributeNames: {
@@ -195,13 +195,13 @@ export const incrementStatementSpendings = async <T extends Tables.STATEMEN>(
 // type refactor
 // TODO: Is this function must be in dynamodb api? (move logic)
 export const moneySpentToLimit = async (
-  key: KeyData<Tables.STATEMEN>,
+  key: KeyData<Tables.STATEMENTS>,
   categoryId: number
 ): Promise<
   AWSError | { limit?: number; moneySpent: number; username: string }
 > => {
   const currentMounth = startMonth('cur');
-  const output = await getAttributesFromTable(Tables.STATEMEN, key, [
+  const output = await getAttributesFromTable(Tables.STATEMENTS, key, [
     currentMounth,
     'username',
   ]);

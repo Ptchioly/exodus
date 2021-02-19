@@ -70,18 +70,18 @@ export const statementUpdate = async (
   processedData: LimitCategory[]
 ): Promise<void> => {
   const account = userFromDB.Item.accounts[0];
-  const dbItem = await getItem(Tables.STATEMEN, {
+  const dbItem = await getItem(Tables.STATEMENTS, {
     accountId: account,
   });
   const newObject = { rawData: data, processedData };
 
   Object.keys(dbItem).length > 0
     ? await updateItem(
-        Tables.STATEMEN,
+        Tables.STATEMENTS,
         { accountId: account },
         { [timestamp]: newObject, username: userFromDB.Item.username }
       )
-    : await putItem(Tables.STATEMEN, {
+    : await putItem(Tables.STATEMENTS, {
         accountId: account,
         [timestamp]: newObject,
         username: userFromDB.Item.username,
@@ -95,7 +95,7 @@ export const updateLimit = async (
   timestamp = startMonth('cur')
 ): Promise<void> => {
   const key = { accountId: userId };
-  const statements = await getItem(Tables.STATEMEN, key);
+  const statements = await getItem(Tables.STATEMENTS, key);
   if (!isFailure(statements)) {
     const newData = statements.Item[timestamp].processedData.reduce(
       (accum: any, el) => {
@@ -106,7 +106,7 @@ export const updateLimit = async (
       []
     );
     updateItem(
-      Tables.STATEMEN,
+      Tables.STATEMENTS,
       { accountId: userId },
       {
         [timestamp]: {
