@@ -24,10 +24,10 @@
   let currentMaxValue = 0;
   let isLoading = false;
 
-  const otherCategoryID = 15;
+  const p2p = 16;
 
   const isOtherCategory = ({ id }: ChartData | Statement) =>
-    id === otherCategoryID;
+    id === p2p;
 
   const getMaxValue = (statements: Statement[]) => {
     return statements.reduce((currentValue, statement) => {
