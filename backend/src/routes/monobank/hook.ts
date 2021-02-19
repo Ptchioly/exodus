@@ -3,13 +3,13 @@ import {
   appendStatement,
   getItem,
   incrementStatementSpendings,
-  moneySpentToLimit,
 } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { sendTelegramMessage } from '../telegram/sendMessage';
 import { isFailure } from '../types/guards';
 import { MonoStatement, Tables } from '../types/types';
 import { getMccCategory } from './paymentsProcessing';
+import { moneySpentToLimit } from './utils';
 
 export const hook = Router();
 

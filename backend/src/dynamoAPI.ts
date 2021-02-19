@@ -7,7 +7,6 @@ import {
 import { AWSError } from 'aws-sdk/lib/error';
 import { secrets } from './config';
 import { startMonth } from './routes/monobank/utils';
-import { isFailure } from './routes/types/guards';
 import {
   GetOutput,
   KeyData,
@@ -16,7 +15,6 @@ import {
   Schema,
   Tables,
 } from './routes/types/types';
-import { AWSNotFound } from './utils';
 
 const documentClient = new DocumentClient({
   accessKeyId: secrets.ACCESS_KEY,
@@ -190,38 +188,4 @@ export const incrementStatementSpendings = async <T extends Tables.STATEMENTS>(
     .update(params)
     .promise()
     .catch((err) => err);
-};
-
-// type refactor
-// TODO: Is this function must be in dynamodb api? (move logic)
-export const moneySpentToLimit = async (
-  key: KeyData<Tables.STATEMENTS>,
-  categoryId: number
-): Promise<
-  AWSError | { limit?: number; moneySpent: number; username: string }
-> => {
-  const currentMounth = startMonth('cur');
-  const output = await getAttributesFromTable(Tables.STATEMENTS, key, [
-    currentMounth,
-    'username',
-  ]);
-
-  if (isFailure(output)) return output;
-  const { username } = output.Item;
-  const categories = output.Item[currentMounth];
-  if (!categories)
-    return AWSNotFound('There are no categories for current mounth');
-
-  const category = categories.processedData.find(
-    (category) => category.id === categoryId
-  );
-
-  if (!category) return AWSNotFound('No such category');
-
-  const { limit, moneySpent } = category;
-  return {
-    limit,
-    moneySpent,
-    username,
-  };
 };

@@ -1,7 +1,7 @@
-import { configs, secrets } from '../../config';
+import fetch from 'node-fetch';
+import { secrets } from '../../config';
 import { getItem, updateItem } from '../../dynamoAPI';
 import { isFailure } from '../types/guards';
-import fetch from 'node-fetch';
 import { Tables } from '../types/types';
 
 const telegramURL = `https://api.telegram.org/${secrets.TELEGRAM_BOT_ID}`;
@@ -39,10 +39,10 @@ export const sendTelegramMessage = (chat_id: string) => async (
     .catch(console.log);
 };
 
-export const processContact = async (
-  res: any,
-  { contact: { user_id, phone_number, first_name }, chat: { id } }: any
-) => {
+export const processContact = async ({
+  contact: { user_id, phone_number, first_name },
+  chat: { id },
+}: any): Promise<void> => {
   const sendMessage = sendTelegramMessage(id);
   if (user_id === id) {
     // Is there always will be phone? Maybe hidden?

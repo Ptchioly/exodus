@@ -3,7 +3,7 @@ import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
-import { ResponseType, Tables } from '../types/types';
+import { Tables } from '../types/types';
 import { decrypt } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 

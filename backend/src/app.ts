@@ -9,7 +9,6 @@ import { signup } from './routes/auth/signup';
 import { authentication } from './routes/auth/validate';
 import { hook } from './routes/monobank/hook';
 import { limit } from './routes/monobank/limits';
-import { personalInfo } from './routes/monobank/personal';
 import { statement } from './routes/monobank/statement';
 import { deleteUser } from './routes/settings/deleteUser';
 import { updateInfo } from './routes/settings/updateInfo';
@@ -22,12 +21,7 @@ export const app = express();
 
 app.use(
   cors({
-    origin: [
-      'http://localhost:5000',
-      'https://beeeee.es',
-      'https://www.beeeee.es',
-      'https://staging.beeeee.es',
-    ],
+    origin: configs.ORIGINS,
     credentials: true,
   })
 );
@@ -42,7 +36,6 @@ app.use(signup);
 app.use(logout);
 app.use(statement);
 app.use(limit);
-app.use(personalInfo);
 app.use(authentication);
 app.use(updateInfo);
 app.use(deleteUser);

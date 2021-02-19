@@ -1,6 +1,13 @@
-import { getItem, putItem, updateItem } from '../../dynamoAPI';
+import { AWSError } from 'aws-sdk';
+import {
+  getAttributesFromTable,
+  getItem,
+  putItem,
+  updateItem,
+} from '../../dynamoAPI';
+import { AWSNotFound } from '../../utils';
 import { isFailedFetchMono, isFailure } from '../types/guards';
-import { GetOutput, LimitCategory, Tables } from '../types/types';
+import { GetOutput, KeyData, LimitCategory, Tables } from '../types/types';
 import { getStatements } from './endpoints';
 import { categorize } from './paymentsProcessing';
 
@@ -116,4 +123,36 @@ export const updateLimit = async (
       }
     );
   }
+};
+
+export const moneySpentToLimit = async (
+  key: KeyData<Tables.STATEMENTS>,
+  categoryId: number
+): Promise<
+  AWSError | { limit?: number; moneySpent: number; username: string }
+> => {
+  const currentMounth = startMonth('cur');
+  const output = await getAttributesFromTable(Tables.STATEMENTS, key, [
+    currentMounth,
+    'username',
+  ]);
+
+  if (isFailure(output)) return output;
+  const { username } = output.Item;
+  const categories = output.Item[currentMounth];
+  if (!categories)
+    return AWSNotFound('There are no categories for current mounth');
+
+  const category = categories.processedData.find(
+    (category) => category.id === categoryId
+  );
+
+  if (!category) return AWSNotFound('No such category');
+
+  const { limit, moneySpent } = category;
+  return {
+    limit,
+    moneySpent,
+    username,
+  };
 };
