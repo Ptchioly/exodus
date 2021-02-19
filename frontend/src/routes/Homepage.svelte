@@ -91,14 +91,13 @@
         .filter(hasValues);
 
       otherCategory = mergedData.filter(isOtherCategory).pop();
-      if (previousMonth)
-        unbudgeted = mergedData.filter((chart) => !hasValues(chart));
+      unbudgeted = mergedData.filter((chart) => !hasValues(chart));
 
       isEmpty = !mergedData.length;
     }
   }
 
-  $: currentMaxValue = getMaxValue(previousMonth);
+  $: currentMaxValue = getMaxValue(previousMonth || []);
 
   const fetchUserName = async () => {
     const userInfo = await getUserInfo();
