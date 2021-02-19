@@ -11,6 +11,7 @@
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import HearedBar from '../components/HearedBar.svelte';
+  import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
@@ -55,17 +56,18 @@
     return name;
   };
 
-  const getStatementWithRetry = async (
-    variant: 'previous' | 'current'
-  ): Promise<APIResponse> => {
-    const response = await getStatement(variant);
-    if (isSuccessResponse(response)) return response;
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const response = await getStatement(variant);
-        resolve(response);
-      }, 75000);
-    });
+  const getStatementWithRetry = async (): Promise<void> => {
+    const response = await getStatement();
+    console.log('getStatementWithRetry => response', response);
+    if (!isSuccessResponse(response)) return Promise.reject(response.message);
+    const { current, previous } = response.data;
+
+    currentMonth = current;
+    if (!previous) {
+      await waitFor(5);
+      return await getStatementWithRetry();
+    }
+    previousMonth = previous;
   };
 
   const maxBarSize = (charts: ChartData[]): number => {
@@ -95,6 +97,8 @@
       isEmpty = !mergedData.length;
     }
   }
+
+  $: currentMaxValue = getMaxValue(previousMonth);
 
   const fetchUserName = async () => {
     const userInfo = await getUserInfo();
@@ -163,11 +167,7 @@
     //   tokenCheck = Date.now().toString();
     // }
     username = await userNameFromStorage('username', fetchUserName);
-    const curResp = await getStatementWithRetry('current');
-    if (isSuccessResponse(curResp)) currentMonth = curResp.data;
-    const prevResp = await getStatementWithRetry('previous');
-    if (isSuccessResponse(prevResp)) previousMonth = prevResp.data;
-    currentMaxValue = getMaxValue(previousMonth);
+    getStatementWithRetry();
   };
 
   onMount(init);
