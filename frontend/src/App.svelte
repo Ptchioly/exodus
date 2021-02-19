@@ -23,8 +23,8 @@
   }: CustomEvent<APIResponse<{ name: string }>>) => {
     if (isSuccessResponse(detail)) {
       localStorage.setItem('name', detail.data.name);
+      navigationState = 'home';
     }
-    navigationState = 'home';
   };
 
   const handleLogout = () => {
