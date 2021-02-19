@@ -3,7 +3,7 @@ import { isFailure } from '../types/guards';
 import { Tables } from '../types/types';
 
 export const deleteAccounts = async (
-  table: Tables.STATEMEN,
+  table: Tables.STATEMENTS,
   accounts: string[]
 ): Promise<boolean> =>
   Promise.allSettled(

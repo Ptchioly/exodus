@@ -23,7 +23,7 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
     if (!userFromDB.Item)
       return respond.FailureResponse('User from DB is empty');
 
-    const statement = await getItem(Tables.STATEMEN, {
+    const statement = await getItem(Tables.STATEMENTS, {
       accountId: userFromDB.Item.accounts[0],
     });
 

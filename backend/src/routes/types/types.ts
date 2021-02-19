@@ -6,16 +6,16 @@ export type PartialOutput<T extends Tables, K extends keyof Schema[T]> = {
 };
 
 export type PrimaryKey = {
-  [Tables.STATEMEN]: 'accountId';
+  [Tables.STATEMENTS]: 'accountId';
   [Tables.USERS]: 'username';
 };
 
 export enum Tables {
-  STATEMEN = 'statements',
+  STATEMENTS = 'statements',
   USERS = 'users',
 }
 export type Schema = {
-  [Tables.STATEMEN]: Statement;
+  [Tables.STATEMENTS]: Statement;
   [Tables.USERS]: Users;
 };
 
