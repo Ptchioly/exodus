@@ -6,12 +6,18 @@
   export let errorMessage: string;
 
   const handleDeleteUser = async () => {
-    const response = await deleteUser();
-    if (!isSuccessResponse(response)) {
-      error = true;
-      errorMessage = 'Failed to delete user';
-    } else {
-      location.reload();
+    const confirmResponse = confirm(
+      'Do you really want to delete your user and all your data? This action is irreversible!'
+    );
+    if (confirmResponse) {
+      const response = await deleteUser();
+      if (!isSuccessResponse(response)) {
+        error = true;
+        errorMessage = 'Failed to delete user';
+      } else {
+        localStorage.clear();
+        location.reload();
+      }
     }
   };
 </script>
