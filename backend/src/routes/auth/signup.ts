@@ -5,8 +5,8 @@ import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
-import { ResponseType, Tables } from '../types/types';
-import { encrypt, getAccounts, setHook } from './utils';
+import { Tables } from '../types/types';
+import { hash, getAccounts, setHook } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
 export const signup = Router();
@@ -36,7 +36,7 @@ signup.post('/signup', async (req, res) => {
   const tokenResponse = await getTokens(Tables.USERS);
 
   if (isFailure(tokenResponse) || !tokenResponse.Items)
-    return respond.FailureResponse('Unable get tokens');
+    return respond.FailureResponse('Unable to get tokens');
 
   if (!tokenResponse.Items)
     return respond.FailureResponse('Unexpected error from db.');
@@ -45,7 +45,7 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('Monobank token is already registered.');
 
   const key = nanoid(21);
-  const encryptedPassword = encrypt(password, key);
+  const encryptedPassword = hash(password, key);
 
   const user = {
     id: clientId,

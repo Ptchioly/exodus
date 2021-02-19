@@ -1,13 +1,10 @@
-import { AES, enc } from 'crypto-js';
+import { SHA3 } from 'crypto-js';
 import fetch from 'node-fetch';
 import { requests } from '../monobank/endpoints';
 import { MonoAccount } from '../types/types';
 
-export const encrypt = (password: string, key: string): string =>
-  AES.encrypt(password, key).toString();
-
-export const decrypt = (encryptedPassword: string, key: string): string =>
-  AES.decrypt(encryptedPassword, key).toString(enc.Utf8);
+export const hash = (password: string, salt: string): string =>
+  SHA3(password + SHA3(salt + 'sobaka')).toString();
 
 const reLower = /[a-z]/;
 const reUpper = /[a-z]/;

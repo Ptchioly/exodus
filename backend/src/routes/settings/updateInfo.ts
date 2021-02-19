@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getItem, updateItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { decrypt, encrypt, isValidPassword } from '../auth/utils';
+import { hash, isValidPassword } from '../auth/utils';
 import { authenticateToken } from '../auth/validate';
 import { getClientInfo } from '../monobank/endpoints';
 import { atLeast, isFailedFetchMono, isFailure } from '../types/guards';
@@ -31,11 +31,11 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
           'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
         );
 
-      const decryptedCurrent = decrypt(user.password, user.key);
-      if (decryptedCurrent !== oldPassword)
+      const oldHash = hash(oldPassword, user.key);
+      if (oldHash !== user.password)
         return respond.FailureResponse('Old password is incorrect');
 
-      const encryptedPass = encrypt(newPassword, userFromDB.Item.key);
+      const encryptedPass = hash(newPassword, userFromDB.Item.key);
 
       const updateUserResponse = await updateItem(
         Tables.USERS,

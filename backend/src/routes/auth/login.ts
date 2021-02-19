@@ -4,7 +4,7 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
 import { Tables } from '../types/types';
-import { decrypt } from './utils';
+import { hash } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
 export const login = Router();
@@ -30,9 +30,10 @@ login.post('/login', async (req, res) => {
   const user = userResponse.Item;
   if (!user) return respond.FailureResponse('User does not exist.');
   const { xtoken, name } = user;
-  const decrypted = decrypt(user.password, user.key);
 
-  if (password !== decrypted)
+  const encrypt = hash(password, user.key);
+
+  if (user.password !== encrypt)
     return respond.FailureResponse('Incorrect password.');
 
   const token = generateAccessToken(username, xtoken);
