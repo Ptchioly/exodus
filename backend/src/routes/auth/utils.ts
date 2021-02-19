@@ -31,7 +31,7 @@ export const getAccounts = (accounts: MonoAccount[]): string[] =>
   accounts.filter((acc) => acc.balance !== 0).map((acc) => acc.id);
 
 export const setHook = async (xtoken: string): Promise<void> => {
-  return await fetch(requests.webhook(), {
+  await fetch(requests.webhook(), {
     method: 'POST',
     headers: {
       'X-Token': xtoken,

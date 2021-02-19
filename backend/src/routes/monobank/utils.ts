@@ -1,12 +1,10 @@
-import { configs } from '../../config';
 import { getItem, putItem, updateItem } from '../../dynamoAPI';
-import { isFailure } from '../types/guards';
-import { GetOutput, LimitCategory, StatementRequest } from '../types/types';
-import { requests } from './endpoints';
+import { isFailedFetchMono, isFailure } from '../types/guards';
+import { GetOutput, LimitCategory, Tables } from '../types/types';
+import { getStatements } from './endpoints';
 import { categorize } from './paymentsProcessing';
-import fetch from 'node-fetch';
 
-export const statementStartDate = (month: 'previous' | 'current'): number => {
+export const statementsDate = (month: 'previous' | 'current'): number => {
   return month === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
@@ -22,25 +20,24 @@ export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
   }
 };
 
-const fetchStatement = async (
+const retreiveCategorizedStatement = async (
   account: any, //???
   time: { start: number; finish: number },
   xtoken: string
 ): Promise<{ data: any; categorizedData: LimitCategory[] }> => {
-  const data = await fetch(
-    requests.statement(account, time.start, time.finish),
-    {
-      headers: {
-        'X-Token': xtoken,
-      },
-    }
-  ).then((el) => el.json());
+  const data = await getStatements(
+    { account, from: time.start, to: time.finish },
+    xtoken
+  );
 
+  if (isFailedFetchMono(data)) return { data: [], categorizedData: [] };
   const categorizedData = categorize(data);
   return { data, categorizedData };
 };
 
-export const syncStatements = async (user: GetOutput): Promise<void> => {
+export const syncStatements = async (
+  user: GetOutput<Tables.USERS>
+): Promise<void> => {
   const start = startMonth('prev');
   const finish = startMonth('cur');
   const prevmonthTime = { start, finish };
@@ -48,7 +45,7 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
     start: finish,
     finish: startMonth('next'),
   };
-  const { data, categorizedData } = await fetchStatement(
+  const { data, categorizedData } = await retreiveCategorizedStatement(
     user.Item.accounts[0],
     currentmonthTime,
     user.Item.xtoken
@@ -56,35 +53,35 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
   await statementUpdate(user, finish, data, categorizedData);
 
   setTimeout(async () => {
-    const { data, categorizedData } = await fetchStatement(
+    const { data, categorizedData } = await retreiveCategorizedStatement(
       user.Item.accounts[0],
       prevmonthTime,
       user.Item.xtoken
     );
 
     await statementUpdate(user, start, data, categorizedData);
-  }, 70000);
+  }, 65000);
 };
 
 export const statementUpdate = async (
-  userFromDB: GetOutput,
+  userFromDB: GetOutput<Tables.USERS>,
   timestamp: number,
   data: any[],
   processedData: LimitCategory[]
 ): Promise<void> => {
   const account = userFromDB.Item.accounts[0];
-  const dbItem = await getItem(configs.STATEMENTS_TABLE, {
+  const dbItem = await getItem(Tables.STATEMEN, {
     accountId: account,
   });
   const newObject = { rawData: data, processedData };
 
   Object.keys(dbItem).length > 0
     ? await updateItem(
-        configs.STATEMENTS_TABLE,
+        Tables.STATEMEN,
         { accountId: account },
         { [timestamp]: newObject, username: userFromDB.Item.username }
       )
-    : await putItem(configs.STATEMENTS_TABLE, {
+    : await putItem(Tables.STATEMEN, {
         accountId: account,
         [timestamp]: newObject,
         username: userFromDB.Item.username,
@@ -98,10 +95,10 @@ export const updateLimit = async (
   timestamp = startMonth('cur')
 ): Promise<void> => {
   const key = { accountId: userId };
-  const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
+  const statements = await getItem(Tables.STATEMEN, key);
   if (!isFailure(statements)) {
     const newData = statements.Item[timestamp].processedData.reduce(
-      (accum: any, el: any) => {
+      (accum: any, el) => {
         if (el.category === category) el.limit = value;
         accum.push(el);
         return accum;
@@ -109,7 +106,7 @@ export const updateLimit = async (
       []
     );
     updateItem(
-      configs.STATEMENTS_TABLE,
+      Tables.STATEMEN,
       { accountId: userId },
       {
         [timestamp]: {
