@@ -15,13 +15,15 @@
 
   const props = {
     hideValue: false,
+    activeInput: limit > 0,
     overlap: 0,
-    remainings: 0
+    remainings: 0,
   }
-  
+
   let barContainer: HTMLElement;
   let limits: HTMLElement;
   let currentBar: HTMLElement;
+  let inputLimit: HTMLElement;
   
   const percentOf = (value: number): number => (value * 100) / maxValue;
 
@@ -43,6 +45,12 @@
   let timeoutId: any;
   let delay = 1500;
   let limitCallback: () => Promise<any> | null;
+
+  const handleChange = () => {
+    if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
+    if (limit <= 0) props.activeInput = false;
+    if (typeof +limit === 'number' && +limit >= 0) setLimit()
+  }
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
@@ -77,6 +85,10 @@
 
   const handleInitLimit = () => {
     limit = current ? Math.ceil(current * 1.1) : 50;
+    props.activeInput = true;
+    window.setTimeout(() => { 
+      inputLimit.focus();
+    }, 1)
     setLimit();
   }
 
@@ -117,7 +129,7 @@
     props.hideValue = isSmallEnough(currentBar);
 
     // Force reload for cases where there are no new values for prev, limit, or curr fields
-    maxValue = maxValue; 
+    maxValue = maxValue;
   }
 </script>
 
@@ -125,7 +137,7 @@
 
   <div class="top">
     <section class="actions">
-      {#if limit <= 0}
+      {#if !props.activeInput}
         <button
           data-automation-id="limit-button"
           class="action action--addLimit"
@@ -137,9 +149,9 @@
         <input
           type="text"
           bind:value={limit}
-          on:change={setLimit}
+          on:change={handleChange}
           on:keydown={handlePress}
-          pattern="\d+"
+          bind:this={inputLimit}
           data-automation-id="limit-input"
           class="action action--setLimit"
         />
@@ -181,7 +193,7 @@
               class="bar__toLimit"
               style={`width: ${props.remainings}%; margin-right: -${props.remainings}%;`}
             >
-              {#if limit && limit > current + 20}
+              {#if limit > 0 && limit > current + 20}
                 <div>
                   <div
                     class:detailed={limit - current > 99}
