@@ -25,7 +25,7 @@ describe(`Login page visibility`, () => {
         cy.viewport(size)
       }
       cy.getBySel('telegram-link').should('be.visible')
-      cy.getBySel('menu-button').should('beInViewport')
+      // cy.getBySel('menu-button').should('beInViewport')
       cy.getBySel('limit-button')
         .first()
         .should('beInViewport')
