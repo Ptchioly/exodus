@@ -40,21 +40,6 @@
   const hasValues = ({ limit, previous, current }: ChartData) =>
     previous || limit || current;
 
-  const userNameFromStorage = async (
-    key: string,
-    initCallBack: () => Promise<string>
-  ): Promise<string> => {
-    const username = localStorage.getItem(key);
-    if (username) return username;
-    const userInfo = await getUserInfo();
-    if (!isSuccessResponse(userInfo)) {
-      return Promise.reject(userInfo.message);
-    }
-    const name = await initCallBack();
-    localStorage.setItem(key, name);
-    return name;
-  };
-
   const getStatementWithRetry = async (): Promise<void> => {
     const response = await getStatement();
     console.log('getStatementWithRetry => response', response);
@@ -109,8 +94,7 @@
     id === searchId;
 
   const limitPrioriry = (prev: ChartData, next: ChartData) =>
-    next.current - prev.current ||
-    next.previous - prev.previous;
+    next.current - prev.current || next.previous - prev.previous;
 
   const processStatement = (
     forCurrent: StatementHandler,
@@ -164,7 +148,7 @@
     //   await getUserInfo();
     //   tokenCheck = Date.now().toString();
     // }
-    username = await userNameFromStorage('username', fetchUserName);
+    username = localStorage.getItem('name');
     getStatementWithRetry();
   };
 
