@@ -4,6 +4,7 @@ import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { hasKey, isFailure } from '../types/guards';
 import { Tables } from '../types/types';
+import mergeStatements from './mergeStatements';
 import { startMonth } from './utils';
 
 export const statement = Router();
@@ -34,9 +35,13 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
       hasKey(statement.Item, current) &&
       hasKey(statement.Item[current], 'processedData')
     ) {
+      const currentStatement = statement.Item[current].processedData;
+      const previousStatement = statement.Item[previous]?.processedData;
+      const merged = mergeStatements(currentStatement, previousStatement);
+
       return respond.SuccessResponse({
-        current: statement.Item[current].processedData,
-        previous: statement.Item[previous]?.processedData,
+        statements: merged,
+        synced: !!previousStatement,
       });
     }
 

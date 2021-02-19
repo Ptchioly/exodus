@@ -144,3 +144,13 @@ export type AccountInfo = {
   operationAmount: number;
   time: number;
 };
+
+export type ChartData = {
+  id: number;
+  title: string;
+  previous: number;
+  current: number;
+  limit: number;
+};
+
+export type StatementHandler = (statement: LimitCategory) => number;

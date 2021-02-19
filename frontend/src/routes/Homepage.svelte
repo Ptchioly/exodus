@@ -1,16 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-  import { getStatement, getUserInfo, logout } from '../endpointApi';
-  import type {
-    APIResponse,
-    ChartData,
-    Statement,
-    StatementHandler,
-  } from '../types/Api';
-  import { isSuccessResponse } from '../types/guards';
+  import { createEventDispatcher, onMount } from 'svelte';
   import StackedBar from '../charts/StackedBar.svelte';
-  import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import HearedBar from '../components/HearedBar.svelte';
+  import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
+  import { getStatement } from '../endpointApi';
+  import type { ChartData, Statement } from '../types/Api';
+  import { isSuccessResponse } from '../types/guards';
   import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
@@ -26,8 +21,7 @@
 
   const p2p = 16;
 
-  const isOtherCategory = ({ id }: ChartData | Statement) =>
-    id === p2p;
+  const isOtherCategory = ({ id }: ChartData | Statement) => id === p2p;
 
   const getMaxValue = (statements: Statement[]) => {
     return statements.reduce((currentValue, statement) => {
@@ -37,22 +31,28 @@
     }, 0);
   };
 
-  const hasValues = ({ limit, previous, current }: ChartData) =>
-    previous || limit || current;
-
   const getStatementWithRetry = async (): Promise<void> => {
     const response = await getStatement();
-    console.log('getStatementWithRetry => response', response);
     if (!isSuccessResponse(response)) return Promise.reject(response.message);
-    const { current, previous } = response.data;
+    const { statements, synced } = response.data;
 
-    currentMonth = current;
-    if (!previous) {
+    chartStatements = statements
+      .filter((chart) => !isOtherCategory(chart))
+      .filter(hasValues);
+
+    [otherCategory] = statements.filter(isOtherCategory);
+    unbudgeted = statements.filter((chart) => !hasValues(chart));
+
+    isEmpty = !chartStatements.length;
+
+    if (!synced) {
       await waitFor(5);
       return await getStatementWithRetry();
     }
-    previousMonth = previous;
   };
+
+  const hasValues = ({ limit, previous, current }: ChartData) =>
+    previous || limit || current;
 
   const maxBarSize = (charts: ChartData[]): number => {
     let max = 0;
@@ -67,87 +67,13 @@
 
   const dispatch = createEventDispatcher();
 
-  $: {
-    if (currentMonth) {
-      const mergedData = mergeData(currentMonth, previousMonth);
-
-      chartStatements = mergedData
-        .filter((chart) => !isOtherCategory(chart))
-        .filter(hasValues);
-
-      otherCategory = mergedData.filter(isOtherCategory).pop();
-      unbudgeted = mergedData.filter((chart) => !hasValues(chart));
-
-      isEmpty = !mergedData.length;
-    }
-  }
-
   $: currentMaxValue = getMaxValue(previousMonth || []);
-
-  const fetchUserName = async () => {
-    const userInfo = await getUserInfo();
-    if (!isSuccessResponse(userInfo)) return Promise.reject(userInfo.message);
-    return userInfo.data.name;
-  };
-
-  const equalId = (searchId: number) => ({ id }: Statement): boolean =>
-    id === searchId;
-
-  const limitPrioriry = (prev: ChartData, next: ChartData) =>
-    next.current - prev.current || next.previous - prev.previous;
-
-  const processStatement = (
-    forCurrent: StatementHandler,
-    forPrevious: StatementHandler
-  ) => (statement: Statement): ChartData => {
-    const { id, limit, category } = statement;
-    return {
-      previous: forPrevious(statement),
-      current: forCurrent(statement),
-      limit: limit || 0,
-      title: category,
-      id,
-    };
-  };
-
-  const mergeData = (
-    currentMonth: Statement[],
-    previousMonth: Statement[] | undefined
-  ): ChartData[] => {
-    const current = currentMonth.map(
-      processStatement(
-        (current) => current.moneySpent,
-        (previous) =>
-          (previousMonth &&
-            previousMonth.find(equalId(previous.id))?.moneySpent) ||
-          0
-      )
-    );
-
-    const previous = previousMonth
-      ? previousMonth
-          .filter(({ id }) => !currentMonth.find(equalId(id)))
-          .map(
-            processStatement(
-              (_) => 0,
-              (previous) => previous.moneySpent
-            )
-          )
-      : [];
-
-    return [...current, ...previous].sort(limitPrioriry);
-  };
 
   const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
     chartStatements = [...chartStatements, detail];
   };
 
   const init = async () => {
-    // let tokenCheck = localStorage.getItem('hookCheck');
-    // if (Date.now() - +tokenCheck > 3600000) {
-    //   await getUserInfo();
-    //   tokenCheck = Date.now().toString();
-    // }
     username = localStorage.getItem('name');
     getStatementWithRetry();
   };
