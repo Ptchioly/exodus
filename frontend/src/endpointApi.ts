@@ -1,4 +1,4 @@
-import type { APIResponse, UserInfo } from './types/Api';
+import type { APIResponse, Statement, UserInfo } from './types/Api';
 
 const baseUrl: string = process.env.host;
 const loginEndpoint = `${baseUrl}/login`;
@@ -82,15 +82,15 @@ export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
   return { status, message };
 };
 
-export const getStatement = async (
-  month: 'previous' | 'current'
-): Promise<APIResponse> => {
+export const getStatement = async (): Promise<
+  APIResponse<{ current: Statement[]; previous?: Statement[] }>
+> => {
   const response = await fetch(statementsEndpoint, {
-    ...defaultInit,
-    method: 'POST',
-    body: JSON.stringify({
-      month,
-    }),
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
   });
 
   const resp: APIResponse = response.ok

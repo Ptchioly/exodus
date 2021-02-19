@@ -11,7 +11,7 @@ export type PrimaryKey = {
 };
 
 export enum Tables {
-  STATEMEN = 'statement',
+  STATEMEN = 'statements',
   USERS = 'users',
 }
 export type Schema = {

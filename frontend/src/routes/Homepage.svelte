@@ -11,6 +11,7 @@
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import HearedBar from '../components/HearedBar.svelte';
+  import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
@@ -21,7 +22,6 @@
   let otherCategory: ChartData | undefined;
   let isEmpty: boolean;
   let currentMaxValue = 0;
-  let showSettings = false;
   let isLoading = false;
 
   const otherCategoryID = 15;
@@ -55,17 +55,18 @@
     return name;
   };
 
-  const getStatementWithRetry = async (
-    variant: 'previous' | 'current'
-  ): Promise<APIResponse> => {
-    const response = await getStatement(variant);
-    if (isSuccessResponse(response)) return response;
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const response = await getStatement(variant);
-        resolve(response);
-      }, 75000);
-    });
+  const getStatementWithRetry = async (): Promise<void> => {
+    const response = await getStatement();
+    console.log('getStatementWithRetry => response', response);
+    if (!isSuccessResponse(response)) return Promise.reject(response.message);
+    const { current, previous } = response.data;
+
+    currentMonth = current;
+    if (!previous) {
+      await waitFor(5);
+      return await getStatementWithRetry();
+    }
+    previousMonth = previous;
   };
 
   const maxBarSize = (charts: ChartData[]): number => {
@@ -80,6 +81,7 @@
   };
 
   const dispatch = createEventDispatcher();
+
   $: {
     if (currentMonth) {
       const mergedData = mergeData(currentMonth, previousMonth);
@@ -89,12 +91,13 @@
         .filter(hasValues);
 
       otherCategory = mergedData.filter(isOtherCategory).pop();
-      if (previousMonth)
-        unbudgeted = mergedData.filter((chart) => !hasValues(chart));
+      unbudgeted = mergedData.filter((chart) => !hasValues(chart));
 
       isEmpty = !mergedData.length;
     }
   }
+
+  $: currentMaxValue = getMaxValue(previousMonth || []);
 
   const fetchUserName = async () => {
     const userInfo = await getUserInfo();
@@ -106,7 +109,6 @@
     id === searchId;
 
   const limitPrioriry = (prev: ChartData, next: ChartData) =>
-    next.limit - prev.limit ||
     next.current - prev.current ||
     next.previous - prev.previous;
 
@@ -155,8 +157,6 @@
   const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
     chartStatements = [...chartStatements, detail];
   };
-  const sorted = (d) =>
-    d.sort((a, b) => b.current - a.current || b.previous - a.previous);
 
   const init = async () => {
     // let tokenCheck = localStorage.getItem('hookCheck');
@@ -165,11 +165,7 @@
     //   tokenCheck = Date.now().toString();
     // }
     username = await userNameFromStorage('username', fetchUserName);
-    const curResp = await getStatementWithRetry('current');
-    if (isSuccessResponse(curResp)) currentMonth = curResp.data;
-    const prevResp = await getStatementWithRetry('previous');
-    if (isSuccessResponse(prevResp)) previousMonth = prevResp.data;
-    currentMaxValue = getMaxValue(previousMonth);
+    getStatementWithRetry();
   };
 
   onMount(init);

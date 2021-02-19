@@ -20,7 +20,7 @@ declare namespace Cypress {
     username?: string
     password?: string
   }
-  interface Chainable {
+  interface Chainable<Subject> {
     /**
      * Custom command to select DOM element by data-automation-id attribute.
      * @example cy.getBySel('greeting')
@@ -48,7 +48,7 @@ declare namespace Cypress {
     // /**
     //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
     //  */
-    registerUser(options?: UserSignupInfo): Chainable<Chai.Assertion>
+    registerUser(options?: UserSignupInfo): Chainable<Subject>
 
     manualRegisterUser(options?: manualSignupInfo): void
 

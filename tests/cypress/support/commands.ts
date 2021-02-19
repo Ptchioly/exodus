@@ -51,15 +51,7 @@ Cypress.Commands.add(
   }
 )
 
-const waitInCIEnv = (): void => {
-  if (Cypress.env('CIWait') === 'true') {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(60000)
-  }
-}
-
 Cypress.Commands.add('registerUser', (options = {}) => {
-  // waitInCIEnv()
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
