@@ -20,7 +20,7 @@ declare namespace Cypress {
     username?: string
     password?: string
   }
-  interface Chainable {
+  interface Chainable<Subject> {
     /**
      * Custom command to select DOM element by data-automation-id attribute.
      * @example cy.getBySel('greeting')
@@ -46,9 +46,9 @@ declare namespace Cypress {
     manualLogin(options?: UserLoginInfo): void
 
     // /**
-    //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
+    //  * API request - creates a user with phone, xtoken and password, deletes JWT cookie after
     //  */
-    registerUser(options?: UserSignupInfo): Chainable<Chai.Assertion>
+    registerUserbyAPI(options?: UserSignupInfo): Chainable<Subject>
 
     manualRegisterUser(options?: manualSignupInfo): void
 
@@ -59,5 +59,15 @@ declare namespace Cypress {
     deleteMyUserIfExists(options?: UserLoginInfo): Chainable<void>
 
     checkHomePageLoaded(): void
+
+    waitInCIEnv(): void
+  }
+  interface Chainer<Subject> {
+    /**
+     * Custom Chai assertion that checks if the given subject is in viewport
+     * @example
+    cy.getBySel('menu-button').should('beInViewport')
+    */
+    (chainer: 'beInViewport'): Chainable<Subject>
   }
 }

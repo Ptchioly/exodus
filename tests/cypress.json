@@ -1,7 +1,8 @@
 {
     "baseUrl": "https://beeeee.es",
     "env": {
-        "apiUrl": "https://api.beeeee.es"
+        "apiUrl": "https://api.beeeee.es",
+        "CIWait": false
     },
     "retries": {
         "runMode": 1,

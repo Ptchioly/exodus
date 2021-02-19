@@ -51,15 +51,14 @@ Cypress.Commands.add(
   }
 )
 
-const waitInCIEnv = (): void => {
-  if (Cypress.env('CIWait') === 'true') {
+Cypress.Commands.add('waitInCIEnv', () => {
+  if (Cypress.env('CIWait') === true) {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(60000)
   }
-}
+})
 
-Cypress.Commands.add('registerUser', (options = {}) => {
-  waitInCIEnv()
+Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
@@ -68,15 +67,16 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }
 
   const user = Cypress._.defaults({}, options, defaults)
-  return cy
-    .request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/signup`,
-      body: {
-        ...user
-      }
-    })
-    .then(response => expect(response.status).to.eq(200))
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/signup`,
+    body: {
+      ...user
+    }
+  }).then(response => {
+    expect(response.status).to.eq(200)
+    cy.clearCookie('jwt')
+  })
 })
 
 // /**

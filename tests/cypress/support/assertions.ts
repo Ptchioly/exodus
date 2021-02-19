@@ -4,7 +4,7 @@
 
 // /**
 //  * Assert for checking element visibility within viewport
-//  * Usage: cy.get("element").should("be.inViewport");
+//  * Usage: cy.get("element").should("beInViewport");
 //  */
 const isInViewport = _chai => {
   function assertIsInViewport() {
@@ -26,7 +26,7 @@ const isInViewport = _chai => {
     )
   }
 
-  _chai.Assertion.addMethod('inViewport', assertIsInViewport)
+  _chai.Assertion.addMethod('beInViewport', assertIsInViewport)
 }
 
 chai.use(isInViewport)
