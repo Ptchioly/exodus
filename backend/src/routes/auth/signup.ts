@@ -28,8 +28,10 @@ signup.post('/signup', async (req, res) => {
     username,
   });
 
-  if (isFailure(userResponse) || !userResponse.Item)
-    return respond.FailureResponse('User already exist.');
+  if (isFailure(userResponse))
+    return respond.FailureResponse('Unable to get user.');
+
+  if (userResponse.Item) return respond.FailureResponse('User already exist.');
 
   const tokenResponse = await getTokens(Tables.USERS);
 
