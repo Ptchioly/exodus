@@ -20,7 +20,6 @@ export const getItem = async (
     TableName: table,
     Key: keyData,
   };
-  console.log('params', params);
 
   return await documentClient
     .get(params)
