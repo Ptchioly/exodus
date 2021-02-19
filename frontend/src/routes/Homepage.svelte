@@ -43,7 +43,7 @@
     [otherCategory] = statements.filter(isOtherCategory);
     unbudgeted = statements.filter((chart) => !hasValues(chart));
 
-    isEmpty = !synced && !chartStatements.length;
+    isEmpty = (!synced && ![...chartStatements].length) || !otherCategory;
 
     if (!synced) {
       await waitFor(5);
