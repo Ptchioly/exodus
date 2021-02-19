@@ -145,7 +145,7 @@
     </section>
 
     <section class="title">
-      <div class="title__name">
+      <div data-automation-id="category-title-budgeted" class="title__name">
         {title}
       </div>
     </section>

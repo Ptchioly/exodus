@@ -10,6 +10,7 @@ describe(`Login page visibility`, () => {
   })
 
   beforeEach(() => {
+    cy.loginByAPI()
     cy.visit('/')
   })
 

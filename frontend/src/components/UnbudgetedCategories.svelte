@@ -31,7 +31,7 @@
             on:mouseleave={() => (activeCategotegory = null)}
             on:click={handleClick(category)}
           >
-            <div>{category.title}</div>
+            <div data-automation-id="category-title-unbudgeted">{category.title}</div>
             <div
               class="ml-2 add opacity-0 mr-0.5"
               class:active={activeCategotegory === category.title}
