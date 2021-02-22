@@ -2,9 +2,7 @@
 /// <reference path="../support/index.d.ts" />
 
 describe.only('Login', () => {
-  const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
-
-  before(function() {
+  before(() => {
     cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
@@ -12,25 +10,6 @@ describe.only('Login', () => {
 
   beforeEach(() => {
     cy.visit('/')
-  })
-
-  sizes.forEach(size => {
-    it(`displays "Sign In" greeting and login forms on the login page using ${size} viewport`, () => {
-      if (Cypress._.isArray(size)) {
-        cy.viewport(size[0], size[1])
-      } else {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        cy.viewport(size)
-      }
-      cy.visit('/')
-      cy.get('h1')
-        .should('contain', 'Sign in to Exodus')
-        .and('beInViewport')
-      cy.getBySel('phone-input').should('beInViewport')
-      cy.getBySel('pwd-input').should('beInViewport')
-      cy.getBySel('signin-button').should('beInViewport')
-    })
   })
 
   it('displays register page on "Join now" click', () => {
