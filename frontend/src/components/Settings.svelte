@@ -83,7 +83,6 @@
   }
 
   #content {
-    min-width: 38rem;
     min-height: 20rem;
   }
 
