@@ -11,24 +11,25 @@
     current: 0,
     previous: 0,
     limit: 0,
-  }
+  };
 
   const props = {
     hideValue: false,
     activeInput: limit > 0,
     overlap: 0,
     remainings: 0,
-  }
+  };
 
   let barContainer: HTMLElement;
   let limits: HTMLElement;
   let currentBar: HTMLElement;
   let inputLimit: HTMLElement;
-  
+
   const percentOf = (value: number): number => (value * 100) / maxValue;
 
-  const getRemainingsPercent = () => percentOf((limit - current) * (maxValue / current));
-  
+  const getRemainingsPercent = () =>
+    percentOf((limit - current) * (maxValue / current));
+
   const getOverlapPercent = () => {
     return limit && current > limit
       ? (maxValue / current) * (percentOf(current) - percentage.limit)
@@ -49,8 +50,8 @@
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
     if (limit <= 0) props.activeInput = false;
-    if (typeof +limit === 'number' && +limit >= 0) setLimit()
-  }
+    if (typeof +limit === 'number' && +limit >= 0) setLimit();
+  };
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
@@ -71,7 +72,6 @@
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
       handleChange();
-
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
       handleChange();
@@ -86,19 +86,21 @@
   const handleInitLimit = () => {
     limit = current ? Math.ceil(current * 1.1) : 50;
     props.activeInput = true;
-    window.setTimeout(() => { 
+    window.setTimeout(() => {
       inputLimit.focus();
-    }, 1)
+    }, 1);
     handleChange();
-  }
+  };
 
   const handleDragLimit = (e) => {
+    console.log('Drag');
     const node = e.target;
     node.classList.add('moveable');
     const overlap = barContainer.querySelector('.bar__over');
     overlap && overlap.classList.add('moveable');
 
     const handleMove = (e) => {
+      console.log('Move');
       const limitsRect = limits.getBoundingClientRect();
       const moveToPercent = Math.round(
         ((e.clientX - limitsRect.left) * 100) / limitsRect.width
@@ -109,6 +111,7 @@
     };
 
     const handleEnd = (e) => {
+      console.log('End');
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
@@ -134,7 +137,6 @@
 </script>
 
 <div class="wrapper">
-
   <div class="top">
     <section class="actions">
       {#if !props.activeInput}
