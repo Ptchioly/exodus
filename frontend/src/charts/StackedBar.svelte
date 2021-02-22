@@ -4,10 +4,10 @@
   import Bars from './Bars.svelte';
   import type { StackedBars } from '../types/charts';
 
-  export let title;
-  export let current;
-  export let previous;
-  export let limit;
+  export let title: string;
+  export let current: number;
+  export let previous: number;
+  export let limit: number;
   export let maxValue = 4000;
 
   let apiRequest: StackedBars;
@@ -76,8 +76,10 @@
     const step = 50;
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
+      // setLimit();
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
+      // setLimit();
     }
   };
 
@@ -140,10 +142,11 @@
     <section class="actions">
       {#if limit <= 0}
         <button
+          data-automation-id="limit-button"
           class="action action--addLimit"
           on:click={() => {
             limit = 50;
-            handleLimitSet(limit);
+            // setLimit();
           }}
         >
           <img src="/images/add.svg" alt="+" />
@@ -198,7 +201,7 @@
   }
 
   .actions {
-    width: 45%;
+    width: 5em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,7 +240,7 @@
   }
 
   .title {
-    width: 55%;
+    width: calc(100% - 5em);
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     display: flex;
@@ -268,6 +271,7 @@
 
   .bar {
     height: 2em;
+    max-width: 100%;
     border-radius: 8px;
     transition: margin 0.2s, width 0.5s ease;
     display: flex;
@@ -285,12 +289,14 @@
     transition: width 0s;
   }
 
-  .bar__toLimit {
+  .bar__toLimit,
+  .unbar__toLimit {
     display: flex;
     align-items: center;
   }
 
-  .bar__toLimit > div {
+  .bar__toLimit > div,
+  .unbar__toLimit > div {
     width: 100%;
     height: 1em;
     margin: 4px;
@@ -300,13 +306,15 @@
     border-right: 1px solid #2f9e9e;
   }
 
-  .bar__toLimit > div > div {
+  .bar__toLimit > div > div,
+  .unbar__toLimit > div > div {
     width: 100%;
     height: 0px;
     border-top: 1px dashed #2f9e9e;
   }
 
-  .bar__toLimit > div > div.detailed::before {
+  .bar__toLimit > div > div.detailed::before,
+  .unbar__toLimit > div > div.detailed::before {
     content: attr(data-value);
     font-size: 0.5em;
     color: #2f9e9e;
@@ -319,14 +327,21 @@
     padding: 1px 3px;
   }
 
+  .unbar__toLimit {
+    margin-top: -2em;
+    height: 2em;
+  }
+
   .detailed > .bars > .bar--previous {
     margin-top: 0.5em;
     margin-left: -0.5em;
   }
 
-  .detailed > .bars > .bar--current {
+  .detailed > .bars > .bar--current,
+  .detailed > .bars > .unbar__toLimit {
     margin-top: -1.5em;
     margin-left: -1em;
+    transition: margin 0.2s, width 0.5s ease;
   }
 
   .detailed > .limits:hover > .limit--red,
@@ -343,12 +358,10 @@
   }
 
   .bar--previous {
-    width: 50%;
     background-color: #a6d6d1;
   }
 
   .bar--current {
-    width: 30%;
     background-color: #2f9e9e;
     margin-top: -2em;
     display: flex;

@@ -6,19 +6,19 @@ import { requests } from './endpoints';
 import { categorize } from './paymentsProcessing';
 import fetch from 'node-fetch';
 
-export const statementStartDate = (mounth: 'previous' | 'current'): Date => {
-  return mounth === 'current' ? startMonth('cur') : startMonth('prev');
+export const statementStartDate = (month: 'previous' | 'current'): number => {
+  return month === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
-export const startMonth = (variant: 'prev' | 'cur' | 'next'): Date => {
+export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
   const date = new Date();
   switch (variant) {
     case 'prev':
-      return new Date(date.getFullYear(), date.getMonth() - 1);
+      return Date.UTC(date.getFullYear(), date.getMonth() - 1);
     case 'cur':
-      return new Date(date.getFullYear(), date.getMonth());
+      return Date.UTC(date.getFullYear(), date.getMonth());
     case 'next':
-      return new Date(date.getFullYear(), date.getMonth() + 1);
+      return Date.UTC(date.getFullYear(), date.getMonth() + 1);
   }
 };
 
@@ -27,7 +27,6 @@ const fetchStatement = async (
   time: { start: number; finish: number },
   xtoken: string
 ): Promise<{ data: any; categorizedData: LimitCategory[] }> => {
-  console.log('time', time);
   const data = await fetch(
     requests.statement(account, time.start, time.finish),
     {
@@ -36,23 +35,22 @@ const fetchStatement = async (
       },
     }
   ).then((el) => el.json());
-  console.log('data', data);
 
   const categorizedData = categorize(data);
   return { data, categorizedData };
 };
 
 export const syncStatements = async (user: GetOutput): Promise<void> => {
-  const start = startMonth('prev').getTime();
-  const finish = startMonth('cur').getTime();
-  const prevMounthTime = { start, finish };
-  const currentMounthTime = {
+  const start = startMonth('prev');
+  const finish = startMonth('cur');
+  const prevmonthTime = { start, finish };
+  const currentmonthTime = {
     start: finish,
-    finish: startMonth('next').getTime(),
+    finish: startMonth('next'),
   };
   const { data, categorizedData } = await fetchStatement(
     user.Item.accounts[0],
-    currentMounthTime,
+    currentmonthTime,
     user.Item.xtoken
   );
   await statementUpdate(user, finish, data, categorizedData);
@@ -60,7 +58,7 @@ export const syncStatements = async (user: GetOutput): Promise<void> => {
   setTimeout(async () => {
     const { data, categorizedData } = await fetchStatement(
       user.Item.accounts[0],
-      prevMounthTime,
+      prevmonthTime,
       user.Item.xtoken
     );
 
@@ -95,9 +93,9 @@ export const statementUpdate = async (
 
 export const updateLimit = async (
   userId: string,
-  timestamp: number,
   category: string,
-  value: number
+  value: number,
+  timestamp = startMonth('cur')
 ): Promise<void> => {
   const key = { accountId: userId };
   const statements = (await getItem(configs.STATEMENTS_TABLE, key)) as any;
@@ -120,5 +118,5 @@ export const updateLimit = async (
         },
       }
     );
-  } else console.log('error');
+  }
 };

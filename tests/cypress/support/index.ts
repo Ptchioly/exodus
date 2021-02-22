@@ -1,4 +1,4 @@
 // @ts-check
-import "./commands";
-import 'cypress-dark';
-import "./assertions.js";
+import './commands'
+import 'cypress-dark'
+import './assertions'

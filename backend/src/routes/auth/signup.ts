@@ -5,7 +5,7 @@ import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
-import { encrypt, getAccounts } from './utils';
+import { encrypt, getAccounts, setHook } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
 export const signup = Router();
@@ -56,6 +56,8 @@ signup.post('/signup', async (req, res) => {
 
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
+
+  setHook(xtoken);
 
   await syncStatements({
     Item: user as any,

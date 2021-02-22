@@ -1,4 +1,5 @@
 import { AWSError } from 'aws-sdk';
+import { Users } from './types';
 
 export const isFailure = (response: any): response is AWSError =>
   response.statusCode;
@@ -15,5 +16,5 @@ export const hasKey = <T, K extends number | string>(
 ): object is T & { [k in K]: any } => {
   return key in object;
 };
-export const isValidMounthVariant = (m: string): m is 'previous' | 'current' =>
+export const isValidMonthVariant = (m: string): m is 'previous' | 'current' =>
   m === 'previous' || m === 'current';

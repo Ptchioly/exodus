@@ -6,6 +6,7 @@
   import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
   import MonoLogo from '../components/MonoLogo.svelte';
   import ErrorMessage from '../components/ErrorMessage.svelte';
+  import { isSuccessResponse } from '../types/guards';
 
   export let error: boolean = false;
 
@@ -29,12 +30,8 @@
     onclick: async () => {
       pwdCheck = checkPwd(pwd, confirmPwd);
       if (pwdCheck) {
-        const resp = (await signUp(
-          countryCode + phoneNumber,
-          pwd,
-          token
-        )) as any;
-        if (resp.message !== undefined) {
+        const resp = await signUp(countryCode + phoneNumber, pwd, token);
+        if (!isSuccessResponse(resp)) {
           errorMessage = resp.message;
           error = true;
         }
@@ -86,7 +83,7 @@
           type="text"
           placeholder="Monobank token"
           required
-          data-automation-d="xtoken-input"
+          data-automation-id="xtoken-input"
           bind:value={token}
         />
         <div class="items-center w-1/6"><MonoLogo /></div>

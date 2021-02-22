@@ -10,7 +10,16 @@ export type Users = {
   password: string;
   xtoken: string;
   telegramId?: string;
-  accounts: AccountInfo[];
+  accounts: string[];
+};
+
+export type Statement = {
+  accountId: string;
+  username: string;
+  [k: number]: {
+    rawData: MonoStatement[];
+    processedData: LimitCategory[];
+  };
 };
 
 export type UserMeta = {
@@ -18,7 +27,7 @@ export type UserMeta = {
 };
 
 export type StatementRequest = {
-  mounth: 'previous' | 'current';
+  month: 'previous' | 'current';
 };
 
 export type Category = {
@@ -33,6 +42,7 @@ export type Category = {
 export type LimitCategory = {
   category: string;
   id: number;
+  limit?: number;
 } & {
   moneySpent: number;
 };

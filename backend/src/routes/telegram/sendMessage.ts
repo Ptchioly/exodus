@@ -1,6 +1,5 @@
 import { configs, secrets } from '../../config';
 import { getItem, updateItem } from '../../dynamoAPI';
-import { endpointRespond } from '../../utils';
 import { isFailure } from '../types/guards';
 import fetch from 'node-fetch';
 
@@ -21,10 +20,11 @@ export const startTelegramBody = () => ({
   },
 });
 
-export const sendTelegramMessage = (res: any, chat_id: string) => async (
+export const sendTelegramMessage = (chat_id: string) => async (
   text: string,
   startBody = {}
 ) => {
+  console.log('TG text', text);
   await fetch(`${telegramURL}/sendMessage`, {
     method: 'POST',
     headers: {
@@ -37,14 +37,13 @@ export const sendTelegramMessage = (res: any, chat_id: string) => async (
       if (!json.ok) console.log('Error on start;', json.description);
     })
     .catch(console.log);
-  return endpointRespond(res).SuccessResponse();
 };
 
 export const processContact = async (
   res: any,
   { contact: { user_id, phone_number, first_name }, chat: { id } }: any
 ) => {
-  const sendMessage = sendTelegramMessage(res, id);
+  const sendMessage = sendTelegramMessage(id);
   if (user_id === id) {
     // Is there always will be phone? Maybe hidden?
     const [username] = /(380\d{9})/.exec(phone_number) as RegExpExecArray;

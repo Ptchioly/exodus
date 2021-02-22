@@ -266,4 +266,12 @@ export const categories: Category[] = [
     category: 'Другое',
     id: 15,
   },
+  {
+    mcc: {
+      numbers: [4829],
+      ranges: [],
+    },
+    category: 'Переводы на карту',
+    id: 16,
+  },
 ];

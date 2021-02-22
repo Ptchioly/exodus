@@ -1,3 +1,4 @@
+import { AWSError } from 'aws-sdk';
 import { NextFunction, Request, Response } from 'express';
 
 export const endpointRespond = (res: Response) => ({
@@ -14,9 +15,15 @@ export const logging = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log(req.url, req.method);
   next();
 };
 
 export const isInRange = (ranges: number[][], num: number): boolean =>
   ranges.some(([min, max]) => min <= num && num <= max);
+
+export const AWSNotFound = (message: string): AWSError => ({
+  name: 'ERRNOTFOUND',
+  code: '404',
+  message,
+  time: new Date(),
+});

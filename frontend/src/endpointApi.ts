@@ -1,12 +1,14 @@
 import type { APIResponse, UserInfo } from './types/Api';
 
 const baseUrl: string = process.env.host;
-const loginEndpoint = baseUrl.concat('/login');
-const authEndpoint = baseUrl.concat('/authentication');
-const signupEndpoint = baseUrl.concat('/signup');
-const logoutEndpoint = baseUrl.concat('/logout');
-const statementsEndpoint = baseUrl.concat('/statement');
-const limitsEndpoint = baseUrl.concat('/limit');
+const loginEndpoint = `${baseUrl}/login`;
+const authEndpoint = `${baseUrl}/authentication`;
+const signupEndpoint = `${baseUrl}/signup`;
+const logoutEndpoint = `${baseUrl}/logout`;
+const statementsEndpoint = `${baseUrl}/statement`;
+const limitsEndpoint = `${baseUrl}/limit`;
+const updateInfoEndpoint = `${baseUrl}/updateInfo`;
+const deleteUserEndpoint = `${baseUrl}/deleteUser`;
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -89,36 +91,8 @@ export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
   return { status, message };
 };
 
-const getPreviousMonth = (
-  currentMonth: number,
-  currentYear: number
-): { from: number; to: number } => {
-  const previousMonth = currentMonth > 0 ? currentMonth - 1 : 11;
-  const yearCheck = previousMonth !== 11 ? currentYear : currentYear - 1;
-  return {
-    from: new Date(yearCheck, previousMonth).valueOf(),
-    to: new Date(currentYear, currentMonth).valueOf(),
-  };
-};
-
-const getDateRange = (
-  currentDate: number,
-  month: 'previous' | 'current'
-): { from: number; to: number } => {
-  const date = new Date(currentDate);
-  const currentMonth = date.getMonth();
-  const currentYear = date.getFullYear();
-  if (month === 'current')
-    return {
-      from: new Date(currentYear, currentMonth).valueOf(),
-      to: currentDate,
-    };
-  else return getPreviousMonth(currentMonth, currentYear);
-};
-
 export const getStatement = async (
-  date: number,
-  mounth: 'previous' | 'current'
+  month: 'previous' | 'current'
 ): Promise<APIResponse> => {
   const response = await fetch(statementsEndpoint, {
     credentials: 'include',
@@ -128,7 +102,7 @@ export const getStatement = async (
     },
     method: 'POST',
     body: JSON.stringify({
-      mounth,
+      month,
     }),
   });
 
@@ -139,7 +113,10 @@ export const getStatement = async (
   return resp;
 };
 
-export const updateLimit = async (category: string, value: number) => {
+export const updateLimit = async (
+  category: string,
+  value: number
+): Promise<void> => {
   await fetch(limitsEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -148,4 +125,69 @@ export const updateLimit = async (category: string, value: number) => {
       value,
     }),
   });
+};
+
+export const updatePassword = async (
+  oldPassword: string,
+  newPassword: string
+): Promise<APIResponse<{ user_id: string }>> => {
+  const response = await fetch(updateInfoEndpoint, {
+    method: 'POST',
+    ...defaultInit,
+    body: JSON.stringify({
+      oldPassword,
+      newPassword,
+    }),
+  });
+
+  const { status } = response;
+
+  if (status !== 200) {
+    const { message } = await response.json();
+    return { status, message };
+  } else {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  }
+};
+
+export const updateXToken = async (
+  newXtoken: string
+): Promise<APIResponse<{ user_id: string }>> => {
+  const response = await fetch(updateInfoEndpoint, {
+    method: 'POST',
+    ...defaultInit,
+    body: JSON.stringify({
+      newXtoken,
+    }),
+  });
+
+  const { status } = response;
+
+  if (status !== 200) {
+    const { message } = await response.json();
+    return { status, message };
+  } else {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  }
+};
+
+export const deleteUser = async (): Promise<
+  APIResponse<{ user_id: string }>
+> => {
+  const response = await fetch(deleteUserEndpoint, {
+    ...defaultInit,
+    method: 'DELETE',
+  });
+
+  const { status } = response;
+
+  if (status !== 200) {
+    const { message } = await response.json();
+    return { status, message };
+  } else {
+    const { user_id } = await response.json();
+    return { status, data: { user_id } };
+  }
 };
