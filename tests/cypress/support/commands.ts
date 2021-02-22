@@ -75,6 +75,7 @@ Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
     }
   }).then(response => {
     expect(response.status).to.eq(200)
+    //don't save cookie, login on purpose
     cy.clearCookie('jwt')
   })
 })
