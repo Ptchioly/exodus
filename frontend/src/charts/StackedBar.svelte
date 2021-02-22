@@ -62,8 +62,9 @@
     }, delay);
   };
 
-  window.onbeforeunload = () => {
-    limitCallback && limitCallback();
+  // sets event every time after limitCallback has been initialized
+  $: window.onbeforeunload = (e) => {
+    limitCallback();
   };
 
   const handlePress = (e) => {
@@ -93,14 +94,12 @@
   };
 
   const handleDragLimit = (e) => {
-    console.log('Drag');
     const node = e.target;
     node.classList.add('moveable');
     const overlap = barContainer.querySelector('.bar__over');
     overlap && overlap.classList.add('moveable');
 
     const handleMove = (e) => {
-      console.log('Move');
       const limitsRect = limits.getBoundingClientRect();
       const moveToPercent = Math.round(
         ((e.clientX - limitsRect.left) * 100) / limitsRect.width
@@ -111,7 +110,6 @@
     };
 
     const handleEnd = (e) => {
-      console.log('End');
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
