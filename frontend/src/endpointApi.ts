@@ -1,4 +1,4 @@
-import type { APIResponse, UserInfo } from './types/Api';
+import type { APIResponse, ChartData, Statement, UserInfo } from './types/Api';
 
 const baseUrl: string = process.env.host;
 const loginEndpoint = `${baseUrl}/login`;
@@ -9,6 +9,7 @@ const statementsEndpoint = `${baseUrl}/statement`;
 const limitsEndpoint = `${baseUrl}/limit`;
 const updateInfoEndpoint = `${baseUrl}/updateInfo`;
 const deleteUserEndpoint = `${baseUrl}/deleteUser`;
+const personalEndpoint = `${baseUrl}/personal`;
 
 const defaultInit: RequestInit = {
   credentials: 'include',
@@ -17,10 +18,22 @@ const defaultInit: RequestInit = {
   },
 };
 
+const statusCheck = async (
+  response: Response
+): Promise<APIResponse<{ name: string }>> => {
+  const { status } = response;
+  if (status === 200) {
+    const { name } = await response.json();
+    return { status, data: { name } };
+  }
+  const { message } = await response.json();
+  return { status, message };
+};
+
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<APIResponse<{ user_id: string }>> => {
+): Promise<APIResponse<{ name: string }>> => {
   const response = await fetch(loginEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -29,16 +42,7 @@ export const signIn = async (
       password: pwd,
     }),
   });
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  } else {
-    const { message } = await response.json();
-    return { status, message };
-  }
+  return await statusCheck(response);
 };
 
 export const isAuthenticated = async (): Promise<boolean> => {
@@ -54,8 +58,8 @@ export const signUp = async (
   username: string,
   password: string,
   xtoken: string
-): Promise<APIResponse<{ user_id: string }>> => {
-  const t = {
+): Promise<APIResponse<{ name: string }>> => {
+  const response = await fetch(signupEndpoint, {
     ...defaultInit,
     method: 'POST',
     body: JSON.stringify({
@@ -63,47 +67,30 @@ export const signUp = async (
       password,
       xtoken,
     }),
-  };
-  const response = await fetch(signupEndpoint, t);
-
-  const { status } = response;
-
-  if (status === 200) {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  }
-
-  const { message } = await response.json();
-  return { status, message };
+  });
+  return await statusCheck(response);
 };
 
 export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
-  const response = await fetch(baseUrl.concat('/personal'), defaultInit);
-
+  const response = await fetch(personalEndpoint, defaultInit);
   const { status } = response;
-
   if (status === 200) {
     const userInfo: UserInfo = await response.json();
     return { status, data: userInfo };
   }
-
   const { message } = await response.json();
   return { status, message };
 };
 
-export const getStatement = async (
-  month: 'previous' | 'current'
-): Promise<APIResponse> => {
+export const getStatement = async (): Promise<
+  APIResponse<{ statements: ChartData[]; synced: boolean }>
+> => {
   const response = await fetch(statementsEndpoint, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
     },
-    method: 'POST',
-    body: JSON.stringify({
-      month,
-    }),
   });
 
   const resp: APIResponse = response.ok
@@ -139,16 +126,7 @@ export const updatePassword = async (
       newPassword,
     }),
   });
-
-  const { status } = response;
-
-  if (status !== 200) {
-    const { message } = await response.json();
-    return { status, message };
-  } else {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  }
+  return await statusCheck(response);
 };
 
 export const updateXToken = async (
@@ -161,16 +139,7 @@ export const updateXToken = async (
       newXtoken,
     }),
   });
-
-  const { status } = response;
-
-  if (status !== 200) {
-    const { message } = await response.json();
-    return { status, message };
-  } else {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  }
+  return await statusCheck(response);
 };
 
 export const deleteUser = async (): Promise<
@@ -180,14 +149,5 @@ export const deleteUser = async (): Promise<
     ...defaultInit,
     method: 'DELETE',
   });
-
-  const { status } = response;
-
-  if (status !== 200) {
-    const { message } = await response.json();
-    return { status, message };
-  } else {
-    const { user_id } = await response.json();
-    return { status, data: { user_id } };
-  }
+  return await statusCheck(response);
 };

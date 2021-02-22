@@ -7,3 +7,6 @@ export const validatePassword: Validator = (pwd?: string): boolean =>
 
 export const validatePhone: Validator = (number?: string): boolean =>
   number && number.length === 10 && Number(number) !== NaN;
+
+export const waitFor = (seconds: number): Promise<void> =>
+  new Promise((res) => setTimeout(res, seconds * 1000));

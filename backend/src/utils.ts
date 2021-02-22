@@ -18,6 +18,14 @@ export const logging = (
   next();
 };
 
+export const defaultRoute = (req: Request, res: Response): void => {
+  res
+    .status(200)
+    .send(
+      `<div style="margin-top: 120px; width: 100%; text-align: center; font-size: 10em; display: block;">🐝 🐝 🐝 🐝 🐝</div>`
+    );
+};
+
 export const isInRange = (ranges: number[][], num: number): boolean =>
   ranges.some(([min, max]) => min <= num && num <= max);
 

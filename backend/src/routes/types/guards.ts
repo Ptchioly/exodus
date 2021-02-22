@@ -1,5 +1,5 @@
 import { AWSError } from 'aws-sdk';
-import { Users } from './types';
+import { MonoFailedFetch } from './types';
 
 export const isFailure = (response: any): response is AWSError =>
   response.statusCode;
@@ -9,6 +9,9 @@ export const exist = (...fields: string[]): boolean =>
 
 export const atLeast = (...fields: string[]): boolean =>
   fields.some((field) => !!field);
+
+export const isFailedFetchMono = (info: any): info is MonoFailedFetch =>
+  !!info.errorDescription;
 
 export const hasKey = <T, K extends number | string>(
   object: T,

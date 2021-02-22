@@ -19,12 +19,12 @@
   const signInButton = {
     label: 'Sign In',
     onclick: async () => {
-      const resp = await signIn(summaryPhone, pwd);
-      if (!isSuccessResponse(resp)) {
-        errorMessage = resp.message;
+      const reponse = await signIn(summaryPhone, pwd);
+      if (!isSuccessResponse(reponse)) {
+        errorMessage = reponse.message;
         error = true;
       }
-      dispatch('login', resp);
+      dispatch('login', reponse);
     },
     dataAut: 'signin-button',
   };
@@ -36,7 +36,6 @@
   };
 
   $: summaryPhone = countryCode + phoneNumber;
-  // $: summaryPhone = phoneNumber;
 </script>
 
 {#if error}

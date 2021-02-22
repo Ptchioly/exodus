@@ -11,9 +11,13 @@ export const secrets = {
 };
 
 export const configs = {
+  ORIGINS: [
+    'http://localhost:5000',
+    'https://beeeee.es',
+    'https://www.beeeee.es',
+    'https://staging.beeeee.es',
+  ],
   HTTP_PORT: 8080,
-  USER_TABLE: 'users',
-  STATEMENTS_TABLE: 'statements',
   MAX_AGE: 86400000,
   CURRENCY_CODE: {
     980: 'UAH',

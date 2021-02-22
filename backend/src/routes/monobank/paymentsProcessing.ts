@@ -55,7 +55,7 @@ export const categorize = (payments: MonoStatements): LimitCategory[] => {
 
   return Object.keys(categoryObj).map(
     (e): LimitCategory => {
-      const { category } = categories.find(({ id }) => +e === id) as Category;
+      const { category } = categories.find(({ id }) => +e === id)!;
       return {
         category,
         moneySpent: categoryObj[e],
