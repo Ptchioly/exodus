@@ -1,6 +1,9 @@
+<script context="module" lang="ts">
+  export let forceLimitSet: () => Promise<void> | null = null;
+</script>
+
 <script lang="ts">
   import { updateLimit } from '../endpointApi';
-
   export let title: string;
   export let current: number;
   export let previous: number;
@@ -45,7 +48,6 @@
 
   let timeoutId: any;
   let delay = 1500;
-  let limitCallback: () => Promise<any> | null;
 
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
@@ -55,16 +57,16 @@
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
-    limitCallback = () => updateLimit(title, limit);
+    forceLimitSet = () => updateLimit(title, limit);
     timeoutId = setTimeout(async () => {
-      await limitCallback();
-      limitCallback = null;
+      await forceLimitSet();
+      forceLimitSet = null;
     }, delay);
   };
 
-  // sets event every time after limitCallback has been initialized
+  // sets event every time after forceLimitSet has been initialized
   $: window.onbeforeunload = (e) => {
-    limitCallback();
+    forceLimitSet();
   };
 
   const handlePress = (e) => {
