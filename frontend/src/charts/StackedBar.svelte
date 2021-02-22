@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
 
   export let title: string;
@@ -8,54 +7,50 @@
   export let limit: number;
   export let maxValue = 4000;
 
-  let currentP = 0;
-  let previousP = 0;
-  let limitP = 0;
-  let overlap: number;
-  let smol = false;
+  const percentage = {
+    current: 0,
+    previous: 0,
+    limit: 0,
+  }
 
-  const percentOf = (i) => (i * 100) / maxValue;
-  const getRemainings = () =>
-    percentOf((limit - current) * (maxValue / current));
+  const props = {
+    hideValue: false,
+    activeInput: limit > 0,
+    overlap: 0,
+    remainings: 0,
+  }
 
-  let remainings = getRemainings();
-
-  let bar: HTMLElement;
+  let barContainer: HTMLElement;
   let limits: HTMLElement;
-  let currentElement: HTMLElement;
+  let currentBar: HTMLElement;
+  let inputLimit: HTMLElement;
+  
+  const percentOf = (value: number): number => (value * 100) / maxValue;
 
-  const detailed = (e) => {
-    if (!bar || e.target.classList.contains('limit')) return;
-    bar.classList.toggle('detailed');
-  };
-
-  const countOverlap = () => {
+  const getRemainingsPercent = () => percentOf((limit - current) * (maxValue / current));
+  
+  const getOverlapPercent = () => {
     return limit && current > limit
-      ? (maxValue / current) * (percentOf(current) - limitP)
+      ? (maxValue / current) * (percentOf(current) - percentage.limit)
       : 0;
-  };
-
-  const handlePress = (e) => {
-    const step = 50;
-    if (e.key === 'ArrowUp' && limit + step <= maxValue) {
-      limit += step;
-      setLimit();
-    } else if (e.key === 'ArrowDown' && limit - step >= 0) {
-      limit -= step;
-      setLimit();
-    }
   };
 
   const isSmallEnough = (elem: HTMLElement) => {
     if (elem) {
-      const barRect = bar.getBoundingClientRect();
-      return (currentP * barRect.width) / 100 < 60;
+      const barRect = barContainer.getBoundingClientRect();
+      return (percentage.current * barRect.width) / 100 < 60;
     }
   };
 
   let timeoutId: any;
   let delay = 1500;
   let limitCallback: () => Promise<any> | null;
+
+  const handleChange = () => {
+    if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
+    if (limit <= 0) props.activeInput = false;
+    if (typeof +limit === 'number' && +limit >= 0) setLimit()
+  }
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
@@ -70,19 +65,46 @@
     limitCallback && limitCallback();
   };
 
-  const move = (e) => {
+  const handlePress = (e) => {
+    const step = 50;
+
+    if (e.key === 'ArrowUp' && limit + step <= maxValue) {
+      limit += step;
+      handleChange();
+
+    } else if (e.key === 'ArrowDown' && limit - step >= 0) {
+      limit -= step;
+      handleChange();
+    }
+  };
+
+  const handleDetailedView = (e) => {
+    if (!barContainer || e.target.classList.contains('limit')) return;
+    barContainer.classList.toggle('detailed');
+  };
+
+  const handleInitLimit = () => {
+    limit = current ? Math.ceil(current * 1.1) : 50;
+    props.activeInput = true;
+    window.setTimeout(() => { 
+      inputLimit.focus();
+    }, 1)
+    handleChange();
+  }
+
+  const handleDragLimit = (e) => {
     const node = e.target;
     node.classList.add('moveable');
-    const overlap = bar.querySelector('.bar__over');
+    const overlap = barContainer.querySelector('.bar__over');
     overlap && overlap.classList.add('moveable');
 
     const handleMove = (e) => {
       const limitsRect = limits.getBoundingClientRect();
-      const movePercent = Math.round(
+      const moveToPercent = Math.round(
         ((e.clientX - limitsRect.left) * 100) / limitsRect.width
       );
-      if (movePercent >= 0 && movePercent <= 100) {
-        limit = Math.round((movePercent * maxValue) / 100);
+      if (moveToPercent >= 0 && moveToPercent <= 100) {
+        limit = Math.round((moveToPercent * maxValue) / 100);
       }
     };
 
@@ -90,44 +112,36 @@
       node.classList.remove('moveable');
       overlap && overlap.classList.remove('moveable');
       window.removeEventListener('mousemove', handleMove);
-      setLimit();
+      handleChange();
     };
 
     window.addEventListener('mouseup', handleEnd);
     window.addEventListener('mousemove', handleMove);
   };
 
-  onMount(() => {
-    setTimeout(() => {
-      currentP = percentOf(current);
-      previousP = percentOf(previous);
-      limitP = percentOf(limit);
-      smol = isSmallEnough(currentElement);
-    }, 20);
-  });
-
   $: {
-    limitP = percentOf(limit);
-    overlap = countOverlap();
-    previousP = percentOf(previous);
-    currentP = percentOf(current);
-    smol = isSmallEnough(currentElement);
-    remainings = getRemainings();
+    percentage.current = percentOf(current);
+    percentage.previous = percentOf(previous);
+    percentage.limit = percentOf(limit);
+
+    props.overlap = getOverlapPercent();
+    props.remainings = getRemainingsPercent();
+    props.hideValue = isSmallEnough(currentBar);
+
+    // Force reload for cases where there are no new values for prev, limit, or curr fields
     maxValue = maxValue;
   }
 </script>
 
 <div class="wrapper">
+
   <div class="top">
     <section class="actions">
-      {#if limit <= 0}
+      {#if !props.activeInput}
         <button
           data-automation-id="limit-button"
           class="action action--addLimit"
-          on:click={() => {
-            limit = 50;
-            setLimit();
-          }}
+          on:click={handleInitLimit}
         >
           <img src="/images/add.svg" alt="+" />
         </button>
@@ -135,9 +149,9 @@
         <input
           type="text"
           bind:value={limit}
-          on:input={setLimit}
+          on:change={handleChange}
           on:keydown={handlePress}
-          pattern="\d+"
+          bind:this={inputLimit}
           data-automation-id="limit-input"
           class="action action--setLimit"
         />
@@ -155,44 +169,44 @@
     <section
       class="bar__container"
       class:detailed={false}
-      bind:this={bar}
-      on:mousedown={detailed}
+      bind:this={barContainer}
+      on:mousedown={handleDetailedView}
     >
       <div class="bars">
         <div
           class="bar bar--previous"
           data-value={`₴${previous}`}
-          style={`width: ${previousP}%`}
+          style={`width: ${percentage.previous}%`}
         />
         {#if current > 0}
           <div
             class="bar bar--current"
-            style={`width: ${currentP}%`}
+            style={`width: ${percentage.current}%`}
             data-value={`₴${current}`}
-            bind:this={currentElement}
-            data-hiddenValue={smol}
+            bind:this={currentBar}
+            data-hiddenValue={props.hideValue}
           >
             <div
               class="bar__over"
               class:moveable={false}
-              style={`width: ${overlap}%`}
+              style={`width: ${limit > 0 && props.overlap}%`}
             />
             <div
               class="bar__toLimit"
-              style={`width: ${remainings}%; margin-right: -${remainings}%;`}
+              style={`width: ${props.remainings}%; margin-right: -${props.remainings}%;`}
             >
-              {#if limit && limit > current + 20}
+              {#if limit > 0 && limit > current + 20}
                 <div>
                   <div
                     class:detailed={limit - current > 99}
-                    data-value={limit - current}
+                    data-value={Math.ceil(limit - current)}
                   />
                 </div>
               {/if}
             </div>
           </div>
-        {:else if limit && !current}
-          <div class="unbar__toLimit" style="width: {limitP}%">
+        {:else if limit > 0 && !current}
+          <div class="unbar__toLimit" style="width: {percentage.limit}%">
             <div>
               <div class:detailed={limit - current > 99} data-value={limit} />
             </div>
@@ -203,12 +217,12 @@
       <div class="limits" bind:this={limits}>
         <div
           class="limit limit--red"
-          on:mousedown={move}
+          on:mousedown={handleDragLimit}
           class:hidden={limit <= 0}
           class:moveable={false}
           data-value={`${limit}`}
           data-automation-id="limit-setter"
-          style={`left: ${limitP}%`}
+          style={`left: ${percentage.limit}%`}
         />
       </div>
     </section>

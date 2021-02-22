@@ -5,7 +5,8 @@ import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
-import { encrypt, getAccounts, setHook } from './utils';
+import { Tables } from '../types/types';
+import { hash, getAccounts, setHook } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
 export const signup = Router();
@@ -21,14 +22,21 @@ signup.post('/signup', async (req, res) => {
 
   if (message !== 'OK') return respond.FailureResponse(message);
 
-  const userResponse = await getItem(configs.USER_TABLE, {
+  const { clientId, name, accounts } = data;
+
+  const userResponse = await getItem(Tables.USERS, {
     username,
   });
 
-  if (isFailure(userResponse) || userResponse.Item)
-    return respond.FailureResponse('User already exist.');
+  if (isFailure(userResponse))
+    return respond.FailureResponse('Unable to get user.');
 
-  const tokenResponse = await getTokens(configs.USER_TABLE);
+  if (userResponse.Item) return respond.FailureResponse('User already exist.');
+
+  const tokenResponse = await getTokens(Tables.USERS);
+
+  if (isFailure(tokenResponse) || !tokenResponse.Items)
+    return respond.FailureResponse('Unable to get tokens');
 
   if (!tokenResponse.Items)
     return respond.FailureResponse('Unexpected error from db.');
@@ -37,19 +45,19 @@ signup.post('/signup', async (req, res) => {
     return respond.FailureResponse('Monobank token is already registered.');
 
   const key = nanoid(21);
-  const encryptedPassword = encrypt(password, key);
+  const encryptedPassword = hash(password, key);
 
   const user = {
-    id: data.clientId,
+    id: clientId,
     key,
     username,
     password: encryptedPassword,
     xtoken,
-    name: data.name,
-    accounts: getAccounts(data.accounts),
+    name,
+    accounts: getAccounts(accounts),
   };
 
-  const updateUserResponse = await putItem(configs.USER_TABLE, user);
+  const updateUserResponse = await putItem(Tables.USERS, user);
 
   if (isFailure(updateUserResponse))
     return respond.FailureResponse('Unable to create user.');
@@ -59,9 +67,7 @@ signup.post('/signup', async (req, res) => {
 
   setHook(xtoken);
 
-  await syncStatements({
-    Item: user as any,
-  });
+  await syncStatements({ Item: user });
 
-  return respond.SuccessResponse();
+  return respond.SuccessResponse({ name });
 });

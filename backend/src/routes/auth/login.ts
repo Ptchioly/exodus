@@ -3,7 +3,8 @@ import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
-import { decrypt } from './utils';
+import { Tables } from '../types/types';
+import { hash } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
 export const login = Router();
@@ -19,7 +20,7 @@ login.post('/login', async (req, res) => {
 
   if (message !== 'OK') return respond.FailureResponse(message);
 
-  const userResponse = await getItem(configs.USER_TABLE, {
+  const userResponse = await getItem(Tables.USERS, {
     username,
   });
 
@@ -28,17 +29,15 @@ login.post('/login', async (req, res) => {
 
   const user = userResponse.Item;
   if (!user) return respond.FailureResponse('User does not exist.');
+  const { xtoken, name } = user;
 
-  const decrypted = decrypt(user.password, user.key);
+  const encrypt = hash(password, user.key);
 
-  if (password !== decrypted)
+  if (user.password !== encrypt)
     return respond.FailureResponse('Incorrect password.');
 
-  const token = generateAccessToken(
-    userResponse.Item.username,
-    userResponse.Item.xtoken
-  );
+  const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
-  return respond.SuccessResponse();
+  return respond.SuccessResponse({ name });
 });

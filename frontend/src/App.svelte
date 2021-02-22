@@ -18,14 +18,11 @@
     navigationState = authorized ? 'home' : 'signIn';
   });
 
-  const handleApiResponse = async ({ detail }: CustomEvent<APIResponse>) => {
+  const handleApiResponse = async ({
+    detail,
+  }: CustomEvent<APIResponse<{ name: string }>>) => {
     if (isSuccessResponse(detail)) {
-      const response = await getUserInfo();
-      if (isSuccessResponse(response)) {
-        const userInfo = response.data;
-        localStorage.setItem('username', userInfo.name);
-        // localStorage.setItem('hookCheck', Date.now().toString());
-      }
+      localStorage.setItem('name', detail.data.name);
       navigationState = 'home';
     }
   };

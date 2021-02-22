@@ -2,8 +2,6 @@
 /// <reference path="../support/index.d.ts" />
 
 describe('sign up', () => {
-  const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
-
   before(() => {
     cy.waitInCIEnv()
   })
@@ -11,27 +9,6 @@ describe('sign up', () => {
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.visit('/')
-  })
-
-  sizes.forEach(size => {
-    it(`displays "Sign Up" greeting and registration forms on the sign up page using ${size} viewport`, () => {
-      if (Cypress._.isArray(size)) {
-        cy.viewport(size[0], size[1])
-      } else {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        cy.viewport(size)
-      }
-      cy.getBySel('link-signup-button').click()
-      cy.get('h1')
-        .should('contain', 'Sign Up')
-        .and('beInViewport')
-      cy.getBySel('phone-input').should('beInViewport')
-      cy.getBySel('pwd-input').should('beInViewport')
-      cy.getBySel('confirm-pwd-input').should('beInViewport')
-      cy.getBySel('xtoken-input').should('beInViewport')
-      cy.getBySel('signup-button').should('beInViewport')
-    })
   })
 
   it('registers new user', () => {

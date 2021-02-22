@@ -65,10 +65,10 @@
       <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
     </div>
 
-    <div class="flex items-center justify-center w-full relative">
+    <div class="password-input">
       <PasswordInput placeholder="Password" bind:value={pwd} />
     </div>
-    <div class="flex items-center justify-center w-full relative">
+    <div class="password-input">
       <PasswordInput
         placeholder="Confirm Password"
         bind:value={confirmPwd}
@@ -91,3 +91,9 @@
     </div>
   </div>
 </LoginForm>
+
+<style lang="postcss">
+  .password-input {
+    @apply flex items-center justify-center w-full relative;
+  }
+</style>

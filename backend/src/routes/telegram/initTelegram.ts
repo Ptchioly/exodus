@@ -9,7 +9,6 @@ export const initTelegramBot = async () =>
   )
     .then((resp) => resp.json())
     .then((json) => {
-      if (!json.ok) console.log(json.description);
       console.log(json.description);
     })
     .catch(console.log);
