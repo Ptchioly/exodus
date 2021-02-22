@@ -3,8 +3,9 @@
 
 describe('sign up', () => {
   before(function() {
+    cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
-    cy.registerUser()
+    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
