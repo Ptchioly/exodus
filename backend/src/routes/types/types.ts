@@ -1,6 +1,31 @@
-export type GetOutput = {
-  Item: Users;
+export type GetOutput<T extends Tables> = {
+  Item: Schema[T];
 };
+export type PartialOutput<T extends Tables, K extends keyof Schema[T]> = {
+  Item: Pick<Schema[T], K>;
+};
+
+export type PrimaryKey = {
+  [Tables.STATEMENTS]: 'accountId';
+  [Tables.USERS]: 'username';
+};
+
+export enum Tables {
+  STATEMENTS = 'statements',
+  USERS = 'users',
+}
+export type Schema = {
+  [Tables.STATEMENTS]: Statement;
+  [Tables.USERS]: Users;
+};
+
+export type KeyData<T extends Tables> = Record<PrimaryKey[T], string> &
+  Partial<Schema[T]>;
+
+export enum ResponseType {
+  LOGIN = 'login',
+  SIGNUP = 'signup',
+}
 
 export type Users = {
   id: string;
@@ -61,6 +86,10 @@ export type MonoClientInfo = {
   accounts: MonoAccount[];
 };
 
+export type MonoFailedFetch = {
+  errorDescription: string;
+};
+
 export type MonoAccount = {
   id: string;
   currencyCode: number;
@@ -115,3 +144,13 @@ export type AccountInfo = {
   operationAmount: number;
   time: number;
 };
+
+export type ChartData = {
+  id: number;
+  title: string;
+  previous: number;
+  current: number;
+  limit: number;
+};
+
+export type StatementHandler = (statement: LimitCategory) => number;

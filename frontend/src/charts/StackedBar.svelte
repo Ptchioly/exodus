@@ -1,3 +1,7 @@
+<script context="module" lang="ts">
+  export let forceLimitSet: () => Promise<void> | null = null;
+</script>
+
 <script lang="ts">
   // import { onMount } from 'svelte';
   import { updateLimit } from '../endpointApi';
@@ -140,7 +144,7 @@
 <div class="wrapper-s">
   <div class="top">
     <section class="actions">
-      {#if limit <= 0}
+      {#if limit < 0}
         <button
           data-automation-id="limit-button"
           class="action action--addLimit"
@@ -156,7 +160,6 @@
           type="text"
           bind:value={limit}
           on:keydown={handlePress}
-          pattern="\d+"
           data-automation-id="limit-input"
           class="action action--setLimit"
         />
@@ -164,9 +167,7 @@
     </section>
 
     <section class="title">
-      <div class="title__name">
-        {title}
-      </div>
+      <div class="title__name">{title}</div>
     </section>
   </div>
 

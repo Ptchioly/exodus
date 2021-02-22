@@ -3,13 +3,14 @@ import jwt from 'jsonwebtoken';
 import { secrets } from '../../config';
 import { endpointRespond } from '../../utils';
 import { getClientInfo } from '../monobank/endpoints';
+import { isFailedFetchMono } from '../types/guards';
 import { isValidPassword, isValidUsername } from './utils';
 
 export const authenticateToken = (
   req: any,
   res: Response,
   next: NextFunction
-): any => {
+): void => {
   const token = req.cookies.jwt;
   if (!token)
     return endpointRespond(res).FailureResponse('No token provided.', 401);
@@ -25,7 +26,7 @@ export const authenticateToken = (
 export const authentication = Router().get(
   '/authentication',
   authenticateToken,
-  (req: any, res) => endpointRespond(res).SuccessResponse({})
+  (req: any, res) => endpointRespond(res).SuccessResponse()
 );
 
 export const generateAccessToken = (username: string, xtoken: string): string =>
@@ -33,9 +34,7 @@ export const generateAccessToken = (username: string, xtoken: string): string =>
     expiresIn: '1d',
   });
 
-const formVerdict = (message: string, data?: any) => {
-  return { message, data };
-};
+const formVerdict = (message: string, data?: any) => ({ message, data });
 
 export const validateUserInfo = async ({
   username,
@@ -52,7 +51,7 @@ export const validateUserInfo = async ({
 
   if (xtoken) {
     const validateToken = await getClientInfo(xtoken);
-    return validateToken.errorDescription
+    return isFailedFetchMono(validateToken)
       ? formVerdict('Invalid X-Token')
       : formVerdict('OK', validateToken);
   }

@@ -1,42 +1,79 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-  import UserProfile from '../components/UserProfile.svelte';
-  import { getStatement, getUserInfo, logout } from '../endpointApi';
-  import type { APIResponse, ChartData, Statement } from '../types/Api';
-  import { isSuccessResponse } from '../types/guards';
-  import StackedBar from '../charts/StackedBar.svelte';
-  import Settings from '../components/Settings.svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
+  import HearedBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
+  import { getStatement } from '../endpointApi';
+  import type { ChartData, Statement } from '../types/Api';
+  import { isSuccessResponse } from '../types/guards';
+  import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
 
-  let data: ChartData[];
-  let unbudgeted: ChartData[];
+  let username: string;
+  let chartStatements: ChartData[] | undefined;
+  let unbudgeted: ChartData[] | undefined;
   let otherCategory: ChartData | undefined;
   let isEmpty: boolean;
   let currentMaxValue = 0;
-  let showSettings = false;
+  let isLoading = false;
 
-  const getMaxValue = (el: any) => {
-    el.forEach((el) => {
-      if (el.id !== 15 && el.moneySpent > currentMaxValue)
-        currentMaxValue = el.moneySpent;
-    });
+  const p2p = 16;
+
+  const isOtherCategory = ({ id }: ChartData | Statement) => id === p2p;
+
+  const saveUnbudgetedState = () =>
+    chartStatements
+      ? chartStatements.filter(
+          ({ previous, current }) => !(previous || current)
+        )
+      : [];
+
+  const getMaxValue = (statements: Statement[]) => {
+    return statements.reduce((currentValue, statement) => {
+      if (isOtherCategory(statement) && statement.moneySpent > currentMaxValue)
+        return statement.moneySpent;
+      return currentValue;
+    }, 0);
   };
 
   const getStatementWithRetry = async (
-    variant: 'previous' | 'current'
-  ): Promise<APIResponse> => {
-    const response = await getStatement(variant);
-    if (isSuccessResponse(response)) return response;
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const response = await getStatement(variant);
-        resolve(response);
-      }, 75000);
-    });
+    { keepAddedUnbudgeted } = { keepAddedUnbudgeted: false }
+  ): Promise<void> => {
+    const response = await getStatement();
+    if (!isSuccessResponse(response)) return Promise.reject(response.message);
+    const { statements, synced } = response.data;
+
+    const addedUnbudgeted = keepAddedUnbudgeted ? saveUnbudgetedState() : [];
+
+    chartStatements = [
+      ...statements
+        .filter((chart) => !isOtherCategory(chart))
+        .filter(hasValues),
+      ...addedUnbudgeted,
+    ];
+
+    [otherCategory] = statements.filter(isOtherCategory);
+
+    unbudgeted = statements.filter((chart) => !hasValues(chart));
+
+    if (keepAddedUnbudgeted && !synced) {
+      unbudgeted = unbudgeted.filter(
+        ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
+      );
+    }
+
+    isEmpty = !synced && ![...chartStatements].length && !otherCategory;
+
+    if (!synced) {
+      await waitFor(5);
+      return await getStatementWithRetry({ keepAddedUnbudgeted: true });
+    }
   };
+
+  const hasValues = ({ limit, previous, current }: ChartData) =>
+    previous || limit || current;
 
   const maxBarSize = (charts: ChartData[]): number => {
     let max = 0;
@@ -50,128 +87,35 @@
   };
 
   const dispatch = createEventDispatcher();
-  $: {
-    if (currentMonth) {
-      const mergedData = mergeData(currentMonth, previousMonth);
 
-      data = mergedData
-        .filter((category) => category.id !== 15) //Id#15 - Category "Other";
-        .filter((el) => el.previous || el.current || el.limit);
-      otherCategory = mergedData.filter((category) => category.id === 15).pop();
-      unbudgeted = mergedData.filter(
-        (t) => !(t.previous || t.current || t.limit)
-      );
+  $: currentMaxValue = getMaxValue(previousMonth || []);
 
-      isEmpty = !mergedData.length;
-    }
-  }
-
-  let username;
-
-  onMount(async () => {
-    // let tokenCheck = localStorage.getItem('hookCheck');
-    // if (Date.now() - +tokenCheck > 3600000) {
-    //   await getUserInfo();
-    //   tokenCheck = Date.now().toString();
-    // }
-    username = localStorage.getItem('username');
-    if (username === null) {
-      const userInfo = await getUserInfo();
-      if (isSuccessResponse(userInfo)) {
-        username = userInfo.data.name;
-        localStorage.setItem('username', username);
-      }
-    }
-    const curResp = await getStatementWithRetry('current');
-    if (isSuccessResponse(curResp)) currentMonth = curResp.data;
-    const prevResp = await getStatementWithRetry('previous');
-    if (isSuccessResponse(prevResp)) previousMonth = prevResp.data;
-    getMaxValue(previousMonth);
-  });
-
-  const mergeData = (
-    currentMonth: Statement[],
-    previousMonth: Statement[] | undefined
-  ): ChartData[] => {
-    const current = currentMonth.map(({ category, moneySpent, limit, id }) => ({
-      id,
-      title: category,
-      current: moneySpent,
-      previous:
-        (previousMonth &&
-          previousMonth.find((st) => st.category === category)?.moneySpent) ||
-        0,
-      limit: limit || 0,
-    }));
-
-    const previous = previousMonth
-      ? previousMonth
-          .filter(
-            ({ id }) =>
-              !currentMonth.find(({ id: currentId }) => id == currentId)
-          )
-          .map(({ category, moneySpent, limit, id }) => ({
-            id,
-            title: category,
-            current: 0,
-            previous: moneySpent,
-            limit: limit || 0,
-          }))
-      : [];
-
-    return sorted([...current, ...previous]);
+  const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
+    chartStatements = [...chartStatements, detail];
   };
 
-  const sorted = (d) =>
-    d.sort(
-      (a, b) =>
-        b.limit - a.limit || b.current - a.current || b.previous - a.previous
-    );
-
-  const handleAddCategory = (e: CustomEvent<ChartData>) => {
-    data = [...data, e.detail];
+  const init = async () => {
+    username = localStorage.getItem('name');
+    if (forceLimitSet) await forceLimitSet();
+    getStatementWithRetry();
   };
+
+  onMount(init);
 </script>
 
-{#if showSettings}
-  <Settings bind:showSettings />
-{/if}
-
 <main class="flex w-full flex-col items-center">
-  <div class="header flex justify-end w-full px-5 mt-4 md:mb-32 mb-10">
-    <div class="flex w-1/8 ">
-      <div
-        class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl"
-        on:click={() => location.reload()}
-      >
-        <img src="images/refresh.png" alt="refresh page" />
-      </div>
-      <div
-        class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl ml-6"
-        data-automation-id="telegram-link"
-        on:click={() => window.open('https://t.me/exodus_MonobankBudgetBot')}
-      >
-        <img src="images/tg.png" alt="telegram" />
-      </div>
-      <div class="user flex items-center" />
-      <div class="logout ml-6 user flex">
-        {#if username}<UserProfile
-            bind:showSettings
-            user={username}
-            on:logout={async () => {
-              await logout();
-              dispatch('logout', {});
-            }}
-          />{/if}
-      </div>
-    </div>
-  </div>
+  <HearedBar
+    on:logout={(e) => dispatch('logout', e)}
+    bind:isLoading
+    onUpdate={init}
+    {username}
+  />
   <section class="container">
     <div class="w-full flex justify-end">
       <div class="mb-15">
-        {#if data}
+        {#if unbudgeted && unbudgeted.length}
           <UnbudgetedCategories
-            categories={unbudgeted}
+            bind:categories={unbudgeted}
             on:addCategory={handleAddCategory}
           />
         {/if}
@@ -182,15 +126,14 @@
         You did not spend anything for current month
       </h1>
     {/if}
-    <!-- <RawCharts /> -->
-    {#if data}
-      {#each data as { previous, current, title, limit }}
+    {#if chartStatements}
+      {#each chartStatements as { previous, current, title, limit }}
         <StackedBar
           {previous}
           {current}
           {title}
           {limit}
-          maxValue={maxBarSize(data)}
+          maxValue={maxBarSize(chartStatements)}
         />
       {/each}
     {/if}

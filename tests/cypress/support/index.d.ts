@@ -20,7 +20,7 @@ declare namespace Cypress {
     username?: string
     password?: string
   }
-  interface Chainable {
+  interface Chainable<Subject> {
     /**
      * Custom command to select DOM element by data-automation-id attribute.
      * @example cy.getBySel('greeting')
@@ -43,67 +43,31 @@ declare namespace Cypress {
     // /**
     //  * Logs user in manually via app UI
     //  */
-    manualLogin(options?: UserLoginInfo): Chainable<any>
+    manualLogin(options?: UserLoginInfo): void
 
     // /**
-    //  * creates a user with phone, xtoken and password, sets JWT and transfer a user to his account
+    //  * API request - creates a user with phone, xtoken and password, deletes JWT cookie after
     //  */
-    registerUser(options?: UserSignupInfo): Chainable<any>
+    registerUserbyAPI(options?: UserSignupInfo): Chainable<Subject>
 
-    manualRegisterUser(options?: manualSignupInfo): Chainable<any>
+    manualRegisterUser(options?: manualSignupInfo): void
 
     // /**
     //  *  logs in to get JWT with creds defined in cypress.env.json
     //  *  then deletes a user from inside his own account
     //  */
-    deleteMyUserIfExists(options?: UserLoginInfo): Chainable<any>
+    deleteMyUserIfExists(options?: UserLoginInfo): Chainable<void>
 
     checkHomePageLoaded(): void
 
-    // /**
-    //  * Gets JWT Token
-    //  */
-    // getLoginToken(username: string, password?: string): Chainable<Response>;
-
-    // /**
-    //  * Sets JWT Token
-    //  */
-    // setToken(token: Response): void;
-
-    // /**
-    //  *  Cypress task for deleting user from database
-    //  */
-    // task(
-    //   event: "db:deleteUser",
-    //   arg: {
-    //     username: string,
-    //     accessKeyId: string,
-    //     secretAccessKey: string,
-    //     region: string
-    //   }
-    // ): Chainable<any>;
-
-    // /**
-    //  *  Cypress task for creating user in database
-    //  */
-
-    // task(
-    //   event: "db:createUser",
-    //   arg: { user: string, password: string }
-    // ): Chainable<any>;
-
-    // /**
-    //  *  Cypress task for quering user from database
-    //  */
-
-    // task(
-    //   event: "db:getUser",
-    //   arg: {
-    //     username: string,
-    //     accessKeyId: string,
-    //     secretAccessKey: string,
-    //     region: string
-    //   }
-    // ): Chainable<any>;
+    waitInCIEnv(): void
+  }
+  interface Chainer<Subject> {
+    /**
+     * Custom Chai assertion that checks if the given subject is in viewport
+     * @example
+    cy.getBySel('menu-button').should('beInViewport')
+    */
+    (chainer: 'beInViewport'): Chainable<Subject>
   }
 }

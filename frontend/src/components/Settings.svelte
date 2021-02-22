@@ -23,21 +23,21 @@
       class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-r-2 border-gray-600 relative"
     >
       <div
-        class="cursor-pointer xs:mt-2 sm:mt-5"
+        class="nav-button"
         on:click={() => (state = 'password')}
         data-automation-id="change-password-nav"
       >
         Change password
       </div>
       <div
-        class="cursor-pointer xs:mt-2 sm:mt-5"
+        class="nav-button"
         on:click={() => (state = 'x-token')}
         data-automation-id="change-token-nav"
       >
         Change X-Token
       </div>
       <div
-        class="cursor-pointer xs:mt-2 sm:mt-5"
+        class="nav-button"
         on:click={() => (state = 'deleteUser')}
         data-automation-id="delete-user-nav"
       >
@@ -63,7 +63,7 @@
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   #bg {
     position: fixed;
     height: 100%;
@@ -83,11 +83,14 @@
   }
 
   #content {
-    min-width: 38rem;
     min-height: 20rem;
   }
 
   .overlay {
     z-index: 4000;
+  }
+
+  .nav-button {
+    @apply cursor-pointer xs:mt-2 sm:mt-5;
   }
 </style>

@@ -2,18 +2,14 @@
 /// <reference path="../support/index.d.ts" />
 
 describe.only('Login', () => {
-  before(function() {
+  before(() => {
+    cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
-    cy.registerUser()
+    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
-    cy.clearCookies()
     cy.visit('/')
-  })
-
-  it('displays "Sign in to Exodus" on the login page', () => {
-    cy.contains('h1', 'Sign in to Exodus').should('be.visible')
   })
 
   it('displays register page on "Join now" click', () => {
@@ -41,6 +37,7 @@ describe.only('Login', () => {
 
   it('should error for an invalid user', () => {
     cy.manualLogin({ username: `123456789123` })
+    cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 400)
     cy.getBySel('login-error-message')
@@ -50,6 +47,7 @@ describe.only('Login', () => {
 
   it('should error for an invalid password for existing user', () => {
     cy.manualLogin({ password: `Wr0ngPa$$word` })
+    cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 400)
     cy.getBySel('login-error-message')
@@ -59,9 +57,10 @@ describe.only('Login', () => {
 
   it('displays home page on successful login', () => {
     cy.manualLogin()
+    cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 200)
-    cy.getBySel('menu-button').should('be.visible')
+    // cy.getBySel('menu-button').should('be.visible')
     cy.getCookie('jwt').should('have.property', 'value')
   })
 })

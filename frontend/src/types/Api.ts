@@ -17,12 +17,6 @@ export type UserInfo = {
   ];
 };
 
-export type OnResponseCB = (response: Response) => void;
-export interface RequestsQueue {
-  pushRequest: (url: string, init?: RequestInit) => void;
-  onResponse: (cb: OnResponseCB) => void;
-}
-
 export type ChartData = {
   id: number;
   title: string;
@@ -37,3 +31,5 @@ export type Statement = {
   limit: number;
   id: number;
 };
+
+export type StatementHandler = (statement: Statement) => number;

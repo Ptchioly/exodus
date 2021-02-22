@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
+import { Tables } from '../types/types';
 import { updateLimit } from './utils';
 
 export const limit = Router().post(
@@ -13,12 +13,12 @@ export const limit = Router().post(
     const { username } = req.user.data;
     const respond = endpointRespond(res);
 
-    const userFromDB = await getItem(configs.USER_TABLE, { username });
+    const userFromDB = await getItem(Tables.USERS, { username });
 
     const { category, value } = req.body;
 
     if (!isFailure(userFromDB)) {
-      const accountId = userFromDB.Item.accounts[0] as any;
+      const accountId = userFromDB.Item.accounts[0];
       await updateLimit(accountId, category, value);
 
       return respond.SuccessResponse({ newLimit: value, category });

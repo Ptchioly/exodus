@@ -2,6 +2,10 @@
 /// <reference path="../support/index.d.ts" />
 
 describe('sign up', () => {
+  before(() => {
+    cy.waitInCIEnv()
+  })
+
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.visit('/')
@@ -9,6 +13,7 @@ describe('sign up', () => {
 
   it('registers new user', () => {
     cy.manualRegisterUser()
+    cy.wait('@signup')
       .its('response.statusCode')
       .should('eq', 200)
     cy.checkHomePageLoaded()

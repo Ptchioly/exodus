@@ -29,22 +29,6 @@ Cypress.Commands.add(
   }
 )
 
-// Cypress.Commands.add(
-//   "deleteMyUserIfExists",
-//   (user = { username: Cypress.env("username"), password: Cypress.env("password") }) => {
-//     cy.intercept(/login/).as("login")
-//     cy.loginByAPI(user)
-//     cy.wait("@login").then(interception =>
-//       interception.response?.statusCode === 200 ?
-//         cy.request({
-//           method: "DELETE",
-//           url: `${Cypress.env("apiUrl")}/deleteUser`,
-//         }) :
-//         cy.log(`Unable to login to delete user ${Cypress.env("username")}.`)
-//     )
-//   }
-// )
-
 Cypress.Commands.add(
   'deleteMyUserIfExists',
   (
@@ -67,7 +51,14 @@ Cypress.Commands.add(
   }
 )
 
-Cypress.Commands.add('registerUser', (options = {}) => {
+Cypress.Commands.add('waitInCIEnv', () => {
+  if (Cypress.env('CIWait') === true) {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(60000)
+  }
+})
+
+Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
@@ -76,15 +67,17 @@ Cypress.Commands.add('registerUser', (options = {}) => {
   }
 
   const user = Cypress._.defaults({}, options, defaults)
-  return cy
-    .request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/signup`,
-      body: {
-        ...user
-      }
-    })
-    .then(response => expect(response.status).to.eq(200))
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/signup`,
+    body: {
+      ...user
+    }
+  }).then(response => {
+    expect(response.status).to.eq(200)
+    //don't save cookie, login on purpose
+    cy.clearCookie('jwt')
+  })
 })
 
 // /**
@@ -92,7 +85,7 @@ Cypress.Commands.add('registerUser', (options = {}) => {
 //  */
 Cypress.Commands.add('checkHomePageLoaded', () => {
   cy.getBySel('telegram-link', { timeout: 8000 }).should('be.visible')
-  cy.getBySel('menu-button').should('be.visible')
+  // cy.getBySel('menu-button').should('be.visible')
   cy.get('section>div.limits')
     .first()
     .should('exist') //not visible height 0px wtf??
@@ -119,7 +112,6 @@ Cypress.Commands.add('manualLogin', (user = {}) => {
   cy.getBySel('pwd-input').type(userInfo.password)
   cy.intercept('POST', 'login').as('login')
   cy.getBySel('signin-button').click()
-  return cy.wait('@login')
 })
 
 // /**
@@ -140,11 +132,4 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('xtoken-input').type(userInfo.xtoken)
   cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
-  return cy.wait('@signup')
-  // cy.checkHomePageLoaded();
 })
-
-// Cypress.Commands.add('setToken', (response) => {
-//   const token = response.headers['set-cookie'][0].match(/jwt=([^;]+)/)[1];
-//   return cy.setCookie('jwt', token, { expiry: configs.MAX_AGE })
-// })

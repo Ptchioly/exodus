@@ -4,15 +4,17 @@
 
 // /**
 //  * Assert for checking element visibility within viewport
-//  * Usage: cy.get("element").should("be.inViewport");
+//  * Usage: cy.get("element").should("beInViewport");
 //  */
 const isInViewport = _chai => {
   function assertIsInViewport() {
     const subject = this._obj
-
     // cy.state is undocumented and should probably not be used, but it's the only thing that works for now
-
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const bottom = Cypress.$(cy.state('window')).height()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     const right = Cypress.$(cy.state('window')).width()
     const rect = subject[0].getBoundingClientRect()
 
@@ -24,7 +26,7 @@ const isInViewport = _chai => {
     )
   }
 
-  _chai.Assertion.addMethod('inViewport', assertIsInViewport)
+  _chai.Assertion.addMethod('beInViewport', assertIsInViewport)
 }
 
 chai.use(isInViewport)

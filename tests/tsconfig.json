@@ -10,8 +10,10 @@
     "types": [
       "cypress"
     ],
+    "noEmitOnError": true,
+    "outDir": "./dist"
   },
   "include": [
     "cypress/integration/*.ts",
-  ]
+  ],
 }

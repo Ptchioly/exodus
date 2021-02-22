@@ -1,13 +1,10 @@
-import { AES, enc } from 'crypto-js';
+import { SHA3 } from 'crypto-js';
 import fetch from 'node-fetch';
 import { requests } from '../monobank/endpoints';
 import { MonoAccount } from '../types/types';
 
-export const encrypt = (password: string, key: string): string =>
-  AES.encrypt(password, key).toString();
-
-export const decrypt = (encryptedPassword: string, key: string): string =>
-  AES.decrypt(encryptedPassword, key).toString(enc.Utf8);
+export const hash = (password: string, salt: string): string =>
+  SHA3(password + SHA3(salt + 'sobaka')).toString();
 
 const reLower = /[a-z]/;
 const reUpper = /[a-z]/;
@@ -31,7 +28,7 @@ export const getAccounts = (accounts: MonoAccount[]): string[] =>
   accounts.filter((acc) => acc.balance !== 0).map((acc) => acc.id);
 
 export const setHook = async (xtoken: string): Promise<void> => {
-  return await fetch(requests.webhook(), {
+  await fetch(requests.webhook(), {
     method: 'POST',
     headers: {
       'X-Token': xtoken,
