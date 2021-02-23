@@ -108,11 +108,11 @@ export type ClientInfo = {
 };
 
 export type Account = {
-    id: string,
-    type: 'black' | 'white' | 'platinum' | 'iron' | 'fop' | 'yellow',
-    balance: number,
-    pan: string[],
-    currency: string,
+  id: string;
+  type: 'black' | 'white' | 'platinum' | 'iron' | 'fop' | 'yellow';
+  balance: number;
+  pan: string[];
+  currency: string;
 };
 
 export type MonoStatements = MonoStatement[];
