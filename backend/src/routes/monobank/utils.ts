@@ -3,7 +3,7 @@ import {
   getAttributesFromTable,
   getItem,
   putItem,
-  updateItem
+  updateItem,
 } from '../../dynamoAPI';
 import { AWSNotFound } from '../../utils';
 import { isFailedFetchMono, isFailure } from '../types/guards';
@@ -58,7 +58,13 @@ export const syncStatements = async (user: Users): Promise<void> => {
         currentMonthTime,
         xtoken
       );
-      await statementUpdate(account.id, username,  finish, data, categorizedData);
+      await statementUpdate(
+        account.id,
+        username,
+        finish,
+        data,
+        categorizedData
+      );
     })
   );
 
@@ -71,7 +77,13 @@ export const syncStatements = async (user: Users): Promise<void> => {
           xtoken
         );
 
-        await statementUpdate(account.id, username, start, data, categorizedData);
+        await statementUpdate(
+          account.id,
+          username,
+          start,
+          data,
+          categorizedData
+        );
       })
     );
   }, 65000);
@@ -91,7 +103,9 @@ export const statementUpdate = async (
 
   Object.keys(dbItem).length > 0
     ? await updateItem(
-        Tables.STATEMENTS, { accountId }, { [timestamp]: newObject, username }
+        Tables.STATEMENTS,
+        { accountId },
+        { [timestamp]: newObject, username }
       )
     : await putItem(Tables.STATEMENTS, {
         accountId,
@@ -101,12 +115,12 @@ export const statementUpdate = async (
 };
 
 export const updateLimit = async (
-  userId: string,
+  accountId: string,
   category: string,
   value: number,
   timestamp = startMonth('cur')
 ): Promise<void> => {
-  const key = { accountId: userId };
+  const key = { accountId };
   const statements = await getItem(Tables.STATEMENTS, key);
   if (!isFailure(statements)) {
     const newData = statements.Item[timestamp].processedData.reduce(
@@ -119,7 +133,7 @@ export const updateLimit = async (
     );
     updateItem(
       Tables.STATEMENTS,
-      { accountId: userId },
+      { accountId },
       {
         [timestamp]: {
           processedData: newData,

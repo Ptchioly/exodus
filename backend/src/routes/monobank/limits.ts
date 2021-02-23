@@ -7,10 +7,11 @@ import { Tables } from '../types/types';
 import { updateLimit } from './utils';
 
 export const limit = Router().post(
-  '/limit',
+  '/limit/:accountId',
   authenticateToken,
   async (req: any, res) => {
     const { username } = req.user.data;
+    const { accountId } = req.params;
     const respond = endpointRespond(res);
 
     const userFromDB = await getItem(Tables.USERS, { username });
@@ -18,7 +19,6 @@ export const limit = Router().post(
     const { category, value } = req.body;
 
     if (!isFailure(userFromDB)) {
-      const accountId = userFromDB.Item.accounts[0];
       await updateLimit(accountId, category, value);
 
       return respond.SuccessResponse({ newLimit: value, category });
