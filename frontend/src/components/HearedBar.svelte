@@ -2,6 +2,8 @@
   import { createEventDispatcher } from 'svelte';
 
   import { logout } from '../endpointApi';
+  import Card from './Card.svelte';
+  import Cards from './Cards.svelte';
 
   import Settings from './Settings.svelte';
   import UserProfile from './UserProfile.svelte';
@@ -19,6 +21,9 @@
 {/if}
 
 <div class="header flex justify-end w-full px-5 mt-4 md:mb-20 mb-10">
+  <div class="w-8/12 flex justify-center">
+    <Cards />
+  </div>
   <div class="flex w-1/8 ">
     <div
       class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl "
