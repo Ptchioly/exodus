@@ -81,15 +81,24 @@ export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
 };
 
 export const getStatement = async (
-  accountId: string
-): Promise<APIResponse<{ statements: ChartData[]; synced: boolean }>> => {
-  const response = await fetch(`${statementsEndpoint}/${accountId}`, {
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-    },
-  });
+  accountIds: string[]
+): Promise<
+  APIResponse<{
+    statements: { statements: ChartData[]; accountId: string }[];
+    all: ChartData[];
+    synced: boolean;
+  }>
+> => {
+  const response = await fetch(
+    `${statementsEndpoint}?ids=${accountIds.join(',')}`,
+    {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    }
+  );
 
   const resp: APIResponse = response.ok
     ? { data: await response.json(), status: 200 }

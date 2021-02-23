@@ -48,4 +48,5 @@ export type CardType =
   | 'platinum'
   | 'iron'
   | 'fop'
-  | 'yellow';
+  | 'yellow'
+  | 'all';

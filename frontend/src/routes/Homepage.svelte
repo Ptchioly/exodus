@@ -13,6 +13,8 @@
   export let currentMonth: Statement[] | undefined;
   export let storage = new IndexedDBStorage<Account>('accounts', 'id');
 
+  let fullStatements: Record<string, ChartData[]>;
+
   let username: string;
   let chartStatements: ChartData[] | undefined;
   let unbudgeted: ChartData[] | undefined;
@@ -22,17 +24,15 @@
   let isLoading = false;
   let accounts: Account[];
   let currentAccountId: string;
-  $: getStatementWithRetry(currentAccountId);
+  $: fullStatements && parseStatements(fullStatements, currentAccountId);
 
   const p2p = 16;
 
   const isOtherCategory = ({ id }: ChartData | Statement) => id === p2p;
 
-  const saveUnbudgetedState = () =>
-    chartStatements
-      ? chartStatements.filter(
-          ({ previous, current }) => !(previous || current)
-        )
+  const saveUnbudgetedState = (statements: ChartData[]) =>
+    statements
+      ? statements.filter(({ previous, current }) => !(previous || current))
       : [];
 
   const getMaxValue = (statements: Statement[]) => {
@@ -43,43 +43,43 @@
     }, 0);
   };
 
-  const getStatementWithRetry = async (
-    account: string,
-    { keepAddedUnbudgeted } = { keepAddedUnbudgeted: false }
-  ): Promise<void> => {
-    console.log('currentAccountId 2', currentAccountId);
-    const response = await getStatement(currentAccountId);
-    if (!isSuccessResponse(response)) return Promise.reject(response.message);
-    const { statements, synced } = response.data;
+  // const getStatementWithRetry = async (
+  //   account: string,
+  //   { keepAddedUnbudgeted } = { keepAddedUnbudgeted: false }
+  // ): Promise<void> => {
+  //   console.log('currentAccountId 2', currentAccountId);
+  //   const response = await getStatement(currentAccountId);
+  //   if (!isSuccessResponse(response)) return Promise.reject(response.message);
+  //   const { statements, synced } = response.data;
 
-    const addedUnbudgeted = keepAddedUnbudgeted ? saveUnbudgetedState() : [];
+  //   const addedUnbudgeted = keepAddedUnbudgeted ? saveUnbudgetedState() : [];
 
-    chartStatements = [
-      ...statements
-        .filter((chart) => !isOtherCategory(chart))
-        .filter(hasValues),
-      ...addedUnbudgeted,
-    ];
+  //   chartStatements = [
+  //     ...statements
+  //       .filter((chart) => !isOtherCategory(chart))
+  //       .filter(hasValues),
+  //     ...addedUnbudgeted,
+  //   ];
 
-    [otherCategory] = statements.filter(isOtherCategory);
+  //   [otherCategory] = statements.filter(isOtherCategory);
 
-    unbudgeted = statements.filter((chart) => !hasValues(chart));
+  //   unbudgeted = statements.filter((chart) => !hasValues(chart));
 
-    if (keepAddedUnbudgeted && !synced) {
-      unbudgeted = unbudgeted.filter(
-        ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
-      );
-    }
+  //   if (keepAddedUnbudgeted && !synced) {
+  //     unbudgeted = unbudgeted.filter(
+  //       ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
+  //     );
+  //   }
 
-    isEmpty = !synced && ![...chartStatements].length && !otherCategory;
+  //   isEmpty = !synced && ![...chartStatements].length && !otherCategory;
 
-    if (!synced) {
-      await waitFor(5);
-      return await getStatementWithRetry(account, {
-        keepAddedUnbudgeted: true,
-      });
-    }
-  };
+  //   if (!synced) {
+  //     await waitFor(5);
+  //     return await getStatementWithRetry(account, {
+  //       keepAddedUnbudgeted: true,
+  //     });
+  // }
+  // };
 
   const hasValues = ({ limit, previous, current }: ChartData) =>
     previous || limit || current;
@@ -103,13 +103,67 @@
     chartStatements = [...chartStatements, detail];
   };
 
+  const fetchStatements = async () => {
+    const response = await getStatement(accounts.map(({ id }) => id));
+    console.log('fetchStatements => response', response);
+    if (!isSuccessResponse(response)) return Promise.reject();
+    const {
+      data: { statements, synced, all },
+    } = response;
+
+    fullStatements = {
+      ...statements.reduce((acc, st) => {
+        return {
+          ...acc,
+          [st.accountId]: st.statements,
+        };
+      }, {}),
+      all,
+    };
+    if (!synced) {
+      await waitFor(10);
+      return await fetchStatements();
+    }
+  };
+
+  const parseStatements = (
+    fullData: Record<string, ChartData[]>,
+    accountId: string,
+    keepAddedUnbudgeted = false
+  ) => {
+    const statementsForAccount = fullData[accountId]; //Check if not null
+
+    const addedUnbudgeted = keepAddedUnbudgeted
+      ? saveUnbudgetedState(statementsForAccount)
+      : [];
+
+    chartStatements = [
+      ...statementsForAccount
+        .filter((chart) => !isOtherCategory(chart))
+        .filter(hasValues),
+      ...addedUnbudgeted,
+    ];
+
+    [otherCategory] = statementsForAccount.filter(isOtherCategory);
+
+    unbudgeted = statementsForAccount.filter((chart) => !hasValues(chart));
+
+    if (keepAddedUnbudgeted) {
+      unbudgeted = unbudgeted.filter(
+        ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
+      );
+    }
+
+    // isEmpty = !synced && ![...chartStatements].length && !otherCategory;
+  };
   const init = async () => {
+    if (forceLimitSet) await forceLimitSet();
     username = localStorage.getItem('name');
     await storage.init();
     accounts = await storage.getAll();
     currentAccountId = accounts[0]?.id;
     console.log('init => accounts', accounts);
-    if (forceLimitSet) await forceLimitSet();
+    fetchStatements();
     // getStatementWithRetry(currentAccountId);
   };
 

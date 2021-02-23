@@ -16,7 +16,10 @@
   export let currentCardType: CardType;
 
   $: currentAccountId =
-    accounts.find(({ type }) => type === currentCardType)?.id || accounts[0].id;
+    currentCardType !== 'all'
+      ? accounts.find(({ type }) => type === currentCardType)?.id ||
+        accounts[0].id
+      : 'all';
 
   const dispatch = createEventDispatcher();
 

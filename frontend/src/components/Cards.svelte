@@ -22,6 +22,7 @@
     class:isActive={activeCard === cards.length}
     on:click={() => {
       activeCard = cards.length;
+      currentCardType = 'all';
     }}
   >
     <div class="h-10 bg-gray-500 w-24 relative rounded-lg" />
