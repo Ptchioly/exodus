@@ -50,6 +50,8 @@ declare namespace Cypress {
     //  */
     registerUserbyAPI(options?: UserSignupInfo): Chainable<Subject>
 
+    sendSignUpRequest(options?: UserSignupInfo): Chainable<Response>
+
     manualRegisterUser(options?: manualSignupInfo): void
 
     // /**

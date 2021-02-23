@@ -11,14 +11,6 @@ describe('sign up', () => {
     cy.visit('/')
   })
 
-  it('registers new user', () => {
-    cy.manualRegisterUser()
-    cy.wait('@signup')
-      .its('response.statusCode')
-      .should('eq', 200)
-    cy.checkHomePageLoaded()
-  })
-
   it('check monobank link', () => {
     cy.getBySel('link-signup-button').click()
     cy.getBySel('monobank-link').should('be.visible')
@@ -31,23 +23,52 @@ describe('sign up', () => {
     })
   })
 
-  //   it('does not register new user with already registered phone number', () => { })
+  it('does not register new user with incorrect data in username', () => {
+    const invalidUsernames = ['testuser_01', '078323', '0783233232323223323333']
+    invalidUsernames.forEach(user => {
+      cy.sendSignUpRequest({ username: user }).then(response => {
+        expect(response.status).to.eq(400)
+        expect(response.body).to.have.property('message', 'Phone number is invalid.')
+      })
+    })
+  })
 
-  //   it('requires only digits in phone number', () => { })
+  it('does not register new user with incorrect data in password', () => {
+    const invalidPasswords = [
+      // 'testuserdata3@',
+      'TESTUSERDATA4@',
+      'TESTuserdata@',
+      'Test1@',
+      'Testuserdata 4456@'
+    ]
+    invalidPasswords.forEach(pwd => {
+      cy.sendSignUpRequest({ password: pwd }).then(response => {
+        expect(response.status).to.eq(400)
+        expect(response.body).to.have.property(
+          'message',
+          'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
+        )
+      })
+    })
+  })
+
+  it('does not register new user with already registered phone number', () => {
+    cy.registerUserbyAPI()
+    cy.sendSignUpRequest().then(response => {
+      expect(response.status).to.eq(400)
+      expect(response.body).to.have.property('message', 'User already exists.')
+    })
+  })
+
+  it('registers new user', () => {
+    cy.manualRegisterUser()
+    cy.wait('@signup')
+      .its('response.statusCode')
+      .should('eq', 200)
+    cy.checkHomePageLoaded()
+  })
 
   // it('does not register new user without incorrct X-Token', () => { })
-
-  //   it('does not register new user with less than 12 chars in phone number', () => { })
-
-  //   it('does not register new user with less than 1 upper-case char in password', () => { })
-
-  //   it('does not register new user with less than 1 lower-case char in password', () => { })
-
-  //   it('does not register new user with less than 1 digit in password', () => { })
-
-  //   it('does not register new user with less than 8 symbols in password', () => { })
-
-  //   it('does not register new user with whitespaces in password', () => { })
 
   //   it('does not register new user with "password" and "confirm password" inputs mismatched', () => { })
 })
