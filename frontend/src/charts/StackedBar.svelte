@@ -1,6 +1,9 @@
+<script context="module" lang="ts">
+  export let forceLimitSet: () => Promise<void> | null = null;
+</script>
+
 <script lang="ts">
   import { updateLimit } from '../endpointApi';
-
   export let title: string;
   export let current: number;
   export let previous: number;
@@ -11,24 +14,25 @@
     current: 0,
     previous: 0,
     limit: 0,
-  }
+  };
 
   const props = {
     hideValue: false,
     activeInput: limit > 0,
     overlap: 0,
     remainings: 0,
-  }
+  };
 
   let barContainer: HTMLElement;
   let limits: HTMLElement;
   let currentBar: HTMLElement;
   let inputLimit: HTMLElement;
-  
+
   const percentOf = (value: number): number => (value * 100) / maxValue;
 
-  const getRemainingsPercent = () => percentOf((limit - current) * (maxValue / current));
-  
+  const getRemainingsPercent = () =>
+    percentOf((limit - current) * (maxValue / current));
+
   const getOverlapPercent = () => {
     return limit && current > limit
       ? (maxValue / current) * (percentOf(current) - percentage.limit)
@@ -44,25 +48,25 @@
 
   let timeoutId: any;
   let delay = 1500;
-  let limitCallback: () => Promise<any> | null;
 
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
     if (limit <= 0) props.activeInput = false;
-    if (typeof +limit === 'number' && +limit >= 0) setLimit()
-  }
+    if (typeof +limit === 'number' && +limit >= 0) setLimit();
+  };
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
-    limitCallback = () => updateLimit(title, limit);
+    forceLimitSet = () => updateLimit(title, limit);
     timeoutId = setTimeout(async () => {
-      await limitCallback();
-      limitCallback = null;
+      await forceLimitSet();
+      forceLimitSet = null;
     }, delay);
   };
 
-  window.onbeforeunload = () => {
-    limitCallback && limitCallback();
+  // sets event every time after forceLimitSet has been initialized
+  $: window.onbeforeunload = (e) => {
+    forceLimitSet();
   };
 
   const handlePress = (e) => {
@@ -71,7 +75,6 @@
     if (e.key === 'ArrowUp' && limit + step <= maxValue) {
       limit += step;
       handleChange();
-
     } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
       handleChange();
@@ -86,11 +89,11 @@
   const handleInitLimit = () => {
     limit = current ? Math.ceil(current * 1.1) : 50;
     props.activeInput = true;
-    window.setTimeout(() => { 
+    window.setTimeout(() => {
       inputLimit.focus();
-    }, 1)
+    }, 1);
     handleChange();
-  }
+  };
 
   const handleDragLimit = (e) => {
     const node = e.target;
@@ -134,7 +137,6 @@
 </script>
 
 <div class="wrapper">
-
   <div class="top">
     <section class="actions">
       {#if !props.activeInput}

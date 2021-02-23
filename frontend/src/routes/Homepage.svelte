@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
-  import StackedBar from '../charts/StackedBar.svelte';
+  import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
   import HearedBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import { getStatement } from '../endpointApi';
@@ -23,6 +23,13 @@
 
   const isOtherCategory = ({ id }: ChartData | Statement) => id === p2p;
 
+  const saveUnbudgetedState = () =>
+    chartStatements
+      ? chartStatements.filter(
+          ({ previous, current }) => !(previous || current)
+        )
+      : [];
+
   const getMaxValue = (statements: Statement[]) => {
     return statements.reduce((currentValue, statement) => {
       if (isOtherCategory(statement) && statement.moneySpent > currentMaxValue)
@@ -31,23 +38,37 @@
     }, 0);
   };
 
-  const getStatementWithRetry = async (): Promise<void> => {
+  const getStatementWithRetry = async (
+    { keepAddedUnbudgeted } = { keepAddedUnbudgeted: false }
+  ): Promise<void> => {
     const response = await getStatement();
     if (!isSuccessResponse(response)) return Promise.reject(response.message);
     const { statements, synced } = response.data;
 
-    chartStatements = statements
-      .filter((chart) => !isOtherCategory(chart))
-      .filter(hasValues);
+    const addedUnbudgeted = keepAddedUnbudgeted ? saveUnbudgetedState() : [];
+
+    chartStatements = [
+      ...statements
+        .filter((chart) => !isOtherCategory(chart))
+        .filter(hasValues),
+      ...addedUnbudgeted,
+    ];
 
     [otherCategory] = statements.filter(isOtherCategory);
+
     unbudgeted = statements.filter((chart) => !hasValues(chart));
+
+    if (keepAddedUnbudgeted && !synced) {
+      unbudgeted = unbudgeted.filter(
+        ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
+      );
+    }
 
     isEmpty = !synced && ![...chartStatements].length && !otherCategory;
 
     if (!synced) {
       await waitFor(5);
-      return await getStatementWithRetry();
+      return await getStatementWithRetry({ keepAddedUnbudgeted: true });
     }
   };
 
@@ -75,6 +96,7 @@
 
   const init = async () => {
     username = localStorage.getItem('name');
+    if (forceLimitSet) await forceLimitSet();
     getStatementWithRetry();
   };
 
@@ -91,9 +113,9 @@
   <section class="container">
     <div class="w-full flex justify-end">
       <div class="mb-15">
-        {#if unbudgeted}
+        {#if unbudgeted && unbudgeted.length}
           <UnbudgetedCategories
-            categories={unbudgeted}
+            bind:categories={unbudgeted}
             on:addCategory={handleAddCategory}
           />
         {/if}
