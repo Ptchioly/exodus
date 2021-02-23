@@ -3,13 +3,15 @@
   import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
   import HearedBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
+  import IndexedDBStorage from '../db';
   import { getStatement } from '../endpointApi';
-  import type { ChartData, Statement } from '../types/Api';
+  import type { ChartData, Statement, Account } from '../types/Api';
   import { isSuccessResponse } from '../types/guards';
   import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
+  export let storage = new IndexedDBStorage<Account>('accounts', 'id');
 
   let username: string;
   let chartStatements: ChartData[] | undefined;
@@ -18,6 +20,9 @@
   let isEmpty: boolean;
   let currentMaxValue = 0;
   let isLoading = false;
+  let accounts: Account[];
+  let currentAccountId: string;
+  $: getStatementWithRetry(currentAccountId);
 
   const p2p = 16;
 
@@ -39,9 +44,11 @@
   };
 
   const getStatementWithRetry = async (
+    account: string,
     { keepAddedUnbudgeted } = { keepAddedUnbudgeted: false }
   ): Promise<void> => {
-    const response = await getStatement();
+    console.log('currentAccountId 2', currentAccountId);
+    const response = await getStatement(currentAccountId);
     if (!isSuccessResponse(response)) return Promise.reject(response.message);
     const { statements, synced } = response.data;
 
@@ -68,7 +75,9 @@
 
     if (!synced) {
       await waitFor(5);
-      return await getStatementWithRetry({ keepAddedUnbudgeted: true });
+      return await getStatementWithRetry(account, {
+        keepAddedUnbudgeted: true,
+      });
     }
   };
 
@@ -96,20 +105,26 @@
 
   const init = async () => {
     username = localStorage.getItem('name');
+    await storage.init();
+    accounts = await storage.getAll();
+    currentAccountId = accounts[0]?.id;
+    console.log('init => accounts', accounts);
     if (forceLimitSet) await forceLimitSet();
-    getStatementWithRetry();
+    // getStatementWithRetry(currentAccountId);
   };
 
   onMount(init);
 </script>
 
 <main class="flex w-full flex-col items-center">
-  <HearedBar
-    on:logout={(e) => dispatch('logout', e)}
-    bind:isLoading
-    onUpdate={init}
-    {username}
-  />
+  {#if accounts}<HearedBar
+      on:logout={(e) => dispatch('logout', e)}
+      bind:isLoading
+      onUpdate={init}
+      {username}
+      {accounts}
+      bind:currentAccountId
+    />{/if}
   <section class="container">
     <div class="w-full flex justify-end">
       <div class="mb-15">

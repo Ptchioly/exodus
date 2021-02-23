@@ -1,9 +1,9 @@
-export default interface ClientStorage<Item> {
-  getItem: <Key extends Extract<keyof Item, string>>(
-    key: Item[Key]
-  ) => Promise<Item>;
+export default interface ClientStorage<
+  Item,
+  Key extends Extract<keyof Item, string>
+> {
+  getItem: (key: Item[Key]) => Promise<Item>;
   putItem: (item: Item) => Promise<void>;
-  deleteItem: <Key extends Extract<keyof Item, string>>(
-    key: Item[Key]
-  ) => Promise<void>;
+  deleteItem: (key: Item[Key]) => Promise<void>;
+  getAll: () => Promise<Item[]>;
 }

@@ -4,14 +4,17 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { getUserInfo, isAuthenticated } from './endpointApi';
+  import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
-  import type { APIResponse } from './types/Api';
+  import type { APIResponse, Account } from './types/Api';
   import { isSuccessResponse } from './types/guards';
+  import IndexedDBStorage from './db';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
+
+  const storage = new IndexedDBStorage<Account>('accounts', 'id');
 
   onMount(async () => {
     authorized = await isAuthenticated();
@@ -20,9 +23,14 @@
 
   const handleApiResponse = async ({
     detail,
-  }: CustomEvent<APIResponse<{ name: string }>>) => {
+  }: CustomEvent<APIResponse<{ name: string; accounts: Account[] }>>) => {
+    console.log('detail', detail);
     if (isSuccessResponse(detail)) {
       localStorage.setItem('name', detail.data.name);
+      await storage.init();
+      await Promise.all(
+        detail.data.accounts.map((account) => storage.putItem(account))
+      );
       navigationState = 'home';
     }
   };

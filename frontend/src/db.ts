@@ -10,7 +10,7 @@ const notInitializedError: Error = {
 export default class IndexedDBStorage<
   Item extends { [k in string]: any }
   //   Key extends Extract<keyof Item, string>
-> implements ClientStorage<Item> {
+> implements ClientStorage<Item, Extract<keyof Item, string>> {
   private _name: string;
   private _keys: Extract<keyof Item, string>;
   private _factory: IDBFactory;
@@ -83,6 +83,22 @@ export default class IndexedDBStorage<
         .delete(key);
       request.onerror = reject;
       request.onsuccess = () => resolve();
+    });
+  }
+
+  getAll(): Promise<Item[]> {
+    if (!this._dataSource) return Promise.reject(notInitializedError);
+    return new Promise((resolve, reject) => {
+      const request = this._dataSource
+        .transaction([this._storeName], 'readwrite')
+        .objectStore(this._storeName)
+        .getAll();
+
+      request.onerror = reject;
+      request.onsuccess = () => {
+        console.log('returnnewPromise => request.result', request.result);
+        resolve(request.result);
+      };
     });
   }
 }

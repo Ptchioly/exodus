@@ -39,5 +39,6 @@ login.post('/login', async (req, res) => {
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 
+  console.log('login.post => user.accounts', user.accounts);
   return respond.SuccessResponse({ name, accounts: user.accounts });
 });

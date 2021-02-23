@@ -33,3 +33,19 @@ export type Statement = {
 };
 
 export type StatementHandler = (statement: Statement) => number;
+
+export type Account = {
+  id: string;
+  type: 'black' | 'white' | 'platinum' | 'iron' | 'fop' | 'yellow';
+  balance: number;
+  pan: string[];
+  currency: string;
+};
+
+export type CardType =
+  | 'black'
+  | 'white'
+  | 'platinum'
+  | 'iron'
+  | 'fop'
+  | 'yellow';

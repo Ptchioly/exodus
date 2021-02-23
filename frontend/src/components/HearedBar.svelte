@@ -2,14 +2,21 @@
   import { createEventDispatcher } from 'svelte';
 
   import { logout } from '../endpointApi';
-  import Card from './Card.svelte';
   import Cards from './Cards.svelte';
+
+  import type { Account, CardType } from '../types/Api';
 
   import Settings from './Settings.svelte';
   import UserProfile from './UserProfile.svelte';
   export let isLoading: boolean;
   export let onUpdate: () => Promise<void>;
   export let username: string | undefined;
+  export let accounts: Account[];
+  export let currentAccountId: string;
+  export let currentCardType: CardType;
+
+  $: currentAccountId =
+    accounts.find(({ type }) => type === currentCardType)?.id || accounts[0].id;
 
   const dispatch = createEventDispatcher();
 
@@ -20,9 +27,12 @@
   <Settings bind:showSettings />
 {/if}
 
-<div class="header flex justify-end w-full px-5 mt-4 md:mb-20 mb-10">
+<div class="header flex justify-end w-full px-5 mt-4 mb-10">
   <div class="w-8/12 flex justify-center">
-    <Cards />
+    <Cards
+      cards={accounts.map(({ pan, type }) => ({ pan, type }))}
+      bind:currentCardType
+    />
   </div>
   <div class="flex w-1/8 ">
     <div

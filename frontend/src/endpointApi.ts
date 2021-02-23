@@ -18,13 +18,11 @@ const defaultInit: RequestInit = {
   },
 };
 
-const statusCheck = async (
-  response: Response
-): Promise<APIResponse<{ name: string }>> => {
+const statusCheck = async (response: Response): Promise<APIResponse> => {
   const { status } = response;
   if (status === 200) {
-    const { name } = await response.json();
-    return { status, data: { name } };
+    const json = await response.json();
+    return { status, data: json };
   }
   const { message } = await response.json();
   return { status, message };
@@ -33,7 +31,7 @@ const statusCheck = async (
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<APIResponse<{ name: string }>> => {
+): Promise<APIResponse<{ name: string; accounts: Account[] }>> => {
   const response = await fetch(loginEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -58,7 +56,7 @@ export const signUp = async (
   username: string,
   password: string,
   xtoken: string
-): Promise<APIResponse<{ name: string }>> => {
+): Promise<APIResponse<{ name: string; accounts: Account[] }>> => {
   const response = await fetch(signupEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -82,10 +80,10 @@ export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
   return { status, message };
 };
 
-export const getStatement = async (): Promise<
-  APIResponse<{ statements: ChartData[]; synced: boolean }>
-> => {
-  const response = await fetch(statementsEndpoint, {
+export const getStatement = async (
+  accountId: string
+): Promise<APIResponse<{ statements: ChartData[]; synced: boolean }>> => {
+  const response = await fetch(`${statementsEndpoint}/${accountId}`, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
@@ -102,9 +100,10 @@ export const getStatement = async (): Promise<
 
 export const updateLimit = async (
   category: string,
-  value: number
+  value: number,
+  accountId: string
 ): Promise<void> => {
-  await fetch(limitsEndpoint, {
+  await fetch(`${limitsEndpoint}/${accountId}`, {
     ...defaultInit,
     method: 'POST',
     body: JSON.stringify({

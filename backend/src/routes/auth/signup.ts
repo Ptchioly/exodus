@@ -70,5 +70,6 @@ signup.post('/signup', async (req, res) => {
 
   await syncStatements(user);
 
+  console.log('signup.post => userAccounts', userAccounts);
   return respond.SuccessResponse({ name, accounts: userAccounts });
 });
