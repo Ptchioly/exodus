@@ -38,7 +38,6 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
         return {
           accountId,
           statements: merged,
-          synced: !!previousStatement,
           message: 'OK',
         };
       }
@@ -63,5 +62,5 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
     });
   }, []);
 
-  return respond.SuccessResponse({ all: mergeAll, statements });
+  return respond.SuccessResponse({ all: mergeAll, statements, synced });
 });
