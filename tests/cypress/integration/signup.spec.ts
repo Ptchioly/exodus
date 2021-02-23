@@ -62,13 +62,20 @@ describe('sign up', () => {
 
   it('registers new user', () => {
     cy.manualRegisterUser()
-    cy.wait('@signup')
-      .its('response.statusCode')
-      .should('eq', 200)
     cy.checkHomePageLoaded()
   })
 
-  // it('does not register new user without incorrct X-Token', () => { })
+  it('does not register new user without incorrect X-Token', () => {
+    cy.manualRegisterUser({ xtoken: 'test12345' })
+    cy.getBySel('login-error-message')
+      .should('be.visible')
+      .and('have.text', 'Invalid X-Token')
+  })
 
-  //   it('does not register new user with "password" and "confirm password" inputs mismatched', () => { })
+  it('does not register new user with "password" and "confirm password" inputs mismatched', () => {
+    cy.manualRegisterUser({ confirmPassword: 'Testuserpwd123@' })
+    cy.getBySel('login-error-message')
+      .should('be.visible')
+      .and('have.text', 'Passwords do not match')
+  })
 })

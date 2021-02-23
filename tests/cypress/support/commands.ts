@@ -134,6 +134,5 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('pwd-input').type(userInfo.password)
   cy.getBySel('confirm-pwd-input').type(userInfo.confirmPassword)
   cy.getBySel('xtoken-input').type(userInfo.xtoken)
-  cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
 })
