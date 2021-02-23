@@ -13,19 +13,13 @@
   export let username: string | undefined;
   export let accounts: Account[];
   export let currentAccountId: string;
-  export let currentCardType: CardType;
+  let currentCardType: CardType;
 
   const dispatch = createEventDispatcher();
   $: {
-    if (currentCardType !== 'all') {
-      dispatch('changeCard', {
-        account:
-          accounts.find(({ type }) => type === currentCardType)?.id ||
-          accounts[0].id,
-      });
-    } else {
-      dispatch('allCards', {});
-    }
+    const accountId =
+      accounts.find(({ type }) => type === currentCardType)?.id || 'all';
+    dispatch('changeCard', { accountId });
   }
 
   let showSettings: boolean;

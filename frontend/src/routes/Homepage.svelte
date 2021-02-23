@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
-  import HearedBar from '../components/HearedBar.svelte';
+  import HeaderBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import { getStatement } from '../endpointApi';
   import type { ChartData, Statement, Account } from '../types/Api';
@@ -82,7 +82,7 @@
       all,
     };
     if (!synced) {
-      await waitFor(10);
+      await waitFor(5);
       return await fetchStatements();
     }
   };
@@ -92,8 +92,9 @@
     accountId: string,
     keepAddedUnbudgeted = false
   ) => {
+    console.log('fullData', fullData);
     const statementsForAccount = fullData[accountId]; //Check if not null
-
+    if (!statementsForAccount) return;
     const addedUnbudgeted = keepAddedUnbudgeted
       ? saveUnbudgetedState(statementsForAccount)
       : [];
@@ -122,7 +123,6 @@
     username = localStorage.getItem('name');
     accounts = await storage.getAll();
     currentAccountId = accounts[0]?.id;
-    console.log('init => accounts', accounts);
     fetchStatements();
   };
 
@@ -131,10 +131,11 @@
 
 <main class="flex w-full flex-col items-center">
   {#if accounts}
-    <HearedBar
+    <HeaderBar
       on:logout={(e) => dispatch('logout', e)}
-      on:allCards={() => (currentAccountId = 'all')}
-      on:changeCard={(e) => (currentAccountId = e.detail.account)}
+      on:changeCard={({ detail: { accountId } }) => {
+        currentAccountId = accountId;
+      }}
       bind:isLoading
       onUpdate={init}
       {username}
