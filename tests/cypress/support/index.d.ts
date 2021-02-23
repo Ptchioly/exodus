@@ -1,25 +1,14 @@
 /// <reference types="cypress" />
 
 declare namespace Cypress {
-  type UserSignupInfo = {
-    username: string
-    password: string
-    xtoken: string
-    // [propName: string]: any;
-  }
-
-  type manualSignupInfo = {
-    username?: string
-    password?: string
-    confirmPassword?: string
-    xtoken?: string
-    // [propName: string]: any;
-  }
-
   type UserLoginInfo = {
     username?: string
     password?: string
   }
+
+  type APISignupInfo = UserLoginInfo & { xtoken?: string }
+
+  type manualSignupInfo = APISignupInfo & { confirmPassword?: string }
   interface Chainable<Subject> {
     /**
      * Custom command to select DOM element by data-automation-id attribute.
@@ -48,9 +37,9 @@ declare namespace Cypress {
     // /**
     //  * API request - creates a user with phone, xtoken and password, deletes JWT cookie after
     //  */
-    registerUserbyAPI(options?: UserSignupInfo): Chainable<Subject>
+    registerUserbyAPI(options?: APISignupInfo): Chainable<Subject>
 
-    sendSignUpRequest(options?: UserSignupInfo): Chainable<Response>
+    sendSignUpRequest(options?: APISignupInfo): Chainable<Response>
 
     manualRegisterUser(options?: manualSignupInfo): void
 
