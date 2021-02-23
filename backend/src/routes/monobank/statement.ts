@@ -9,23 +9,18 @@ import { startMonth } from './utils';
 
 export const statement = Router();
 
-statement.get('/statement', authenticateToken, async (req: any, res) => {
-  const { username } = req.user.data;
-  const respond = endpointRespond(res);
+statement.get(
+  '/statement/:accountId',
+  authenticateToken,
+  async (req: any, res) => {
+    const { accountId } = req.params;
+    const respond = endpointRespond(res);
 
-  const current = startMonth('cur');
-  const previous = startMonth('prev');
-
-  const userFromDB = await getItem(Tables.USERS, {
-    username,
-  });
-
-  if (!isFailure(userFromDB)) {
-    if (!userFromDB.Item)
-      return respond.FailureResponse('User from DB is empty');
+    const current = startMonth('cur');
+    const previous = startMonth('prev');
 
     const statement = await getItem(Tables.STATEMENTS, {
-      accountId: userFromDB.Item.accounts[0],
+      accountId,
     });
 
     if (isFailure(statement)) return respond.FailureResponse(statement.message);
@@ -47,7 +42,4 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
 
     return respond.FailureResponse('Not Found', 404);
   }
-  return respond.FailureResponse(
-    'Failed to get statement. ' + userFromDB.message
-  );
-});
+);

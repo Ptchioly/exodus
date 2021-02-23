@@ -67,7 +67,7 @@ signup.post('/signup', async (req, res) => {
 
   setHook(xtoken);
 
-  await syncStatements({ Item: user });
+  await syncStatements(user);
 
   return respond.SuccessResponse({ name });
 });

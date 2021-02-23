@@ -3,11 +3,11 @@ import {
   getAttributesFromTable,
   getItem,
   putItem,
-  updateItem,
+  updateItem
 } from '../../dynamoAPI';
 import { AWSNotFound } from '../../utils';
 import { isFailedFetchMono, isFailure } from '../types/guards';
-import { GetOutput, KeyData, LimitCategory, Tables } from '../types/types';
+import { KeyData, LimitCategory, Tables, Users } from '../types/types';
 import { getStatements } from './endpoints';
 import { categorize } from './paymentsProcessing';
 
@@ -28,7 +28,7 @@ export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
 };
 
 const retreiveCategorizedStatement = async (
-  account: any, //???
+  account: string,
   time: { start: number; finish: number },
   xtoken: string
 ): Promise<{ data: any; categorizedData: LimitCategory[] }> => {
@@ -42,56 +42,61 @@ const retreiveCategorizedStatement = async (
   return { data, categorizedData };
 };
 
-export const syncStatements = async (
-  user: GetOutput<Tables.USERS>
-): Promise<void> => {
+export const syncStatements = async (user: Users): Promise<void> => {
+  const { accounts, xtoken, username } = user;
   const start = startMonth('prev');
   const finish = startMonth('cur');
-  const prevmonthTime = { start, finish };
-  const currentmonthTime = {
+  const prevMonthTime = { start, finish };
+  const currentMonthTime = {
     start: finish,
     finish: startMonth('next'),
   };
-  const { data, categorizedData } = await retreiveCategorizedStatement(
-    user.Item.accounts[0],
-    currentmonthTime,
-    user.Item.xtoken
+  await Promise.all(
+    accounts.map(async (account) => {
+      const { data, categorizedData } = await retreiveCategorizedStatement(
+        account.id,
+        currentMonthTime,
+        xtoken
+      );
+      await statementUpdate(account.id, username,  finish, data, categorizedData);
+    })
   );
-  await statementUpdate(user, finish, data, categorizedData);
 
   setTimeout(async () => {
-    const { data, categorizedData } = await retreiveCategorizedStatement(
-      user.Item.accounts[0],
-      prevmonthTime,
-      user.Item.xtoken
-    );
+    await Promise.all(
+      accounts.map(async (account) => {
+        const { data, categorizedData } = await retreiveCategorizedStatement(
+          account.id,
+          prevMonthTime,
+          xtoken
+        );
 
-    await statementUpdate(user, start, data, categorizedData);
+        await statementUpdate(account.id, username, start, data, categorizedData);
+      })
+    );
   }, 65000);
 };
 
 export const statementUpdate = async (
-  userFromDB: GetOutput<Tables.USERS>,
+  accountId: string,
+  username: string,
   timestamp: number,
   data: any[],
   processedData: LimitCategory[]
 ): Promise<void> => {
-  const account = userFromDB.Item.accounts[0];
   const dbItem = await getItem(Tables.STATEMENTS, {
-    accountId: account,
+    accountId,
   });
   const newObject = { rawData: data, processedData };
 
   Object.keys(dbItem).length > 0
     ? await updateItem(
-        Tables.STATEMENTS,
-        { accountId: account },
-        { [timestamp]: newObject, username: userFromDB.Item.username }
+        Tables.STATEMENTS, { accountId }, { [timestamp]: newObject, username }
       )
     : await putItem(Tables.STATEMENTS, {
-        accountId: account,
+        accountId,
         [timestamp]: newObject,
-        username: userFromDB.Item.username,
+        username,
       });
 };
 

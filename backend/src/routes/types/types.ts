@@ -35,7 +35,7 @@ export type Users = {
   password: string;
   xtoken: string;
   telegramId?: string;
-  accounts: string[];
+  accounts: Account[];
 };
 
 export type Statement = {
@@ -92,7 +92,7 @@ export type MonoFailedFetch = {
 
 export type MonoAccount = {
   id: string;
-  currencyCode: number;
+  currencyCode: 980 | 985 | 840 | 978;
   cashbackType: 'None' | 'UAH' | 'Miles';
   balance: number;
   creditLimit: number;
@@ -107,12 +107,12 @@ export type ClientInfo = {
   accounts: Account[];
 };
 
-type Account = {
-  id: string;
-  currencyCode: number;
-  balance: number;
-  creditLimit: number;
-  type: string;
+export type Account = {
+    id: string,
+    type: 'black' | 'white' | 'platinum' | 'iron' | 'fop' | 'yellow',
+    balance: number,
+    pan: string[],
+    currency: string,
 };
 
 export type MonoStatements = MonoStatement[];
