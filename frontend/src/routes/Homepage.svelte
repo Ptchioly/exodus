@@ -3,15 +3,15 @@
   import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
   import HearedBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
-  import IndexedDBStorage from '../db';
   import { getStatement } from '../endpointApi';
   import type { ChartData, Statement, Account } from '../types/Api';
+  import type ClientStorage from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
-  export let storage = new IndexedDBStorage<Account>('accounts', 'id');
+  export let storage: ClientStorage<Account, 'id'>;
 
   let fullStatements: Record<string, ChartData[]>;
 
@@ -43,44 +43,6 @@
     }, 0);
   };
 
-  // const getStatementWithRetry = async (
-  //   account: string,
-  //   { keepAddedUnbudgeted } = { keepAddedUnbudgeted: false }
-  // ): Promise<void> => {
-  //   console.log('currentAccountId 2', currentAccountId);
-  //   const response = await getStatement(currentAccountId);
-  //   if (!isSuccessResponse(response)) return Promise.reject(response.message);
-  //   const { statements, synced } = response.data;
-
-  //   const addedUnbudgeted = keepAddedUnbudgeted ? saveUnbudgetedState() : [];
-
-  //   chartStatements = [
-  //     ...statements
-  //       .filter((chart) => !isOtherCategory(chart))
-  //       .filter(hasValues),
-  //     ...addedUnbudgeted,
-  //   ];
-
-  //   [otherCategory] = statements.filter(isOtherCategory);
-
-  //   unbudgeted = statements.filter((chart) => !hasValues(chart));
-
-  //   if (keepAddedUnbudgeted && !synced) {
-  //     unbudgeted = unbudgeted.filter(
-  //       ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
-  //     );
-  //   }
-
-  //   isEmpty = !synced && ![...chartStatements].length && !otherCategory;
-
-  //   if (!synced) {
-  //     await waitFor(5);
-  //     return await getStatementWithRetry(account, {
-  //       keepAddedUnbudgeted: true,
-  //     });
-  // }
-  // };
-
   const hasValues = ({ limit, previous, current }: ChartData) =>
     previous || limit || current;
 
@@ -105,7 +67,6 @@
 
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
-    console.log('fetchStatements => response', response);
     if (!isSuccessResponse(response)) return Promise.reject();
     const {
       data: { statements, synced, all },
@@ -159,25 +120,25 @@
   const init = async () => {
     if (forceLimitSet) await forceLimitSet();
     username = localStorage.getItem('name');
-    await storage.init();
     accounts = await storage.getAll();
     currentAccountId = accounts[0]?.id;
     console.log('init => accounts', accounts);
     fetchStatements();
-    // getStatementWithRetry(currentAccountId);
   };
 
   onMount(init);
 </script>
 
 <main class="flex w-full flex-col items-center">
-  {#if accounts}<HearedBar
+  {#if accounts}
+    <HearedBar
       on:logout={(e) => dispatch('logout', e)}
+      on:allCards={() => (currentAccountId = 'all')}
+      on:changeCard={(e) => (currentAccountId = e.detail.account)}
       bind:isLoading
       onUpdate={init}
       {username}
       {accounts}
-      bind:currentAccountId
     />{/if}
   <section class="container">
     <div class="w-full flex justify-end">

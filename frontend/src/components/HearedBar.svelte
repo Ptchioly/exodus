@@ -15,13 +15,18 @@
   export let currentAccountId: string;
   export let currentCardType: CardType;
 
-  $: currentAccountId =
-    currentCardType !== 'all'
-      ? accounts.find(({ type }) => type === currentCardType)?.id ||
-        accounts[0].id
-      : 'all';
-
   const dispatch = createEventDispatcher();
+  $: {
+    if (currentCardType !== 'all') {
+      dispatch('changeCard', {
+        account:
+          accounts.find(({ type }) => type === currentCardType)?.id ||
+          accounts[0].id,
+      });
+    } else {
+      dispatch('allCards', {});
+    }
+  }
 
   let showSettings: boolean;
 </script>

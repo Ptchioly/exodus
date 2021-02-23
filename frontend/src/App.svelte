@@ -8,17 +8,18 @@
   import type { NavigationState } from './types/Layout';
   import type { APIResponse, Account } from './types/Api';
   import { isSuccessResponse } from './types/guards';
-  import IndexedDBStorage from './db';
+  import type ClientStorage from './types/ClientStorage';
+  import { accountsStorage } from './storage/accountsStorage';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
-
-  const storage = new IndexedDBStorage<Account>('accounts', 'id');
+  let storage: ClientStorage<Account, 'id'>;
 
   onMount(async () => {
     authorized = await isAuthenticated();
     navigationState = authorized ? 'home' : 'signIn';
+    storage = await accountsStorage();
   });
 
   const handleApiResponse = async ({
@@ -27,7 +28,6 @@
     console.log('detail', detail);
     if (isSuccessResponse(detail)) {
       localStorage.setItem('name', detail.data.name);
-      await storage.init();
       await Promise.all(
         detail.data.accounts.map((account) => storage.putItem(account))
       );
@@ -53,22 +53,24 @@
 
 <TailwindCss />
 <main class="font-main h-screen md:mx-20 text-center flex content-center p-0">
-  {#if navigationState === 'home'}
-    <Homepage on:logout={handleLogout} />
-  {:else if navigationState === 'signIn'}
-    <SignIn
-      on:login={handleApiResponse}
-      on:openSignUp={handleOpenSignUp}
-      bind:error
-    />
-  {:else if navigationState === 'signUp'}
-    <SignUp
-      on:signUp={handleApiResponse}
-      on:openSignIn={handleOpenSignIn}
-      bind:error
-    />
-  {:else}
-    Loading
+  {#if storage}
+    {#if navigationState === 'home'}
+      <Homepage on:logout={handleLogout} {storage} />
+    {:else if navigationState === 'signIn'}
+      <SignIn
+        on:login={handleApiResponse}
+        on:openSignUp={handleOpenSignUp}
+        bind:error
+      />
+    {:else if navigationState === 'signUp'}
+      <SignUp
+        on:signUp={handleApiResponse}
+        on:openSignIn={handleOpenSignIn}
+        bind:error
+      />
+    {:else}
+      Loading
+    {/if}
   {/if}
 </main>
 
