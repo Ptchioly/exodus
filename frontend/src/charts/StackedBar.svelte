@@ -4,9 +4,9 @@
 
 <script lang="ts">
   // import { onMount } from 'svelte';
-  import { updateLimit } from '../endpointApi';
-  import Bars from './Bars.svelte';
-  import type { StackedBars } from '../types/charts';
+  import { updateLimit } from "../endpointApi";
+  import Bars from "./Bars.svelte";
+  import type { StackedBars } from "../types/charts";
 
   export let title: string;
   export let current: number;
@@ -30,35 +30,37 @@
   $: apiRequest = {
     maxValue,
     conf: {
-      background: '#E7F4EC',
+      background: "#E7F4EC",
       detailedSpace: 70,
     },
     bars: [
       {
         value: previous,
-        limits: ['basic'],
-        background: '#A6D6D1',
-        labelPosition: 'in-left',
-        label: '$${value}'
+        limits: ["basic"],
+        background: "#A6D6D1",
+        labelPosition: "in-left",
+        label: "$${value}",
+        detailedLabel: "$${value}",
       },
       {
         value: current,
-        limits: ['basic'],
-        background: '#2F9E9E',
-        labelPosition: 'in-left',
-        label: '$${value}'
-      }
+        limits: ["basic"],
+        background: "#2F9E9E",
+        labelPosition: "in-left",
+        label: "$${value}",
+        detailedLabel: "$${value}",
+      },
     ],
     limits: [
       {
-        name: 'basic',
+        name: "basic",
         value: limit,
-        color: '#A04343',
-        visible: 'static',
-        overlapStyle: '',
-      }
-    ]
-  }
+        color: "#A04343",
+        visible: "static",
+        overlapStyle: "",
+      },
+    ],
+  };
 
   //hot fix from Max; previousP doesnt sync when previous updates
   // $: previousP = percentOf(previous);
@@ -78,10 +80,10 @@
 
   const handlePress = (e) => {
     const step = 50;
-    if (e.key === 'ArrowUp' && limit + step <= maxValue) {
+    if (e.key === "ArrowUp" && limit + step <= maxValue) {
       limit += step;
       // setLimit();
-    } else if (e.key === 'ArrowDown' && limit - step >= 0) {
+    } else if (e.key === "ArrowDown" && limit - step >= 0) {
       limit -= step;
       // setLimit();
     }
@@ -172,7 +174,7 @@
   </div>
 
   <div class="bottom">
-    <Bars bars={apiRequest}/>
+    <Bars bars={apiRequest} />
   </div>
 </div>
 
@@ -197,7 +199,7 @@
 
   .bottom {
     width: 60%;
-    font-size: .8em;
+    font-size: 0.8em;
     display: flex;
   }
 
@@ -242,7 +244,7 @@
 
   .title {
     width: calc(100% - 5em);
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     font-weight: bold;
     display: flex;
     flex-shrink: 0;
