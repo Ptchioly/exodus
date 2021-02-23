@@ -9,6 +9,7 @@
   export let previous: number;
   export let limit: number;
   export let maxValue = 4000;
+  export let currentAccountId: string;
 
   const percentage = {
     current: 0,
@@ -57,7 +58,7 @@
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
-    forceLimitSet = () => updateLimit(title, limit);
+    forceLimitSet = () => updateLimit(title, limit, currentAccountId);
     timeoutId = setTimeout(async () => {
       await forceLimitSet();
       forceLimitSet = null;

@@ -9,12 +9,14 @@
   import type { APIResponse, Account } from './types/Api';
   import { isSuccessResponse } from './types/guards';
   import type ClientStorage from './types/ClientStorage';
+  import type { UserMeta } from './types/ClientStorage';
   import { accountsStorage } from './storage/accountsStorage';
+  import UserMenu from './components/UserMenu.svelte';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
-  let storage: ClientStorage<Account, 'id'>;
+  let storage: ClientStorage<UserMeta, 'name'>;
 
   onMount(async () => {
     authorized = await isAuthenticated();
@@ -27,10 +29,9 @@
   }: CustomEvent<APIResponse<{ name: string; accounts: Account[] }>>) => {
     console.log('detail', detail);
     if (isSuccessResponse(detail)) {
-      localStorage.setItem('name', detail.data.name);
-      await Promise.all(
-        detail.data.accounts.map((account) => storage.putItem(account))
-      );
+      const { name, accounts } = detail.data;
+      localStorage.setItem('name', name);
+      await storage.putItem({ name, accounts });
       navigationState = 'home';
     }
   };

@@ -6,12 +6,13 @@
   import { getStatement } from '../endpointApi';
   import type { ChartData, Statement, Account } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
+  import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { waitFor } from '../utils';
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
-  export let storage: ClientStorage<Account, 'id'>;
+  export let storage: ClientStorage<UserMeta, 'name'>;
 
   let fullStatements: Record<string, ChartData[]>;
 
@@ -120,8 +121,7 @@
   };
   const init = async () => {
     if (forceLimitSet) await forceLimitSet();
-    username = localStorage.getItem('name');
-    accounts = await storage.getAll();
+    [{ name: username, accounts }] = await storage.getAll();
     currentAccountId = accounts[0]?.id;
     fetchStatements();
   };
@@ -164,6 +164,7 @@
           {current}
           {title}
           {limit}
+          {currentAccountId}
           maxValue={maxBarSize(chartStatements)}
         />
       {/each}

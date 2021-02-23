@@ -1,3 +1,5 @@
+import type { Account } from './Api';
+
 export default interface ClientStorage<
   Item,
   Key extends Extract<keyof Item, string>
@@ -7,3 +9,8 @@ export default interface ClientStorage<
   deleteItem: (key: Item[Key]) => Promise<void>;
   getAll: () => Promise<Item[]>;
 }
+
+export type UserMeta = {
+  name: string;
+  accounts: Account[];
+};

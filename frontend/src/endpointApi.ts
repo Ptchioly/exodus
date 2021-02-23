@@ -112,6 +112,7 @@ export const updateLimit = async (
   value: number,
   accountId: string
 ): Promise<void> => {
+  console.log(`${limitsEndpoint}/${accountId}`);
   await fetch(`${limitsEndpoint}/${accountId}`, {
     ...defaultInit,
     method: 'POST',
