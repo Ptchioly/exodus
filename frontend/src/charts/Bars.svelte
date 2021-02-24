@@ -262,7 +262,7 @@
         display: flex;
         align-items: center;
         box-sizing: border-box;
-        transition: left 0.3s, width 0.3s;
+        transition: width 0.3s; /** left: .3s **/
     }
 
     .wrapper.moveable .limit {

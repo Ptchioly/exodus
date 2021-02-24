@@ -30,7 +30,7 @@
     handleChange();
   };
 
-  const generateChartData = (maxValue): StackedBars => {
+  const generateChartData = (maxValue, limit): StackedBars => {
     const currentBar = {
       value: current,
       limits: ["current"],
@@ -76,7 +76,7 @@
     activeInput: limit > 0,
   };
 
-  $: apiRequest = generateChartData(maxValue);
+  $: apiRequest = generateChartData(maxValue, limit);
 
   const updateInput = ({ detail }) => {
     limit = +detail.limit.value;
