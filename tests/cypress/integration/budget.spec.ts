@@ -17,24 +17,37 @@ describe('sign up', () => {
 // it('edits limit with input', () => {
 // })
 
-// it('edits limit with setter (drag and drop)', () => {
-// })
-
-  it('creates a budget for category', () => {
-    cy.getBySel('unbudgeted-categories', { timeout: 80000 }).click()
-    cy.get(`div[class*="flex-wrap justify-center"]`).should('be.visible')
-    cy.getBySel('category-title')
+  it('edits limit with setter (drag and drop)', () => {
+    cy.getBySel(`limit-button`)
       .first()
-      .then(($category) => {
-        const name = $category.text()
-        cy.getBySel('category-title-unbudgeted')
-          .first()
-          .click()
-        cy.getBySel(`category-title-budgeted`)
-          .contains(name)
-          .should('have.text', name)
-      })
-})
+      .click()
+    cy.getBySel(`limit-setter`)
+      .first()
+      .trigger('mousedown', { button: 0 })
+      .wait(1000)
+      .trigger('mousemove', { clientX: 600 })
+      .wait(1000)
+      .trigger('mousemove', { clientX: 500 })
+      .wait(1000)
+      // .trigger('mousemove', 'right')
+      .trigger('mouseup')
+  })
+
+  // it('creates a budget for category', () => {
+  //   cy.getBySel('unbudgeted-categories', { timeout: 80000 }).click()
+  //   cy.contains('Unbudgeted').should('not.exist')
+  //   cy.getBySel('category-title-unbudgeted')
+  //     .first()
+  //     .then($category => {
+  //       const name = $category.text()
+  //       cy.getBySel('category-title-unbudgeted')
+  //         .first()
+  //         .click()
+  //       cy.getBySel(`category-title-budgeted`)
+  //         .contains(name)
+  //         .should('be.visible')
+  //     })
+  // })
 
 // it('deletes a budget for category', () => {
 // })
