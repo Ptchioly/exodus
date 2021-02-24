@@ -168,12 +168,15 @@
   .top {
     width: 30%;
     padding-right: 1em;
+    box-sizing: border-box;
+    flex-shrink: 100;
   }
 
   .bottom {
-    width: 70%;
+    width: 66%;
     font-size: 0.8em;
     display: flex;
+    flex-shrink: 0;
   }
 
   .actions {

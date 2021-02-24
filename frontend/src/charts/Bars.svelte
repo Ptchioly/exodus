@@ -13,10 +13,10 @@
     const percentOf = (v: number): number => (v * 100) / bars.maxValue;
     let isDetailed = false;
 
-    const isSmallEnough = (limits: HTMLElement, value: number): boolean => {
-        if (limits) {
-            const barRect = limits.getBoundingClientRect();
-            return (percentOf(value) * barRect.width) / 100 < 60;
+    const isSmallEnough = (rect: HTMLElement, value: number, small = 60): boolean => {
+        if (rect) {
+            const barRect = rect.getBoundingClientRect();
+            return (percentOf(value) * barRect.width) / 100 < small;
         }
     };
 
@@ -151,7 +151,7 @@
                                         >
                                             <div
                                                 class="remaining"
-                                                class:headless={limit.value - bar.value < 100}
+                                                class:headless={isSmallEnough(limits, limit.value - bar.value, 40)}
                                                 data-value="${limit.value - bar.value}"
                                                 style="border-color: {bar.background};"
                                             />
@@ -359,12 +359,12 @@
 
     .label,
     .label--detailed {
-        height: 2em;
+        /* height: 2em; */
         display: flex;
         padding: 0 0.5em;
         align-items: center;
         font-family: monospace;
-        line-height: 2em;
+        /* line-height: 2em; */
         font-weight: bold;
         z-index: 200;
     }
