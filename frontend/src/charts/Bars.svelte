@@ -231,7 +231,7 @@
         height: 2em;
         margin: 1em 0;
         border-radius: 0.5em;
-        transition: width 0.3s;
+        transition: width .3s;
     }
 
     .limits {

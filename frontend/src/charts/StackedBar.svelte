@@ -109,9 +109,15 @@
   const handlePress = (e) => {
     const step = 50;
 
-    if (e.key === "ArrowUp" && limit + step <= maxValue) {
+    if (e.key === "ArrowUp") {
+      
+      if (limit + step <= maxValue) {
+        dispatch("updateMaxValue", { limit });
+      }
+
       limit += step;
       handleChange();
+
     } else if (e.key === "ArrowDown" && limit - step >= 0) {
       limit -= step;
       handleChange();
