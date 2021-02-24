@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
-  import StackedBar from '../charts/StackedBar.svelte';
+  import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
   import HearedBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import { getStatement } from '../endpointApi';
@@ -96,6 +96,7 @@
 
   const init = async () => {
     username = localStorage.getItem('name');
+    if (forceLimitSet) await forceLimitSet();
     getStatementWithRetry();
   };
 
