@@ -13,10 +13,10 @@
     const percentOf = (v: number): number => (v * 100) / bars.maxValue;
     let isDetailed = false;
 
-    const isSmallEnough = (limits: HTMLElement, value: number): boolean => {
-        if (limits) {
-            const barRect = limits.getBoundingClientRect();
-            return (percentOf(value) * barRect.width) / 100 < 60;
+    const isSmallEnough = (rect: HTMLElement, value: number, small = 60): boolean => {
+        if (rect) {
+            const barRect = rect.getBoundingClientRect();
+            return (percentOf(value) * barRect.width) / 100 < small;
         }
     };
 
@@ -74,11 +74,12 @@
     bind:this={wrapper}
     class:moveable={false}
     on:mousedown={() => (isDetailed = !isDetailed)}
+    style='height: {isDetailed ? (bars.bars.length * 4) * (bars.conf.detailedSpace / 100) : 4}em'
 >
     <section class="bar-placeholder">
         <div
             class="bar--placeholder"
-            style="background: {bars.conf.background}"
+            style="background: {bars.conf.background}; height: {isDetailed ? (bars.bars.length * 2) * (bars.conf.detailedSpace / 100) + 2 : 2}em"
         />
     </section>
 
@@ -87,7 +88,7 @@
             <div
                 class="bar--wrapper"
                 class:detailed={isDetailed}
-                style="top: {isDetailed ? i * bars.conf.detailedSpace : 0}%"
+                style="top: {isDetailed ? i * bars.conf.detailedSpace : 0}%; z-index: {i*1};"
                 data-index={i + 1}
                 class:upperLayer={i === bars.bars.length - 1}
             >
@@ -115,7 +116,7 @@
                     </div>
                 </div>
                 <div class="limits" bind:this={limits}>
-                    {#each bars.limits as limit, limI}
+                    {#each bars.limits as limit, limitIndex}
                         {#if bar.limits && bar.limits.indexOf(limit.name) > -1}
                             <div
                                 class="limit"
@@ -124,7 +125,7 @@
                                 data-name={limit.name}
                                 style="{styledZIndex(
                                     limit.value < bar.value,
-                                    limI
+                                    limitIndex
                                 )}; left: {styledBarLeft(
                                     bar,
                                     limit
@@ -150,11 +151,8 @@
                                         >
                                             <div
                                                 class="remaining"
-                                                class:headless={limit.value -
-                                                    bar.value <
-                                                    100}
-                                                data-value="${limit.value -
-                                                    bar.value}"
+                                                class:headless={isSmallEnough(limits, limit.value - bar.value, 40)}
+                                                data-value="${limit.value - bar.value}"
                                                 style="border-color: {bar.background};"
                                             />
                                         </div>
@@ -188,6 +186,7 @@
         position: relative;
         width: 100%;
         user-select: none;
+        transition: height .3s;
     }
 
     .bar-placeholder {
@@ -202,6 +201,7 @@
         height: 2em;
         border-radius: 0.5em;
         background-color: #edf8f4;
+        transition: height .3s;
     }
 
     .bars {
@@ -300,8 +300,9 @@
     .limit-handle.moveable::after {
         content: attr(data-value);
         font-family: monospace;
+        font-size: .8em;
         font-weight: bold;
-        top: -1em;
+        top: -1.2em;
         position: absolute;
         z-index: 300;
         left: -0.1em;
@@ -358,12 +359,12 @@
 
     .label,
     .label--detailed {
-        height: 2em;
+        /* height: 2em; */
         display: flex;
         padding: 0 0.5em;
         align-items: center;
         font-family: monospace;
-        line-height: 2em;
+        /* line-height: 2em; */
         font-weight: bold;
         z-index: 200;
     }
