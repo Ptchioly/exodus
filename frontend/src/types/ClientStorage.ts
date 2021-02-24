@@ -8,6 +8,7 @@ export default interface ClientStorage<
   putItem: (item: Item) => Promise<void>;
   deleteItem: (key: Item[Key]) => Promise<void>;
   getAll: () => Promise<Item[]>;
+  clear: () => Promise<void>;
 }
 
 export type UserMeta = {

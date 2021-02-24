@@ -54,10 +54,9 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
       const found = acc.find((el: any) => el.id === a.id) as any;
       return {
         ...found,
-        ...{
-          previous: found.previous + a.previous,
-          current: found.current + a.current,
-        },
+        previous: found.previous + a.previous,
+        current: found.current + a.current,
+        limit: +found.limit + +a.limit,
       };
     });
   }, []);

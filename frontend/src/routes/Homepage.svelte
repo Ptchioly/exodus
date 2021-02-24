@@ -73,6 +73,11 @@
       data: { statements, synced, all },
     } = response;
 
+    if (!synced && fullStatements) {
+      await waitFor(5);
+      return await fetchStatements();
+    }
+
     fullStatements = {
       ...statements.reduce((acc, st) => {
         return {
@@ -93,7 +98,6 @@
     accountId: string,
     keepAddedUnbudgeted = false
   ) => {
-    console.log('fullData', fullData);
     const statementsForAccount = fullData[accountId]; //Check if not null
     if (!statementsForAccount) return;
     const addedUnbudgeted = keepAddedUnbudgeted

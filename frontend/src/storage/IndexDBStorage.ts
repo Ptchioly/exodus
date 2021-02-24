@@ -23,21 +23,29 @@ export default class IndexedDBStorage<
     this._name = name;
     this._factory = window.indexedDB;
   }
+  async clear(): Promise<void> {
+    if (!this._dataSource) return Promise.reject(notInitializedError);
+    return new Promise((resolve, reject) => {
+      const request = this._dataSource
+        .transaction([this._storeName], 'readwrite')
+        .objectStore(this._storeName)
+        .clear();
+      request.onerror = reject;
+      request.onsuccess = () => resolve();
+    });
+  }
 
   async init(): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = this._factory.open(this._name, version);
       request.onerror = reject;
       request.onsuccess = () => {
-        console.log('success', request.result.objectStoreNames);
         this._dataSource = request.result;
         resolve();
       };
       request.onupgradeneeded = async (
         e: IDBVersionChangeEvent & { currentTarget: { result: IDBDatabase } }
       ) => {
-        console.log('Not exists');
-
         // Если БД еще не существует, то создаем хранилище объектов.
         e.currentTarget.result.createObjectStore(this._storeName, {
           keyPath: this._keys,
@@ -97,7 +105,6 @@ export default class IndexedDBStorage<
 
       request.onerror = reject;
       request.onsuccess = () => {
-        console.log('returnnewPromise => request.result', request.result);
         resolve(request.result);
       };
     });

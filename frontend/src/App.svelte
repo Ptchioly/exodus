@@ -36,7 +36,8 @@
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await storage.clear();
     error = false;
     navigationState = 'signIn';
   };

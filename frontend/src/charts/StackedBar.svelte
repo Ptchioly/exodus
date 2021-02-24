@@ -67,7 +67,7 @@
 
   // sets event every time after forceLimitSet has been initialized
   $: window.onbeforeunload = (e) => {
-    forceLimitSet();
+    forceLimitSet && forceLimitSet();
   };
 
   const handlePress = (e) => {

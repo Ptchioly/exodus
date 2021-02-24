@@ -2,31 +2,40 @@
   import type { CardType } from '../types/Api';
   import Card from './Card.svelte';
 
-  let activeCard: number;
+  let activeCard: number = 1;
   type CardData = { pan: string[]; type: CardType };
   export let cards: CardData[];
-  export let currentCardType: CardType;
+  export let currentCardType: CardType = cards[0].type;
 </script>
 
 <div class="mr-16 flex">
   {#each cards as card, i}
     <Card
       {...card}
-      index={i}
+      index={i + 1}
       bind:activeCard
       on:click={() => (currentCardType = card.type)}
     />
   {/each}
   <div
-    class="opacity-50"
-    class:isActive={activeCard === cards.length}
+    id="a"
     on:click={() => {
-      activeCard = cards.length;
+      activeCard = 0;
       currentCardType = 'all';
     }}
   >
-    <div class="h-10 bg-gray-500 w-24 relative rounded-lg" />
-    <div class="h-10 bg-black w-24 relative -mt-8 ml-2 rounded-lg" />
+    {#each cards as card, i}
+      <div class="relative -mt-{i * 8} ml-{i * 2}">
+        <Card
+          {...card}
+          index={0}
+          bind:activeCard
+          on:click={() => (currentCardType = card.type)}
+        />
+      </div>
+    {/each}
+    <!-- <div class="h-10 bg-gray-500 w-24 relative rounded-lg" />
+    <div class="h-10 bg-black w-24 relative -mt-8 ml-2 rounded-lg" /> -->
   </div>
 </div>
 
