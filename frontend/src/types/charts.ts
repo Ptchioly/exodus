@@ -22,6 +22,7 @@ export type Limit = {
   name: string;
   value: number;
   color: string;
+  draggable?: boolean;
 
   overlapStyle?: 'stripes' | '';
   visible?: 'hover' | 'static';

@@ -1,10 +1,14 @@
 <script lang="ts">
     import type { StackedBars, Bar, Limit } from "../types/charts";
+    import { createEventDispatcher } from "svelte";
+
     export let bars: StackedBars;
 
     let limits: HTMLElement;
     let wrapper: HTMLElement;
     let currentBar: HTMLElement;
+
+    const dispatch = createEventDispatcher();
 
     const percentOf = (v: number): number => (v * 100) / bars.maxValue;
     let isDetailed = false;
@@ -21,14 +25,17 @@
             return `background: repeating-linear-gradient(45deg, ${c}, ${c} 10px, ${b} 10px, ${b} 20px);`;
         return `background: ${c}`;
     };
+
     const styledZIndex = (isOverlap: boolean, index: number) =>
         isOverlap ? `z-index: ${100 - index}` : "";
+
     const styledBarWidth = (bar: Bar, limit: Limit) =>
         limit.value > bar.value
             ? percentOf(limit.value - bar.value)
             : limit.value < bar.value
             ? percentOf(bar.value - limit.value)
             : 0;
+
     const styledBarLeft = (bar: Bar, limit: Limit) =>
         limit.value > bar.value ? percentOf(bar.value) : percentOf(limit.value);
 
@@ -45,6 +52,7 @@
             );
             if (movePercent >= 0 && movePercent <= 100) {
                 limit.value = Math.round((movePercent * bars.maxValue) / 100);
+                dispatch("bindLimitValue", { limit });
                 bars = bars;
             }
         };
@@ -53,6 +61,7 @@
             node.classList.remove("moveable");
             wrapper.classList.remove("moveable");
             window.removeEventListener("mousemove", handleMove);
+            dispatch("updateLimit", { limit });
         };
 
         window.addEventListener("mouseup", handleEnd);
@@ -110,6 +119,7 @@
                         {#if bar.limits && bar.limits.indexOf(limit.name) > -1}
                             <div
                                 class="limit"
+                                class:hidden={limit.value <= 0}
                                 data-overlap={limit.value < bar.value}
                                 data-name={limit.name}
                                 style="{styledZIndex(
@@ -150,12 +160,20 @@
                                         </div>
                                     {/if}
                                 </div>
-                                <div
-                                    class="limit-handle"
-                                    style="background: {limit.color};"
-                                    data-value={limit.value}
-                                    on:mousedown={move(limit)}
-                                />
+                                {#if limit.draggable}
+                                    <div
+                                        class="limit-handle draggable"
+                                        style="background: {limit.color};"
+                                        data-value={+limit.value}
+                                        on:mousedown={move(limit)}
+                                    />
+                                {:else}
+                                    <div
+                                        class="limit-handle"
+                                        style="background: {limit.color};"
+                                        data-value={+limit.value}
+                                    />
+                                {/if}
                             </div>
                         {/if}
                     {/each}
@@ -265,6 +283,10 @@
         border-radius: 0 0.5em 0.5em 0;
     }
 
+    .limit.hidden {
+        display: none;
+    }
+
     .limit-handle {
         position: absolute;
         right: -0.55em;
@@ -288,7 +310,11 @@
         left: -0.6em;
     }
 
-    .limits > .limit:hover > .limit-handle,
+    .limits > .limit > .limit-handle[data-value="0"] {
+        visibility: hidden;
+    }
+
+    .limits > .limit:hover > .limit-handle.draggable,
     .limit-handle.moveable {
         width: 1em;
     }

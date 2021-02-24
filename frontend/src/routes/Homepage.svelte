@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
-  import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
-  import HearedBar from '../components/HearedBar.svelte';
-  import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
-  import { getStatement } from '../endpointApi';
-  import type { ChartData, Statement } from '../types/Api';
-  import { isSuccessResponse } from '../types/guards';
-  import { waitFor } from '../utils';
+  import { createEventDispatcher, onMount } from "svelte";
+  import StackedBar from "../charts/StackedBar.svelte";
+  import HearedBar from "../components/HearedBar.svelte";
+  import UnbudgetedCategories from "../components/UnbudgetedCategories.svelte";
+  import { getStatement } from "../endpointApi";
+  import type { ChartData, Statement } from "../types/Api";
+  import { isSuccessResponse } from "../types/guards";
+  import { waitFor } from "../utils";
+  import Bars from "../charts/Bars.svelte";
 
   export let previousMonth: Statement[] | undefined;
   export let currentMonth: Statement[] | undefined;
@@ -95,8 +96,7 @@
   };
 
   const init = async () => {
-    username = localStorage.getItem('name');
-    if (forceLimitSet) await forceLimitSet();
+    username = localStorage.getItem("name");
     getStatementWithRetry();
   };
 
@@ -105,7 +105,7 @@
 
 <main class="flex w-full flex-col items-center">
   <HearedBar
-    on:logout={(e) => dispatch('logout', e)}
+    on:logout={(e) => dispatch("logout", e)}
     bind:isLoading
     onUpdate={init}
     {username}

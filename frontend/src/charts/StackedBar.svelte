@@ -15,17 +15,20 @@
   export let maxValue = 4000;
 
   let apiRequest: StackedBars;
+  let inputLimit: HTMLElement;
 
-  // let currentP = 0;
-  // let previousP = 0;
-  // let limitP = 0;
-  // let overlap;
-  // let smol = false;
-  // let timeoutId;
+  const handleInitLimit = () => {
+    limit = current ? Math.ceil(current * 1.1) : 50;
+    props.activeInput = true;
+    window.setTimeout(() => {
+      inputLimit.focus();
+    }, 1);
+    handleChange();
+  };
 
-  // let bar;
-  // let limits;
-  // let currentElement;
+  const props = {
+    activeInput: limit > 0,
+  };
 
   $: apiRequest = {
     maxValue,
@@ -36,7 +39,7 @@
     bars: [
       {
         value: previous,
-        limits: ["basic"],
+        limits: ["prev"],
         background: "#A6D6D1",
         labelPosition: "in-left",
         label: "$${value}",
@@ -44,7 +47,7 @@
       },
       {
         value: current,
-        limits: ["basic"],
+        limits: ["curr"],
         background: "#2F9E9E",
         labelPosition: "in-left",
         label: "$${value}",
@@ -53,115 +56,81 @@
     ],
     limits: [
       {
-        name: "basic",
+        name: "prev",
         value: limit,
         color: "#A04343",
         visible: "static",
-        overlapStyle: "",
+        overlapStyle: "stripes",
+        draggable: true,
+      },
+      {
+        name: "curr",
+        value: limit,
+        color: "#A04343",
+        visible: "static",
+        overlapStyle: "stripes",
+        draggable: true,
       },
     ],
   };
 
-  //hot fix from Max; previousP doesnt sync when previous updates
-  // $: previousP = percentOf(previous);
+  const updateInput = ({ detail }) => {
+    limit = +detail.limit.value;
+  };
 
-  // const detailed = (e) => {
-  //   if (!bar || e.target.classList.contains('limit')) return;
-  //   bar.classList.toggle('detailed');
-  // };
+  let timeoutId: any;
+  let delay = 1500;
 
-  // const percentOf = (i) => (i * 100) / maxValue;
+  const handleChange = () => {
+    if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
+    if (limit <= 0) props.activeInput = false;
+    if (typeof +limit === "number" && +limit >= 0) setLimit();
+  };
 
-  // const countOverlap = () => {
-  //   return limit && current > limit
-  //     ? (maxValue / current) * (percentOf(current) - limitP)
-  //     : 0;
-  // };
+  const setLimit = () => {
+    if (timeoutId) clearInterval(timeoutId);
+    forceLimitSet = () => updateLimit(title, limit);
+    timeoutId = setTimeout(async () => {
+      await forceLimitSet();
+      forceLimitSet = null;
+    }, delay);
+  };
+
+  $: window.onbeforeunload = (e) => {
+    forceLimitSet();
+  };
 
   const handlePress = (e) => {
     const step = 50;
+
     if (e.key === "ArrowUp" && limit + step <= maxValue) {
       limit += step;
-      // setLimit();
+      handleChange();
     } else if (e.key === "ArrowDown" && limit - step >= 0) {
       limit -= step;
-      // setLimit();
+      handleChange();
     }
   };
-
-  const handleLimitSet = async (value) => {
-    updateLimit(title, value);
-  };
-
-  // const isSmallEnough = (elem) => {
-  //   if (elem) {
-  //     const barRect = bar.getBoundingClientRect();
-  //     return (currentP * barRect.width) / 100 < 60;
-  //   }
-  // };
-
-  // const move = (e) => {
-  //   const node = e.target;
-  //   node.classList.add('moveable');
-  //   const overlap = bar.querySelector('.bar__over');
-  //   overlap && overlap.classList.add('moveable');
-
-  //   const handleMove = (e) => {
-  //     const limitsRect = limits.getBoundingClientRect();
-  //     const movePercent = Math.round(
-  //       ((e.clientX - limitsRect.left) * 100) / limitsRect.width
-  //     );
-  //     if (movePercent >= 0 && movePercent <= 100) {
-  //       limit = Math.round((movePercent * maxValue) / 100);
-  //     }
-  //   };
-
-  //   const handleEnd = (e) => {
-  //     node.classList.remove('moveable');
-  //     overlap && overlap.classList.remove('moveable');
-  //     window.removeEventListener('mousemove', handleMove);
-  //     handleLimitSet(limit);
-  //   };
-
-  //   window.addEventListener('mouseup', handleEnd);
-  //   window.addEventListener('mousemove', handleMove);
-  // };
-
-  // onMount(() => {
-  //   setTimeout(() => {
-  //     currentP = percentOf(current);
-  //     previousP = percentOf(previous);
-  //     console.log('Chart mount');
-  //     limitP = percentOf(limit);
-  //     smol = isSmallEnough(currentElement);
-  //   }, 20);
-  // });
-
-  // $: {
-  //   limitP = percentOf(limit);
-  //   overlap = countOverlap();
-  // }
 </script>
 
 <div class="wrapper-s">
   <div class="top">
     <section class="actions">
-      {#if limit < 0}
+      {#if !props.activeInput}
         <button
           data-automation-id="limit-button"
           class="action action--addLimit"
-          on:click={() => {
-            limit = 50;
-            // setLimit();
-          }}
+          on:click={handleInitLimit}
         >
           <img src="/images/add.svg" alt="+" />
         </button>
       {:else}
         <input
           type="text"
+          bind:this={inputLimit}
           bind:value={limit}
           on:keydown={handlePress}
+          on:change={handleChange}
           data-automation-id="limit-input"
           class="action action--setLimit"
         />
@@ -174,7 +143,11 @@
   </div>
 
   <div class="bottom">
-    <Bars bars={apiRequest} />
+    <Bars
+      bars={apiRequest}
+      on:bindLimitValue={updateInput}
+      on:updateLimit={handleChange}
+    />
   </div>
 </div>
 
