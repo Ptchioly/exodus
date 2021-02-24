@@ -6,13 +6,17 @@
   // import { onMount } from 'svelte';
   import { updateLimit } from "../endpointApi";
   import Bars from "./Bars.svelte";
-  import type { StackedBars } from "../types/charts";
+  import type { LabelPosition, StackedBars } from "../types/charts";
+  import { createEventDispatcher } from "svelte";
+  import { staticValues } from "./configs";
 
   export let title: string;
   export let current: number;
   export let previous: number;
   export let limit: number;
   export let maxValue = 4000;
+
+  const dispatch = createEventDispatcher();
 
   let apiRequest: StackedBars;
   let inputLimit: HTMLElement;
@@ -26,56 +30,57 @@
     handleChange();
   };
 
+  const generateChartData = (maxValue): StackedBars => {
+    const currentBar = {
+      value: current,
+      limits: ["current"],
+      background: staticValues.currentBgColor,
+      labelPosition: "in-left" as LabelPosition,
+      label: staticValues.valueString,
+      detailedLabel: staticValues.valueString,
+    };
+
+    const previousBar = {
+      ...currentBar,
+      value: previous,
+      limits: ["previous"],
+      background: staticValues.previousBgColor,
+    };
+
+    const previousLimit = {
+      name: "previous",
+      value: limit,
+      color: staticValues.limitColor,
+      visible: "static" as "static" | "hover",
+      overlapStyle: "stripes" as "" | "stripes",
+    };
+
+    const currentLimit = {
+      ...previousLimit,
+      name: "current",
+      draggable: true,
+    };
+
+    return {
+      maxValue,
+      conf: {
+        background: staticValues.mainBgColor,
+        detailedSpace: staticValues.detailedSpace,
+      },
+      bars: [previousBar, currentBar],
+      limits: [previousLimit, currentLimit],
+    };
+  };
+
   const props = {
     activeInput: limit > 0,
   };
 
-  $: apiRequest = {
-    maxValue,
-    conf: {
-      background: "#E7F4EC",
-      detailedSpace: 70,
-    },
-    bars: [
-      {
-        value: previous,
-        limits: ["prev"],
-        background: "#A6D6D1",
-        labelPosition: "in-left",
-        label: "$${value}",
-        detailedLabel: "$${value}",
-      },
-      {
-        value: current,
-        limits: ["curr"],
-        background: "#2F9E9E",
-        labelPosition: "in-left",
-        label: "$${value}",
-        detailedLabel: "$${value}",
-      },
-    ],
-    limits: [
-      {
-        name: "prev",
-        value: limit,
-        color: "#A04343",
-        visible: "static",
-        overlapStyle: "stripes",
-        draggable: true,
-      },
-      {
-        name: "curr",
-        value: limit,
-        color: "#A04343",
-        visible: "static",
-        overlapStyle: "stripes",
-        draggable: true,
-      },
-    ],
-  };
+  $: apiRequest = generateChartData(maxValue);
 
   const updateInput = ({ detail }) => {
     limit = +detail.limit.value;
+    dispatch("updateMaxValue", { limit });
   };
 
   let timeoutId: any;

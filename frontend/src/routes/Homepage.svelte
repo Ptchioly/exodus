@@ -19,6 +19,7 @@
   let isEmpty: boolean;
   let currentMaxValue = 0;
   let isLoading = false;
+  let maxValue;
 
   const p2p = 16;
 
@@ -76,15 +77,14 @@
   const hasValues = ({ limit, previous, current }: ChartData) =>
     previous || limit || current;
 
-  const maxBarSize = (charts: ChartData[]): number => {
-    let max = 0;
-
+  const maxBarSize = (charts: ChartData[], max?: number): number => {
+    max = max || currentMaxValue;
     charts.forEach((chart: ChartData) => {
       const currentMax = Math.max(chart.limit, chart.previous, chart.current);
       if (currentMax > max) max = currentMax;
     });
 
-    return Math.ceil(max / 100) * 1.4 * 100;
+    return Math.ceil(max / 100) * 1.05 * 100;
   };
 
   const dispatch = createEventDispatcher();
@@ -94,6 +94,9 @@
   const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
     chartStatements = [...chartStatements, detail];
   };
+  $: if (chartStatements) {
+    maxValue = maxBarSize(chartStatements, currentMaxValue);
+  }
 
   const init = async () => {
     username = localStorage.getItem("name");
@@ -133,7 +136,9 @@
           {current}
           {title}
           {limit}
-          maxValue={maxBarSize(chartStatements)}
+          {maxValue}
+          on:updateMaxValue={({ detail }) =>
+            (currentMaxValue = maxBarSize(chartStatements, detail.limit))}
         />
       {/each}
     {/if}
