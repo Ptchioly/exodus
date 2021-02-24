@@ -90,6 +90,7 @@
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
     if (limit <= 0) props.activeInput = false;
     if (typeof +limit === "number" && +limit >= 0) setLimit();
+    if (limit > maxValue) dispatch("updateMaxValue", { limit });
   };
 
   const setLimit = () => {
@@ -164,6 +165,7 @@
     user-select: none;
     -webkit-user-select: none;
     justify-content: space-between;
+    overflow: hidden;
   }
 
   .top,
