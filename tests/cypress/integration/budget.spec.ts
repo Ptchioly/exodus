@@ -24,13 +24,11 @@ describe('sign up', () => {
     cy.getBySel(`limit-setter`)
       .first()
       .trigger('mousedown', { button: 0 })
-      .wait(1000)
       .trigger('mousemove', { clientX: 600 })
-      .wait(1000)
       .trigger('mousemove', { clientX: 500 })
-      .wait(1000)
-      // .trigger('mousemove', 'right')
       .trigger('mouseup')
+      .should('have.attr', 'data-value')
+      .and('equal', '1711')
   })
 
   // it('creates a budget for category', () => {
