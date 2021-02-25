@@ -27,7 +27,6 @@
   const handleApiResponse = async ({
     detail,
   }: CustomEvent<APIResponse<{ name: string; accounts: Account[] }>>) => {
-    console.log('detail', detail);
     if (isSuccessResponse(detail)) {
       const { name, accounts } = detail.data;
       localStorage.setItem('name', name);
