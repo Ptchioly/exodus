@@ -63,7 +63,7 @@
         </div>
       {/each}
 
-      {#if cards.length > 0}
+      {#if cards.length > 1}
         <div
           on:click={() => {
             activeCard = -1;
