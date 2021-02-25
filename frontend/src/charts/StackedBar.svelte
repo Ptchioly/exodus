@@ -1,14 +1,26 @@
 <script context="module" lang="ts">
-  export let forceLimitSet: () => Promise<void> | null = null;
+  let setLimitCallback: () => Promise<void> | null = null;
+
+  export const pushTimedOutLimit = async () => {
+    // console.log('pushTimedOutLimit => setLimitCallback', setLimitCallback);
+    if (setLimitCallback) {
+      await setLimitCallback();
+      setLimitCallback = null;
+      // console.log('pushTimedOutLimit => setLimitCallback', setLimitCallback);
+    }
+  };
 </script>
 
 <script lang="ts">
+  import { onDestroy } from 'svelte';
+
   import { updateLimit } from '../endpointApi';
   export let title: string;
   export let current: number;
   export let previous: number;
   export let limit: number;
   export let maxValue = 4000;
+  export let account: string;
 
   const percentage = {
     current: 0,
@@ -57,16 +69,17 @@
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
-    forceLimitSet = () => updateLimit(title, limit);
-    timeoutId = setTimeout(async () => {
-      await forceLimitSet();
-      forceLimitSet = null;
-    }, delay);
+    setLimitCallback = async () => {
+      if (account === 'all') return; // deny set limit for all cards (temporary solution)
+      if (timeoutId) clearInterval(timeoutId);
+      await updateLimit(title, limit, account);
+    };
+    timeoutId = setTimeout(pushTimedOutLimit, delay);
   };
 
-  // sets event every time after forceLimitSet has been initialized
+  // sets event every time after setLimitCallback has been initialized
   $: window.onbeforeunload = (e) => {
-    forceLimitSet();
+    pushTimedOutLimit();
   };
 
   const handlePress = (e) => {
@@ -118,7 +131,7 @@
       handleChange();
     };
 
-    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('mouseup', handleEnd, { once: true });
     window.addEventListener('mousemove', handleMove);
   };
 
@@ -134,6 +147,8 @@
     // Force reload for cases where there are no new values for prev, limit, or curr fields
     maxValue = maxValue;
   }
+
+  onDestroy(pushTimedOutLimit);
 </script>
 
 <div class="wrapper">
