@@ -11,7 +11,6 @@
   import type ClientStorage from './types/ClientStorage';
   import type { UserMeta } from './types/ClientStorage';
   import { accountsStorage } from './storage/accountsStorage';
-  import UserMenu from './components/UserMenu.svelte';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
@@ -113,11 +112,11 @@
   :global(*:focus) {
     outline: none;
   }
-  .container {
+  /* .container {
     max-width: 900px;
     padding: 0 15px;
     margin: 0 auto;
-  }
+  } */
   main {
     text-align: center;
     padding: 1em;

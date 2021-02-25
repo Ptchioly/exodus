@@ -20,7 +20,7 @@
 
   let offsetWidth: number;
   let isOpen = false;
-  $: isMobile = offsetWidth < 300;
+  $: isMobile = offsetWidth < 500;
   $: currentAccountId =
     accounts.find(({ type }) => type === currentCardType)?.id || 'all';
 </script>

@@ -79,4 +79,9 @@
       transform: rotate(360deg);
     }
   }
+  @media (max-width: 600px) {
+    .header {
+      max-width: 300px;
+    }
+  }
 </style>

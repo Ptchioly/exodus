@@ -24,7 +24,6 @@
     all: { bg: 'yellow', text: '#FFFFFF', grad: '#ffffff' },
   };
 
-  console.log('type', type);
   const { bg, text, grad } = cardTypeStyle[type];
   let style = `background: linear-gradient(150deg, ${grad}, ${bg})`;
 </script>
