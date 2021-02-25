@@ -58,22 +58,26 @@ Cypress.Commands.add('waitInCIEnv', () => {
   }
 })
 
-Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
+Cypress.Commands.add('sendSignUpRequest', (options = {}) => {
   const defaults = {
     // phone, password, xtoken
     username: Cypress.env('username'),
     password: Cypress.env('password'),
     xtoken: Cypress.env('xtoken')
   }
-
   const user = Cypress._.defaults({}, options, defaults)
-  cy.request({
+  return cy.request({
     method: 'POST',
     url: `${Cypress.env('apiUrl')}/signup`,
     body: {
       ...user
-    }
-  }).then(response => {
+    },
+    failOnStatusCode: false
+  })
+})
+
+Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
+  cy.sendSignUpRequest(options).then(response => {
     expect(response.status).to.eq(200)
     //don't save cookie, login on purpose
     cy.clearCookie('jwt')
@@ -130,6 +134,5 @@ Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   cy.getBySel('pwd-input').type(userInfo.password)
   cy.getBySel('confirm-pwd-input').type(userInfo.confirmPassword)
   cy.getBySel('xtoken-input').type(userInfo.xtoken)
-  cy.intercept('POST', 'signup').as('signup')
   cy.getBySel('signup-button').click()
 })
