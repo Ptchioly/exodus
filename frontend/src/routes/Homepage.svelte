@@ -122,7 +122,7 @@
             {isEmpty}
             {fullParsedSatements}
             {accounts}
-            {currentAccountId}
+            bind:currentAccountId
           />
         {/if}
       {/each}
