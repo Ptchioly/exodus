@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
-  import StackedBar, { forceLimitSet } from '../charts/StackedBar.svelte';
+  import StackedBar, { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import HeaderBar from '../components/HearedBar.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import { getStatement } from '../endpointApi';
@@ -14,18 +14,21 @@
   export let currentMonth: Statement[] | undefined;
   export let storage: ClientStorage<UserMeta, 'name'>;
 
-  let fullStatements: Record<string, ChartData[]>;
+  type AccountId = string;
+  type ParsedStatements = {
+    budgeted: ChartData[];
+    unbudgeted: ChartData[];
+    other?: ChartData;
+  };
+
+  let fullParsedSatements: Record<AccountId, ParsedStatements>;
 
   let username: string;
-  let chartStatements: ChartData[] | undefined;
-  let unbudgeted: ChartData[] | undefined;
-  let otherCategory: ChartData | undefined;
   let isEmpty: boolean;
   let currentMaxValue = 0;
   let isLoading = false;
   let accounts: Account[];
   let currentAccountId: string;
-  $: fullStatements && parseStatements(fullStatements, currentAccountId);
 
   const p2p = 16;
 
@@ -63,7 +66,13 @@
   $: currentMaxValue = getMaxValue(previousMonth || []);
 
   const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
-    chartStatements = [...chartStatements, detail];
+    fullParsedSatements = {
+      ...fullParsedSatements,
+      [currentAccountId]: {
+        ...fullParsedSatements[currentAccountId],
+        budgeted: [...fullParsedSatements[currentAccountId].budgeted, detail],
+      },
+    };
   };
 
   const fetchStatements = async () => {
@@ -73,58 +82,48 @@
       data: { statements, synced, all },
     } = response;
 
-    if (!synced && fullStatements) {
+    if (!synced && fullParsedSatements) {
       await waitFor(5);
       return await fetchStatements();
     }
 
-    fullStatements = {
-      ...statements.reduce((acc, st) => {
+    fullParsedSatements = statements.reduce(
+      (acc, st) => {
         return {
           ...acc,
-          [st.accountId]: st.statements,
+          [st.accountId]: parseStatements(st.statements),
         };
-      }, {}),
-      all,
-    };
+      },
+      {
+        all: parseStatements(all),
+      }
+    );
+
     if (!synced) {
       await waitFor(5);
       return await fetchStatements();
     }
   };
 
-  const parseStatements = (
-    fullData: Record<string, ChartData[]>,
-    accountId: string,
-    keepAddedUnbudgeted = false
-  ) => {
-    const statementsForAccount = fullData[accountId]; //Check if not null
-    if (!statementsForAccount) return;
-    const addedUnbudgeted = keepAddedUnbudgeted
-      ? saveUnbudgetedState(statementsForAccount)
-      : [];
+  const parseStatements = (statement: ChartData[]): ParsedStatements => {
+    if (!statement) return { budgeted: [], unbudgeted: [] };
 
-    chartStatements = [
-      ...statementsForAccount
-        .filter((chart) => !isOtherCategory(chart))
-        .filter(hasValues),
-      ...addedUnbudgeted,
-    ];
+    const budgeted = statement
+      .filter((chart) => !isOtherCategory(chart))
+      .filter(hasValues);
 
-    [otherCategory] = statementsForAccount.filter(isOtherCategory);
+    const [other] = statement.filter(isOtherCategory);
 
-    unbudgeted = statementsForAccount.filter((chart) => !hasValues(chart));
+    const unbudgeted = statement.filter((chart) => !hasValues(chart));
 
-    if (keepAddedUnbudgeted) {
-      unbudgeted = unbudgeted.filter(
-        ({ id }) => !addedUnbudgeted.some((added) => added.id === id)
-      );
-    }
-
-    // isEmpty = !synced && ![...chartStatements].length && !otherCategory;
+    return {
+      budgeted,
+      other,
+      unbudgeted,
+    };
   };
   const init = async () => {
-    if (forceLimitSet) await forceLimitSet();
+    await pushTimedOutLimit();
     [{ name: username, accounts }] = await storage.getAll();
     currentAccountId = accounts[0]?.id;
     fetchStatements();
@@ -146,44 +145,46 @@
       {accounts}
     />{/if}
   <section class="container">
-    <div class="w-full flex justify-end">
-      <div class="mb-15">
-        {#if unbudgeted && unbudgeted.length}
-          <UnbudgetedCategories
-            bind:categories={unbudgeted}
-            on:addCategory={handleAddCategory}
-          />
+    {#if fullParsedSatements}
+      {#each Object.entries(fullParsedSatements) as [account, { other, unbudgeted, budgeted }]}
+        {#if account === currentAccountId}
+          <div class="w-full flex justify-end">
+            <div class="mb-15">
+              {#if unbudgeted && unbudgeted.length}
+                <UnbudgetedCategories
+                  bind:categories={unbudgeted}
+                  on:addCategory={handleAddCategory}
+                />
+              {/if}
+            </div>
+          </div>
+          {#if isEmpty}
+            <h1 class="w-full flex items-start text-gray-700">
+              You did not spend anything for current month
+            </h1>
+          {/if}
+          {#if budgeted}
+            {#each budgeted as category}
+              <StackedBar
+                {...category}
+                bind:limit={category.limit}
+                {account}
+                maxValue={maxBarSize(budgeted)}
+              />
+            {/each}
+          {/if}
+          {#if other}
+            <div class="other-category">
+              <StackedBar
+                {...other}
+                bind:limit={other.limit}
+                maxValue={maxBarSize([other])}
+                {account}
+              />
+            </div>
+          {/if}
         {/if}
-      </div>
-    </div>
-    {#if isEmpty}
-      <h1 class="w-full flex items-start text-gray-700">
-        You did not spend anything for current month
-      </h1>
-    {/if}
-    {#if chartStatements}
-      {#each chartStatements as { previous, current, title, limit }}
-        <StackedBar
-          {previous}
-          {current}
-          {title}
-          {limit}
-          {currentAccountId}
-          maxValue={maxBarSize(chartStatements)}
-        />
       {/each}
-    {/if}
-    {#if otherCategory}
-      <div class="other-category">
-        <!-- svelte-ignore missing-declaration -->
-        <StackedBar
-          previous={otherCategory.previous}
-          current={otherCategory.current}
-          title={otherCategory.title}
-          limit={otherCategory.limit}
-          maxValue={maxBarSize([otherCategory])}
-        />
-      </div>
     {/if}
   </section>
 </main>
