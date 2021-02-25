@@ -18,13 +18,11 @@ const defaultInit: RequestInit = {
   },
 };
 
-const statusCheck = async (
-  response: Response
-): Promise<APIResponse<{ name: string }>> => {
+const statusCheck = async (response: Response): Promise<APIResponse> => {
   const { status } = response;
   if (status === 200) {
-    const { name } = await response.json();
-    return { status, data: { name } };
+    const json = await response.json();
+    return { status, data: json };
   }
   const { message } = await response.json();
   return { status, message };
@@ -33,7 +31,7 @@ const statusCheck = async (
 export const signIn = async (
   phoneNumber: string,
   pwd: string
-): Promise<APIResponse<{ name: string }>> => {
+): Promise<APIResponse<{ name: string; accounts: Account[] }>> => {
   const response = await fetch(loginEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -58,7 +56,7 @@ export const signUp = async (
   username: string,
   password: string,
   xtoken: string
-): Promise<APIResponse<{ name: string }>> => {
+): Promise<APIResponse<{ name: string; accounts: Account[] }>> => {
   const response = await fetch(signupEndpoint, {
     ...defaultInit,
     method: 'POST',
@@ -82,16 +80,25 @@ export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
   return { status, message };
 };
 
-export const getStatement = async (): Promise<
-  APIResponse<{ statements: ChartData[]; synced: boolean }>
+export const getStatement = async (
+  accountIds: string[]
+): Promise<
+  APIResponse<{
+    statements: { statements: ChartData[]; accountId: string }[];
+    all: ChartData[];
+    synced: boolean;
+  }>
 > => {
-  const response = await fetch(statementsEndpoint, {
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-cache, no-store, must-revalidate',
-    },
-  });
+  const response = await fetch(
+    `${statementsEndpoint}?ids=${accountIds.join(',')}`,
+    {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    }
+  );
 
   const resp: APIResponse = response.ok
     ? { data: await response.json(), status: 200 }
@@ -102,9 +109,10 @@ export const getStatement = async (): Promise<
 
 export const updateLimit = async (
   category: string,
-  value: number
+  value: number,
+  accountId: string
 ): Promise<void> => {
-  await fetch(limitsEndpoint, {
+  await fetch(`${limitsEndpoint}/${accountId}`, {
     ...defaultInit,
     method: 'POST',
     body: JSON.stringify({

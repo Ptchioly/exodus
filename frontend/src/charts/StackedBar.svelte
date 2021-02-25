@@ -1,20 +1,30 @@
 <script context="module" lang="ts">
-  export let forceLimitSet: () => Promise<void> | null = null;
+  let setLimitCallback: () => Promise<void> | null = null;
+
+  export const pushTimedOutLimit = async () => {
+    // console.log('pushTimedOutLimit => setLimitCallback', setLimitCallback);
+    if (setLimitCallback) {
+      await setLimitCallback();
+      setLimitCallback = null;
+      // console.log('pushTimedOutLimit => setLimitCallback', setLimitCallback);
+    }
+  };
 </script>
 
 <script lang="ts">
   // import { onMount } from 'svelte';
-  import { updateLimit } from "../endpointApi";
-  import Bars from "./Bars.svelte";
-  import type { LabelPosition, StackedBars } from "../types/charts";
-  import { createEventDispatcher } from "svelte";
-  import { staticValues } from "./configs";
-
+  import Bars from './Bars.svelte';
+  import type { LabelPosition, StackedBars } from '../types/charts';
+  import { createEventDispatcher } from 'svelte';
+  import { staticValues } from './configs';
+  import { onDestroy } from 'svelte';
+  import { updateLimit } from '../endpointApi';
   export let title: string;
   export let current: number;
   export let previous: number;
   export let limit: number;
   export let maxValue = 4000;
+  export let account: string;
 
   const dispatch = createEventDispatcher();
 
@@ -33,9 +43,9 @@
   const generateChartData = (maxValue, limit): StackedBars => {
     const currentBar = {
       value: current,
-      limits: ["current"],
+      limits: ['current'],
       background: staticValues.currentBgColor,
-      labelPosition: "in-left" as LabelPosition,
+      labelPosition: 'in-left' as LabelPosition,
       label: staticValues.valueString,
       detailedLabel: staticValues.valueString,
     };
@@ -43,21 +53,21 @@
     const previousBar = {
       ...currentBar,
       value: previous,
-      limits: ["previous"],
+      limits: ['previous'],
       background: staticValues.previousBgColor,
     };
 
     const previousLimit = {
-      name: "previous",
+      name: 'previous',
       value: limit,
       color: staticValues.limitColor,
-      visible: "static" as "static" | "hover",
-      overlapStyle: "stripes" as "" | "stripes",
+      visible: 'static' as 'static' | 'hover',
+      overlapStyle: 'stripes' as '' | 'stripes',
     };
 
     const currentLimit = {
       ...previousLimit,
-      name: "current",
+      name: 'current',
       draggable: true,
     };
 
@@ -80,7 +90,7 @@
 
   const updateInput = ({ detail }) => {
     limit = +detail.limit.value;
-    dispatch("updateMaxValue", { limit });
+    dispatch('updateMaxValue', { limit });
   };
 
   let timeoutId: any;
@@ -89,40 +99,47 @@
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
     if (limit <= 0) props.activeInput = false;
-    if (typeof +limit === "number" && +limit >= 0) setLimit();
-    if (limit > maxValue) dispatch("updateMaxValue", { limit });
+    if (typeof +limit === 'number' && +limit >= 0) setLimit();
+    if (limit > maxValue) dispatch('updateMaxValue', { limit });
   };
 
   const setLimit = () => {
     if (timeoutId) clearInterval(timeoutId);
-    forceLimitSet = () => updateLimit(title, limit);
-    timeoutId = setTimeout(async () => {
-      await forceLimitSet();
-      forceLimitSet = null;
-    }, delay);
+    setLimitCallback = async () => {
+      if (account === 'all') return; // deny set limit for all cards (temporary solution)
+      if (timeoutId) clearInterval(timeoutId);
+      await updateLimit(title, limit, account);
+    };
+    timeoutId = setTimeout(pushTimedOutLimit, delay);
   };
 
+  // sets event every time after setLimitCallback has been initialized
   $: window.onbeforeunload = (e) => {
-    forceLimitSet();
+    pushTimedOutLimit();
   };
 
   const handlePress = (e) => {
     const step = 50;
 
-    if (e.key === "ArrowUp") {
-      
+    if (e.key === 'ArrowUp') {
       if (limit + step <= maxValue) {
-        dispatch("updateMaxValue", { limit });
+        dispatch('updateMaxValue', { limit });
       }
 
       limit += step;
       handleChange();
-
-    } else if (e.key === "ArrowDown" && limit - step >= 0) {
+    } else if (e.key === 'ArrowDown' && limit - step >= 0) {
       limit -= step;
       handleChange();
     }
   };
+
+  $: {
+    // Force reload for cases where there are no new values for prev, limit, or curr fields
+    maxValue = maxValue;
+  }
+
+  onDestroy(pushTimedOutLimit);
 </script>
 
 <div class="wrapper-s">
@@ -234,7 +251,7 @@
 
   .title {
     width: calc(100% - 5em);
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-weight: bold;
     display: flex;
     flex-shrink: 0;

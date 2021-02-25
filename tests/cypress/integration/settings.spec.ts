@@ -2,13 +2,10 @@
 /// <reference path="../support/index.d.ts" />
 
 describe('settings actions', () => {
-  before(() => {
+  beforeEach(() => {
     cy.waitInCIEnv()
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
-  })
-
-  beforeEach(() => {
     cy.loginByAPI()
     cy.visit('/')
   })
