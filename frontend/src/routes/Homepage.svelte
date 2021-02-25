@@ -2,6 +2,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import StackedBar, { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import HeaderBar from '../components/HearedBar.svelte';
+  import Cards from '../components/Cards.svelte';
   import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import { getStatement } from '../endpointApi';
   import type { ChartData, Statement, Account } from '../types/Api';
@@ -136,26 +137,27 @@
   {#if accounts}
     <HeaderBar
       on:logout={(e) => dispatch('logout', e)}
-      on:changeCard={({ detail: { accountId } }) => {
-        currentAccountId = accountId;
-      }}
       bind:isLoading
       onUpdate={init}
       {username}
-      {accounts}
     />{/if}
   <section class="container">
     {#if fullParsedSatements}
       {#each Object.entries(fullParsedSatements) as [account, { other, unbudgeted, budgeted }]}
         {#if account === currentAccountId}
-          <div class="w-full flex justify-end">
-            <div class="mb-15">
-              {#if unbudgeted && unbudgeted.length}
-                <UnbudgetedCategories
-                  bind:categories={unbudgeted}
-                  on:addCategory={handleAddCategory}
-                />
-              {/if}
+          <div class="flex flex-col mb-5">
+            <div class="ml-10 flex justify-center">
+              <Cards {accounts} bind:currentAccountId />
+            </div>
+            <div>
+              <div class="mb-8 mt-8 flex justify-end">
+                {#if unbudgeted && unbudgeted.length}
+                  <UnbudgetedCategories
+                    bind:categories={unbudgeted}
+                    on:addCategory={handleAddCategory}
+                  />
+                {/if}
+              </div>
             </div>
           </div>
           {#if isEmpty}

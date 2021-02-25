@@ -21,8 +21,10 @@
     fop: { bg: '#000000', text: '#FFFFFF', grad: '#ffffff' },
     iron: { bg: '#000000', text: '#FFFFFF', grad: '#ffffff' },
     yellow: { bg: 'yellow', text: '#FFFFFF', grad: '#ffffff' },
+    all: { bg: 'yellow', text: '#FFFFFF', grad: '#ffffff' },
   };
 
+  console.log('type', type);
   const { bg, text, grad } = cardTypeStyle[type];
   let style = `background: linear-gradient(150deg, ${grad}, ${bg})`;
 </script>
@@ -35,7 +37,7 @@
   }}
 >
   <div
-    class="card rounded-lg flex items-end p-1 h-12 flex-col justify-between border-gray-600"
+    class="card rounded-md flex items-end p-1 h-12 flex-col justify-between border-gray-600"
     {style}
     class:isActive={activeCard === index}
   >
@@ -59,9 +61,10 @@
   }
 
   .card {
-    box-shadow: 0 0 1px 1px #818181;
+    border: 1px solid #acacac;
   }
   .card.isActive {
-    box-shadow: 0 0 2px 2px #818181;
+    border: none;
+    box-shadow: 0 0 2px 2px #a5a5a5;
   }
 </style>

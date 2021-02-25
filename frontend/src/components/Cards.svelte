@@ -1,87 +1,85 @@
 <script lang="ts">
-  import type { CardType } from '../types/Api';
+  import { fly } from 'svelte/transition';
+
+  import type { CardType, Account } from '../types/Api';
   import Card from './Card.svelte';
 
-  let activeCard: number = 1;
-  type CardData = { pan: string[]; type: CardType };
-  export let cards: CardData[];
-  export let currentCardType: CardType = cards[0].type;
+  export let accounts: Account[];
+  export let currentAccountId: string;
+
+  $: mobileFly = isMobile ? fly : () => null;
+
+  let currentCardType: CardType =
+    accounts.find(({ id }) => id === currentAccountId)?.type || 'all';
+
+  let activeCard: number = accounts.findIndex(
+    ({ id }) => id === currentAccountId
+  );
+
+  let cards = accounts.map(({ pan, type }) => ({ pan, type }));
 
   let offsetWidth: number;
   let isOpen = false;
   $: isMobile = offsetWidth < 300;
+  $: currentAccountId =
+    accounts.find(({ type }) => type === currentCardType)?.id || 'all';
 </script>
 
 <div
-  class="mr-16 flex"
-  class:isMobile
+  class="flex cards"
   bind:offsetWidth
   on:click={() => (isOpen = !isOpen)}
+  class:isMobile
 >
   {#if isMobile && !isOpen}
     <div class="my-2">
-      {#if activeCard > 0}
+      {#if activeCard > -1}
         <Card
-          {...cards[activeCard - 1]}
+          {...cards[activeCard]}
+          type={currentCardType}
           index={activeCard}
           bind:activeCard
-          on:click={() => {
-            currentCardType = cards[activeCard - 1].type;
-          }}
         />
       {:else}
         {#each cards as card, i}
           <div class="relative -mt-{i * 8} ml-{i * 2}">
-            <Card
-              {...card}
-              index={0}
-              bind:activeCard
-              on:click={() => {
-                currentCardType = card.type;
-                isOpen = false;
-              }}
-            />
+            <Card {...card} index={-1} bind:activeCard />
           </div>
         {/each}
       {/if}
     </div>
   {:else}
-    {#each cards as card, i}
-      <div class="my-2">
-        <Card
-          {...card}
-          index={i + 1}
-          bind:activeCard
+    <div class="w-full flex flex-row" class:isMobile>
+      {#each cards as card, i}
+        <div class="my-2" in:mobileFly={{ duration: 500, x: i && -100 }}>
+          <Card
+            {...card}
+            index={i}
+            bind:activeCard
+            on:click={() => {
+              currentCardType = card.type;
+            }}
+          />
+        </div>
+      {/each}
+
+      {#if cards.length > 0}
+        <div
           on:click={() => {
-            currentCardType = card.type;
+            activeCard = -1;
+            currentCardType = 'all';
           }}
-        />
-      </div>
-    {/each}
-    {#if cards.length > 1}
-      <div
-        on:click={() => {
-          activeCard = 0;
-          currentCardType = 'all';
-        }}
-        class="my-2"
-      >
-        {#each cards as card, i}
-          <div class="relative -mt-{i * 8} ml-{i * 2}">
-            <Card
-              {...card}
-              index={0}
-              bind:activeCard
-              on:click={() => {
-                currentCardType = card.type;
-              }}
-            />
-          </div>
-        {/each}
-        <!-- <div class="h-10 bg-gray-500 w-24 relative rounded-lg" />
-    <div class="h-10 bg-black w-24 relative -mt-8 ml-2 rounded-lg" /> -->
-      </div>
-    {/if}
+          class="my-2"
+          in:mobileFly={{ duration: 500, x: -100 }}
+        >
+          {#each cards as card, i}
+            <div class="relative -mt-{i * 8} ml-{i * 2}">
+              <Card {...card} index={-1} {activeCard} />
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
   {/if}
 </div>
 
@@ -91,6 +89,9 @@
   }
 
   .isMobile {
-    flex-direction: column;
+    flex-direction: row;
+  }
+  .cards.isMobile {
+    width: 100%;
   }
 </style>

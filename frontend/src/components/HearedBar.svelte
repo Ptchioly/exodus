@@ -1,26 +1,16 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
   import { logout } from '../endpointApi';
-  import Cards from './Cards.svelte';
-
-  import type { Account, CardType } from '../types/Api';
-
   import Settings from './Settings.svelte';
   import UserProfile from './UserProfile.svelte';
+
   export let isLoading: boolean;
   export let onUpdate: () => Promise<void>;
   export let username: string | undefined;
-  export let accounts: Account[];
+
   export let currentAccountId: string;
-  let currentCardType: CardType;
 
   const dispatch = createEventDispatcher();
-  $: {
-    const accountId =
-      accounts.find(({ type }) => type === currentCardType)?.id || 'all';
-    dispatch('changeCard', { accountId });
-  }
 
   let showSettings: boolean;
 </script>
@@ -29,12 +19,13 @@
   <Settings bind:showSettings />
 {/if}
 
-<div class="header flex justify-end w-full px-5 mt-4 mb-10">
-  <div class="w-8/12 flex justify-center">
-    <Cards
-      cards={accounts.map(({ pan, type }) => ({ pan, type }))}
-      bind:currentCardType
-    />
+<div class="header flex justify-between w-full px-5 mt-4 mb-10 pl-10">
+  <div class="w-8/12 flex justify-between ">
+    <div
+      class="mx-8 mt-1 py-0.5 px-4 text-sm bg-coolGreen-lessLight h-6 rounded-lg shadow-md font-bold text-white"
+    >
+      alpha
+    </div>
   </div>
   <div class="flex w-1/8 ">
     <div
@@ -62,7 +53,8 @@
     </div>
     <div class="user flex items-center" />
     <div class="logout ml-6 user flex">
-      {#if username}<UserProfile
+      {#if username}
+        <UserProfile
           bind:showSettings
           user={username}
           on:logout={async () => {
