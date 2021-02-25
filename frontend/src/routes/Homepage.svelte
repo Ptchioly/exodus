@@ -146,7 +146,7 @@
       {#each Object.entries(fullParsedSatements) as [account, { other, unbudgeted, budgeted }]}
         {#if account === currentAccountId}
           <div class="flex flex-col mb-5">
-            <div class="ml-10 flex justify-center">
+            <div class="ml-5 flex justify-center">
               <Cards {accounts} bind:currentAccountId />
             </div>
             <div>
