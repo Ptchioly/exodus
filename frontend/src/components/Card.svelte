@@ -10,18 +10,21 @@
 
   const dispatch = createEventDispatcher();
 
-  const cardTypeStyle: Record<CardType, { bg: string; text: string }> = {
-    black: { bg: '#000000', text: '#FFFFFF' },
-    platinum: { bg: '#d0cfcd', text: '#000000' },
-    white: { bg: '#FFFFFF', text: '#6c6c6c' },
+  const cardTypeStyle: Record<
+    CardType,
+    { bg: string; text: string; grad: string }
+  > = {
+    black: { bg: '#000000', text: '#FFFFFF', grad: '#6c6c6c' },
+    platinum: { bg: 'rgb(245 193 191)', text: '#000000', grad: '#ffffff' },
+    white: { bg: '#FFFFFF', text: '#6c6c6c', grad: '#ffffff' },
     //needs to add actual
-    fop: { bg: '#000000', text: '#FFFFFF' },
-    iron: { bg: '#000000', text: '#FFFFFF' },
-    yellow: { bg: 'yellow', text: '#FFFFFF' },
+    fop: { bg: '#000000', text: '#FFFFFF', grad: '#ffffff' },
+    iron: { bg: '#000000', text: '#FFFFFF', grad: '#ffffff' },
+    yellow: { bg: 'yellow', text: '#FFFFFF', grad: '#ffffff' },
   };
 
-  const { bg, text } = cardTypeStyle[type];
-  let style = `background-color: ${bg}`;
+  const { bg, text, grad } = cardTypeStyle[type];
+  let style = `background: linear-gradient(150deg, ${grad}, ${bg})`;
 </script>
 
 <div
@@ -32,7 +35,7 @@
   }}
 >
   <div
-    class="card rounded-lg flex items-end p-1 h-12 flex-col justify-between border-gray-600 "
+    class="card rounded-lg flex items-end p-1 h-12 flex-col justify-between border-gray-600"
     {style}
     class:isActive={activeCard === index}
   >
