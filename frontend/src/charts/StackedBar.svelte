@@ -90,7 +90,7 @@
 
   const updateInput = ({ detail }) => {
     limit = +detail.limit.value;
-    dispatch('updateMaxValue', { limit });
+    dispatch('updateMaxValue', { limit, title });
   };
 
   let timeoutId: any;

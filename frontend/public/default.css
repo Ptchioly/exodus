@@ -42,9 +42,9 @@ table {
 	border-spacing: 0;
 }
 
-html, body {
+/* html, body {
 	overflow-y: hidden;
-}
+} */
 
 *, *::after, *::before {
     box-sizing: content-box !important;
