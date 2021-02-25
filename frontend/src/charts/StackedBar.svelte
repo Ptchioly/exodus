@@ -270,10 +270,9 @@
   }
 
   .actions {
-    width: 5em;
+    width: 4em;
     display: flex;
     align-items: center;
-    justify-content: center;
   }
 
   .action--addLimit {
@@ -329,7 +328,6 @@
     height: 2em;
     background-color: #e7f4ec;
     border-radius: 8px;
-    margin-left: 1em;
   }
 
   .bars {
@@ -541,7 +539,6 @@
 
     .top > .title {
       order: 1;
-      padding-left: 1em;
     }
     .top > .actions {
       order: 2;

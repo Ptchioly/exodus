@@ -30,7 +30,7 @@
 </script>
 
 <div
-  class="w-24 mr-2"
+  class="w-24 mr-2 cursor-pointer"
   on:click={(e) => {
     dispatch('click', e);
     activeCard = index;

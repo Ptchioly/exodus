@@ -26,7 +26,7 @@
 </script>
 
 <div
-  class="flex cards"
+  class="flex cards max-h-16"
   bind:offsetWidth
   on:click={() => (isOpen = !isOpen)}
   class:isMobile
@@ -42,14 +42,14 @@
         />
       {:else}
         {#each cards as card, i}
-          <div class="relative -mt-{i * 8} ml-{i * 2}">
+          <div class="relative -mt-{i * 8 + 1} ml-{i * 2}">
             <Card {...card} index={-1} bind:activeCard />
           </div>
         {/each}
       {/if}
     </div>
   {:else}
-    <div class="w-full flex flex-row" class:isMobile>
+    <div class="w-full flex flex-row max-h-16" class:isMobile>
       {#each cards as card, i}
         <div class="my-2" in:mobileFly={{ duration: 500, x: i && -100 }}>
           <Card
@@ -73,7 +73,7 @@
           in:mobileFly={{ duration: 500, x: -100 }}
         >
           {#each cards as card, i}
-            <div class="relative -mt-{i * 8} ml-{i * 2}">
+            <div class="relative -mt-{i * 8 + 1} ml-{i * 2}">
               <Card {...card} index={-1} {activeCard} />
             </div>
           {/each}
@@ -91,7 +91,7 @@
   .isMobile {
     flex-direction: row;
   }
-  .cards.isMobile {
+  .cards {
     width: 100%;
   }
 </style>

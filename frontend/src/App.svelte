@@ -27,7 +27,6 @@
   const handleApiResponse = async ({
     detail,
   }: CustomEvent<APIResponse<{ name: string; accounts: Account[] }>>) => {
-    console.log('detail', detail);
     if (isSuccessResponse(detail)) {
       const { name, accounts } = detail.data;
       localStorage.setItem('name', name);
@@ -54,7 +53,7 @@
 </script>
 
 <TailwindCss />
-<main class="font-main h-screen md:mx-20 text-center flex content-center p-0">
+<main class="font-main h-screen md:mx-20 text-center flex content-center">
   {#if storage}
     {#if navigationState === 'home'}
       <Homepage on:logout={handleLogout} {storage} />
