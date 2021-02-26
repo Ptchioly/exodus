@@ -161,6 +161,7 @@
                                 {#if limit.draggable}
                                     <div
                                         class="limit-handle draggable"
+                                        data-automation-id="limit-setter"
                                         style="background: {limit.color};"
                                         data-value={+limit.value}
                                         on:mousedown={move(limit)}
