@@ -20,7 +20,7 @@
     class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay"
   >
     <div
-      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-r-2 border-gray-600 relative"
+      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-solid sm:border-r-2 border-gray-600 relative"
     >
       <div
         class="nav-button"

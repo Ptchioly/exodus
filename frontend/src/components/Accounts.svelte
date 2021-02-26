@@ -19,7 +19,7 @@
   let p2pMax = 0;
 
   const maxBarSize = (charts: ChartData[], max?: number): number => {
-    max = max || maxValue;
+    max = !isNaN(+max) || max.toString().length > 0 ? max : maxValue;
     charts.forEach((chart: ChartData) => {
       const currentMax = Math.max(chart.limit, chart.previous, chart.current);
       if (currentMax > max) max = currentMax;
