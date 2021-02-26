@@ -45,7 +45,7 @@
     @apply w-4/5;
   }
 
-  <style > .login-input.code {
+  .login-input.code {
     background-color: rgba(218, 218, 218, 0.686);
     user-select: none;
     -moz-user-select: none;
