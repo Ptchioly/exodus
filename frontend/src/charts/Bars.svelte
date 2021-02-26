@@ -123,6 +123,7 @@
                                 class:hidden={limit.value <= 0}
                                 data-overlap={limit.value < bar.value}
                                 data-name={limit.name}
+                                data-automation-id="limit-hover"
                                 style="{styledZIndex(
                                     limit.value < bar.value,
                                     limitIndex
