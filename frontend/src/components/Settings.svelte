@@ -20,7 +20,7 @@
     class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay"
   >
     <div
-      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-r-2 border-gray-600 relative"
+      class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-solid sm:border-r-2 border-gray-600 relative"
     >
       <div
         class="nav-button"
@@ -44,7 +44,7 @@
         Delete User
       </div>
       <div
-        class="cursor-pointer sm:absolute xs:mt-2 sm:bottom-5 sm:bg-coolGreen-default sm:py-1 sm:px-3 sm:rounded-md sm:text-white"
+        class="cursor-pointer sm:absolute xs:mt-2 m-auto w-1/4 sm:bottom-5 bg-red-600 py-1 px-3 rounded-md text-white text-center"
         on:click={() => (showSettings = false)}
         data-automation-id="close-settings"
       >
@@ -83,7 +83,6 @@
   }
 
   #content {
-    min-width: 38rem;
     min-height: 20rem;
   }
 

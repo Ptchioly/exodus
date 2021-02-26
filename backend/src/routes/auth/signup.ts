@@ -31,11 +31,11 @@ signup.post('/signup', async (req, res) => {
   if (isFailure(userResponse))
     return respond.FailureResponse('Unable to get user.');
 
-  if (userResponse.Item) return respond.FailureResponse('User already exist.');
+  if (userResponse.Item) return respond.FailureResponse('User already exists.');
 
   const tokenResponse = await getTokens(Tables.USERS);
 
-  if (isFailure(tokenResponse) || !tokenResponse.Items)
+  if (isFailure(tokenResponse))
     return respond.FailureResponse('Unable to get tokens');
 
   if (!tokenResponse.Items)
@@ -47,6 +47,7 @@ signup.post('/signup', async (req, res) => {
   const key = nanoid(21);
   const encryptedPassword = hash(password, key);
 
+  const userAccounts = getAccounts(accounts);
   const user = {
     id: clientId,
     key,
@@ -54,7 +55,7 @@ signup.post('/signup', async (req, res) => {
     password: encryptedPassword,
     xtoken,
     name,
-    accounts: getAccounts(accounts),
+    accounts: userAccounts,
   };
 
   const updateUserResponse = await putItem(Tables.USERS, user);
@@ -67,7 +68,7 @@ signup.post('/signup', async (req, res) => {
 
   setHook(xtoken);
 
-  await syncStatements({ Item: user });
+  await syncStatements(user);
 
-  return respond.SuccessResponse({ name });
+  return respond.SuccessResponse({ name, accounts: userAccounts });
 });

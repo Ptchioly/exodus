@@ -31,6 +31,7 @@ module.exports = {
       current: 'currentColor',
       black: colors.black,
       white: colors.white,
+      pinkCard: 'rgb(245 193 191)',
       gray: { ...colors.trueGray, ...{ signIn: '#C4C4C4' } },
       indigo: colors.indigo,
       red: colors.rose,

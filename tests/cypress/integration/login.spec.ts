@@ -2,35 +2,14 @@
 /// <reference path="../support/index.d.ts" />
 
 describe.only('Login', () => {
-  const sizes = ['iphone-6', 'ipad-2', [1280, 1024]] // viewport sizes
-
-  before(function() {
+  before(() => {
     cy.waitInCIEnv()
-    cy.deleteMyUserIfExists()
-    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
+    cy.deleteMyUserIfExists()
+    cy.registerUserbyAPI()
     cy.visit('/')
-  })
-
-  sizes.forEach(size => {
-    it(`displays "Sign In" greeting and login forms on the login page using ${size} viewport`, () => {
-      if (Cypress._.isArray(size)) {
-        cy.viewport(size[0], size[1])
-      } else {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        cy.viewport(size)
-      }
-      cy.visit('/')
-      cy.get('h1')
-        .should('contain', 'Sign in to Exodus')
-        .and('beInViewport')
-      cy.getBySel('phone-input').should('beInViewport')
-      cy.getBySel('pwd-input').should('beInViewport')
-      cy.getBySel('signin-button').should('beInViewport')
-    })
   })
 
   it('displays register page on "Join now" click', () => {
@@ -49,7 +28,7 @@ describe.only('Login', () => {
   it('requires password', () => {
     cy.getBySel('phone-input').clear()
     cy.getBySel('pwd-input').clear()
-    cy.getBySel('phone-input').type(`${Cypress.env('phone')}`)
+    cy.getBySel('phone-input').type(`${Cypress.env('username')}`)
     cy.getBySel('signin-button').click()
     cy.getBySel('login-error-message')
       .should('be.visible')
@@ -81,7 +60,7 @@ describe.only('Login', () => {
     cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 200)
-    // cy.getBySel('menu-button').should('be.visible')
+    cy.getBySel('menu-button').should('be.visible')
     cy.getCookie('jwt').should('have.property', 'value')
   })
 })
