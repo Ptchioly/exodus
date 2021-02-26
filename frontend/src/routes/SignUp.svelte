@@ -65,10 +65,10 @@
       <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
     </div>
 
-    <div class="password-input">
+    <div class="flex justify-center w-3/4 self-center relative">
       <PasswordInput placeholder="Password" bind:value={pwd} />
     </div>
-    <div class="password-input">
+    <div class="flex justify-center w-3/4 self-center relative">
       <PasswordInput
         placeholder="Confirm Password"
         bind:value={confirmPwd}

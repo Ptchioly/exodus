@@ -8,7 +8,7 @@ export const hash = (password: string, salt: string): string =>
   SHA3(password + SHA3(salt + 'sobaka')).toString();
 
 const reLower = /[a-z]/;
-const reUpper = /[a-z]/;
+const reUpper = /[A-Z]/;
 const reNumber = /[0-9]/;
 const reWhitespace = /\s/;
 const reTwelweNumbers = /^[0-9]{12}$/;
