@@ -238,6 +238,9 @@
     .limits {
         height: 100%;
         width: 100%;
+    }
+
+    .bar--wrapper:not(.upperLayer) > .limits {
         visibility: hidden;
     }
 
