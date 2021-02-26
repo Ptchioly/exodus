@@ -4,11 +4,11 @@
 describe.only('Login', () => {
   before(() => {
     cy.waitInCIEnv()
-    cy.deleteMyUserIfExists()
-    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
+    cy.deleteMyUserIfExists()
+    cy.registerUserbyAPI()
     cy.visit('/')
   })
 
@@ -28,7 +28,7 @@ describe.only('Login', () => {
   it('requires password', () => {
     cy.getBySel('phone-input').clear()
     cy.getBySel('pwd-input').clear()
-    cy.getBySel('phone-input').type(`${Cypress.env('phone')}`)
+    cy.getBySel('phone-input').type(`${Cypress.env('username')}`)
     cy.getBySel('signin-button').click()
     cy.getBySel('login-error-message')
       .should('be.visible')
@@ -60,7 +60,7 @@ describe.only('Login', () => {
     cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 200)
-    // cy.getBySel('menu-button').should('be.visible')
+    cy.getBySel('menu-button').should('be.visible')
     cy.getCookie('jwt').should('have.property', 'value')
   })
 })

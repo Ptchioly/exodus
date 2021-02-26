@@ -23,7 +23,7 @@
   export let current: number;
   export let previous: number;
   export let limit: number;
-  export let maxValue = 4000;
+  export let maxValue;
   export let account: string;
 
   const dispatch = createEventDispatcher();
@@ -32,7 +32,7 @@
   let inputLimit: HTMLElement;
 
   const handleInitLimit = () => {
-    limit = current ? Math.ceil(current * 1.1) : 50;
+    limit = current ? Math.ceil(current * 1.05) : 50;
     props.activeInput = true;
     window.setTimeout(() => {
       inputLimit.focus();
@@ -86,7 +86,10 @@
     activeInput: limit > 0,
   };
 
-  $: apiRequest = generateChartData(maxValue, limit);
+  $: {
+    limit = limit;
+    apiRequest = generateChartData(maxValue, limit);
+  }
 
   const updateInput = ({ detail }) => {
     limit = +detail.limit.value;
@@ -94,11 +97,14 @@
   };
 
   let timeoutId: any;
-  let delay = 1500;
+  let delay = 1000;
 
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
-    if (limit <= 0) props.activeInput = false;
+    if (+limit <= 0) {
+      props.activeInput = false;
+      limit = 0;
+    }
     if (typeof +limit === 'number' && +limit >= 0) setLimit();
     dispatch('updateMaxValue', { limit });
   };
@@ -108,7 +114,7 @@
     setLimitCallback = async () => {
       if (account === 'all') return; // deny set limit for all cards (temporary solution)
       if (timeoutId) clearInterval(timeoutId);
-      await updateLimit(title, limit, account);
+      await updateLimit(title, +limit, account);
     };
     timeoutId = setTimeout(pushTimedOutLimit, delay);
   };

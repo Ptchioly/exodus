@@ -35,7 +35,7 @@ signup.post('/signup', async (req, res) => {
 
   const tokenResponse = await getTokens(Tables.USERS);
 
-  if (isFailure(tokenResponse) || !tokenResponse.Items)
+  if (isFailure(tokenResponse))
     return respond.FailureResponse('Unable to get tokens');
 
   if (!tokenResponse.Items)

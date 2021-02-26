@@ -14,34 +14,30 @@
   };
 </script>
 
-<div class="py-2 w-3/4">
-  <div class="relative">
-    {#if show}
-      <input
-        class="pwd-input text-md"
-        data-automation-id={dataAut}
-        type="text"
-        {placeholder}
-        bind:value
-        on:input={handleInput}
-      />
-    {:else}
-      <input
-        class="pwd-input text-md"
-        data-automation-id={dataAut}
-        type="password"
-        {placeholder}
-        bind:value
-        on:input={handleInput}
-      />
-    {/if}
-    <div
-      class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-    >
-      <div class:show on:click={() => (show = !show)} class="px-1">
-        <img src="images/show-password.svg" alt="show-password" />
-      </div>
-    </div>
+{#if show}
+  <input
+    class="pwd-input text-lg"
+    data-automation-id={dataAut}
+    type="text"
+    {placeholder}
+    bind:value
+    on:input={handleInput}
+  />
+{:else}
+  <input
+    class="pwd-input text-lg"
+    data-automation-id={dataAut}
+    type="password"
+    {placeholder}
+    bind:value
+    on:input={handleInput}
+  />
+{/if}
+<div
+  class="absolute bottom-2 md:bottom-3 right-0 pr-3 flex items-center text-sm leading-5"
+>
+  <div class:show on:click={() => (show = !show)} class="px-1">
+    <img src="images/show-password.svg" alt="show-password" />
   </div>
 </div>
 
@@ -51,7 +47,7 @@
   }
 
   .pwd-input {
-    @apply text-gray-700 placeholder-gray-500 border-gray-200  border-2  pl-2  block px-3 mt-5 py-2 rounded-lg w-full;
+    @apply flex content-center self-center text-gray-700 placeholder-gray-500 border-gray-200 pl-1 border-2 mt-5 py-2 rounded-lg w-full;
   }
 
   input:-webkit-autofill::first-line {

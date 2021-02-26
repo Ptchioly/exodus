@@ -4,14 +4,14 @@
 describe('responsible UI', () => {
   before(() => {
     cy.waitInCIEnv()
-    cy.deleteMyUserIfExists()
-    cy.registerUserbyAPI()
   })
 
   const sizes = ['iphone-xr', 'ipad-2', 'macbook-15']
   sizes.forEach(size => {
     context('non-authenticated user', () => {
       beforeEach(() => {
+        cy.deleteMyUserIfExists()
+        cy.registerUserbyAPI()
         cy.visit('/')
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -40,7 +40,10 @@ describe('responsible UI', () => {
     })
     context('authenticated user', () => {
       beforeEach(() => {
-        cy.loginByAPI()
+        cy.deleteMyUserIfExists()
+        cy.registerUserbyAPI()
+        // cy.loginByAPI()
+        cy.manualLogin()
         cy.visit('/')
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
