@@ -1,8 +1,8 @@
 import type { Account } from './Api';
 
 export default interface ClientStorage<
-  Item,
-  Key extends Extract<keyof Item, string>
+  Item = any,
+  Key extends Extract<keyof Item, string> = any
 > {
   getItem: (key: Item[Key]) => Promise<Item>;
   putItem: (item: Item) => Promise<void>;

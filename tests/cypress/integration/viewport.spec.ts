@@ -42,7 +42,8 @@ describe('responsible UI', () => {
       beforeEach(() => {
         cy.deleteMyUserIfExists()
         cy.registerUserbyAPI()
-        cy.loginByAPI()
+        // cy.loginByAPI()
+        cy.manualLogin()
         cy.visit('/')
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
