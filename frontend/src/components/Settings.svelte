@@ -44,7 +44,7 @@
         Delete User
       </div>
       <div
-        class="cursor-pointer sm:absolute xs:mt-2 sm:bottom-5 sm:bg-coolGreen-default sm:py-1 sm:px-3 sm:rounded-md sm:text-white"
+        class="cursor-pointer sm:absolute xs:mt-2 m-auto w-1/4 sm:bottom-5 bg-red-600 py-1 px-3 rounded-md text-white text-center"
         on:click={() => (showSettings = false)}
         data-automation-id="close-settings"
       >

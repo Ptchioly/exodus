@@ -28,8 +28,8 @@
   bind:value
   on:input={handleInput}
 />
-<style>
 
+<style>
   .login-input.code {
     background-color: rgba(218, 218, 218, 0.686);
     user-select: none;
@@ -37,5 +37,5 @@
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
-}
+  }
 </style>

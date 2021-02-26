@@ -29,13 +29,7 @@
   };
 
   const handleAddCategory = ({ detail }: CustomEvent<ChartData>) => {
-    fullParsedSatements = {
-      ...fullParsedSatements,
-      [accountId]: {
-        ...fullParsedSatements[accountId],
-        budgeted: [...fullParsedSatements[accountId].budgeted, detail],
-      },
-    };
+    budgeted = [...budgeted, detail];
   };
 
   onMount(() => {
