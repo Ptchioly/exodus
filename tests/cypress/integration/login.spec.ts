@@ -4,11 +4,11 @@
 describe.only('Login', () => {
   before(() => {
     cy.waitInCIEnv()
-    cy.deleteMyUserIfExists()
-    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
+    cy.deleteMyUserIfExists()
+    cy.registerUserbyAPI()
     cy.visit('/')
   })
 
