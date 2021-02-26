@@ -48,10 +48,10 @@
   actionButton={signInButton}
 >
   <div class="flex flex-col justify-center w-full">
-    <div class="phone flex justify-center w-3/4 self-center">
+    <div class="flex justify-center w-3/4 self-center">
       <PhoneNumberInput bind:countryCode bind:value={phoneNumber} />
     </div>
-    <div class="flex items-center justify-center w-full self-center">
+    <div class="flex justify-center w-3/4 self-center relative">
       <PasswordInput bind:value={pwd} placeholder={'Password'} />
     </div>
   </div>
@@ -59,7 +59,7 @@
 
 <style global lang="postcss">
   .login-input {
-    @apply w-3/4 text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
+    @apply text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 pl-3 mt-8;
   }
   .login-input.tel:focus {
     @apply border-gray-400 border-2;
