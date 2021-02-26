@@ -137,7 +137,7 @@
       limit = +limit - step;
       handleChange();
     } else if (/[0-9]/.test(e.key) || e.key === 'Backspace') {
-      setTimeout(() => dispatch('updateMaxValue', { limit }), 5);
+      setTimeout(() => dispatch('updateMaxValue', { limit }), 100);
     }
   };
 
