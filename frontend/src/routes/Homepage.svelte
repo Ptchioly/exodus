@@ -36,6 +36,7 @@
 
   const dispatch = createEventDispatcher();
 
+  //TODO: refactor
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
     if (!isSuccessResponse(response)) return Promise.reject();
@@ -90,17 +91,11 @@
     fetchStatements();
   };
 
-  // $: if (fullParsedSatements) {
-  //   Object.values(fullParsedSatements).forEach((el) => {
-  //     maxValue = maxBarSize(el.budgeted, maxValue);
-  //     p2pMax = maxBarSize([el.other], p2pMax);
-  //   });
-  // }
-
   onMount(init);
 </script>
 
-<main class="flex w-full flex-col items-center">
+<!-- TODO: rename main -->
+<home class="flex w-full flex-col items-center">
   {#if accounts}
     <HeaderBar
       on:logout={(e) => dispatch('logout', e)}
@@ -131,4 +126,4 @@
       </h1>
     {/if}
   </section>
-</main>
+</home>

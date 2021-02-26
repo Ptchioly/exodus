@@ -49,4 +49,11 @@
   .pwd-input {
     @apply flex content-center self-center text-gray-700 placeholder-gray-500 border-gray-200 pl-1 border-2 mt-5 py-2 rounded-lg w-full;
   }
+
+  input:-webkit-autofill::first-line {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    --tw-text-opacity: 1;
+    color: rgba(64, 64, 64, var(--tw-text-opacity));
+  }
 </style>

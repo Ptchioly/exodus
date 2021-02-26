@@ -1,11 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  export let errorMessage: string;
-  export let visible: boolean;
+  export let message: string | null;
 
   onMount(async () => {
     setTimeout(() => {
-      visible = false;
+      message = null;
     }, 10000);
   });
 </script>
@@ -17,6 +16,6 @@
   <p
     class="relative m-auto block min-w-min max-w-xl bg-red-300 rounded-md border-red-700 border-solid border-2 py-3 px-5"
   >
-    {errorMessage}
+    {message}
   </p>
 </div>
