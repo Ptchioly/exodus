@@ -71,13 +71,7 @@ export const signUp = async (
 
 export const getUserInfo = async (): Promise<APIResponse<UserInfo>> => {
   const response = await fetch(personalEndpoint, defaultInit);
-  const { status } = response;
-  if (status === 200) {
-    const userInfo: UserInfo = await response.json();
-    return { status, data: userInfo };
-  }
-  const { message } = await response.json();
-  return { status, message };
+  return statusCheck(response);
 };
 
 export const getStatement = async (
@@ -100,11 +94,7 @@ export const getStatement = async (
     }
   );
 
-  const resp: APIResponse = response.ok
-    ? { data: await response.json(), status: 200 }
-    : { status: response.status, message: await response.text() };
-
-  return resp;
+  return statusCheck(response);
 };
 
 export const updateLimit = async (
