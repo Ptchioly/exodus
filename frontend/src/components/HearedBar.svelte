@@ -1,13 +1,14 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
   import { logout } from '../endpointApi';
-
   import Settings from './Settings.svelte';
   import UserProfile from './UserProfile.svelte';
+
   export let isLoading: boolean;
   export let onUpdate: () => Promise<void>;
   export let username: string | undefined;
+
+  export let currentAccountId: string;
 
   const dispatch = createEventDispatcher();
 
@@ -18,7 +19,14 @@
   <Settings bind:showSettings />
 {/if}
 
-<div class="header flex justify-end w-full px-5 mt-4 md:mb-20 mb-10">
+<div class="header flex justify-between w-full mt-4 mb-10">
+  <div class="w-8/12 flex justify-between ">
+    <div
+      class="mr-8 mt-1 py-0.5 px-4 text-sm bg-coolGreen-lessLight h-6 rounded-lg shadow-md font-bold text-white"
+    >
+      alpha
+    </div>
+  </div>
   <div class="flex w-1/8 ">
     <div
       class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl "
@@ -45,7 +53,8 @@
     </div>
     <div class="user flex items-center" />
     <div class="logout ml-6 user flex">
-      {#if username}<UserProfile
+      {#if username}
+        <UserProfile
           bind:showSettings
           user={username}
           on:logout={async () => {
@@ -68,6 +77,11 @@
 
     to {
       transform: rotate(360deg);
+    }
+  }
+  @media (max-width: 600px) {
+    .header {
+      max-width: 300px;
     }
   }
 </style>

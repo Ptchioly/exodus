@@ -1,7 +1,8 @@
 import { SHA3 } from 'crypto-js';
 import fetch from 'node-fetch';
+import { configs } from '../../config';
 import { requests } from '../monobank/endpoints';
-import { MonoAccount } from '../types/types';
+import { Account, MonoAccount } from '../types/types';
 
 export const hash = (password: string, salt: string): string =>
   SHA3(password + SHA3(salt + 'sobaka')).toString();
@@ -24,8 +25,19 @@ export const isValidUsername = (username: string): boolean =>
   Number(username) !== NaN &&
   reTwelweNumbers.test(username);
 
-export const getAccounts = (accounts: MonoAccount[]): string[] =>
-  accounts.filter((acc) => acc.balance !== 0).map((acc) => acc.id);
+export const getAccounts = (accounts: MonoAccount[]): Account[] => {
+  return accounts
+    .filter((account) => account.balance !== 0)
+    .map((account) => {
+      return {
+        id: account.id,
+        type: account.type,
+        balance: account.balance,
+        pan: account.maskedPan,
+        currency: configs.CURRENCY_CODE[account.currencyCode],
+      };
+    });
+};
 
 export const setHook = async (xtoken: string): Promise<void> => {
   await fetch(requests.webhook(), {

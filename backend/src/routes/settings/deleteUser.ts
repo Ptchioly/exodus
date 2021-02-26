@@ -19,7 +19,7 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
   if (!isFailure(updateResponse) && !isFailure(userResponse) && userResponse) {
     const isDeleted = await deleteAccounts(
       Tables.STATEMENTS,
-      userResponse.Item.accounts
+      userResponse.Item.accounts.map((a) => a.id)
     );
     if (isDeleted) {
       res.clearCookie('jwt');

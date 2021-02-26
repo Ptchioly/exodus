@@ -15,7 +15,7 @@
 </script>
 
 <div class="py-2 w-3/4">
-  <div class="relative w-full">
+  <div class="relative">
     {#if show}
       <input
         class="pwd-input text-md"

@@ -4,30 +4,38 @@
   import SignUp from './routes/SignUp.svelte';
   import Homepage from './routes/Homepage.svelte';
   import { onMount } from 'svelte';
-  import { getUserInfo, isAuthenticated } from './endpointApi';
+  import { isAuthenticated } from './endpointApi';
   import type { NavigationState } from './types/Layout';
-  import type { APIResponse } from './types/Api';
+  import type { APIResponse, Account } from './types/Api';
   import { isSuccessResponse } from './types/guards';
+  import type ClientStorage from './types/ClientStorage';
+  import type { UserMeta } from './types/ClientStorage';
+  import { accountsStorage } from './storage/accountsStorage';
 
   let navigationState: NavigationState = 'loading';
   let authorized: boolean | undefined;
   let error: boolean = false;
+  let storage: ClientStorage<UserMeta, 'name'>;
 
   onMount(async () => {
     authorized = await isAuthenticated();
     navigationState = authorized ? 'home' : 'signIn';
+    storage = await accountsStorage();
   });
 
   const handleApiResponse = async ({
     detail,
-  }: CustomEvent<APIResponse<{ name: string }>>) => {
+  }: CustomEvent<APIResponse<{ name: string; accounts: Account[] }>>) => {
     if (isSuccessResponse(detail)) {
-      localStorage.setItem('name', detail.data.name);
+      const { name, accounts } = detail.data;
+      localStorage.setItem('name', name);
+      await storage.putItem({ name, accounts });
       navigationState = 'home';
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await storage.clear();
     error = false;
     navigationState = 'signIn';
   };
@@ -44,23 +52,25 @@
 </script>
 
 <TailwindCss />
-<main class="font-main h-screen md:mx-20 text-center flex content-center p-0">
-  {#if navigationState === 'home'}
-    <Homepage on:logout={handleLogout} />
-  {:else if navigationState === 'signIn'}
-    <SignIn
-      on:login={handleApiResponse}
-      on:openSignUp={handleOpenSignUp}
-      bind:error
-    />
-  {:else if navigationState === 'signUp'}
-    <SignUp
-      on:signUp={handleApiResponse}
-      on:openSignIn={handleOpenSignIn}
-      bind:error
-    />
-  {:else}
-    Loading
+<main class="font-main h-screen md:mx-20 text-center flex content-center">
+  {#if storage}
+    {#if navigationState === 'home'}
+      <Homepage on:logout={handleLogout} {storage} />
+    {:else if navigationState === 'signIn'}
+      <SignIn
+        on:login={handleApiResponse}
+        on:openSignUp={handleOpenSignUp}
+        bind:error
+      />
+    {:else if navigationState === 'signUp'}
+      <SignUp
+        on:signUp={handleApiResponse}
+        on:openSignIn={handleOpenSignIn}
+        bind:error
+      />
+    {:else}
+      Loading
+    {/if}
   {/if}
 </main>
 
@@ -102,11 +112,11 @@
   :global(*:focus) {
     outline: none;
   }
-  .container {
+  /* .container {
     max-width: 900px;
     padding: 0 15px;
     margin: 0 auto;
-  }
+  } */
   main {
     text-align: center;
     padding: 1em;
