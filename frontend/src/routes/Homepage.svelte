@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
-  import HeaderBar from '../components/HearedBar.svelte';
+  import HeaderBar from '../components/HeaderBar.svelte';
   import { getStatement } from '../endpointApi';
   import type { Account, ChartData, Statement } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
