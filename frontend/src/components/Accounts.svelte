@@ -1,9 +1,9 @@
 <script lang="ts">
   import StackedBar from '../charts/StackedBar.svelte';
-  import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
+  import UnbudgetedCategories from './UnbudgetedCategories.svelte';
   import type { ChartData, Account } from '../types/Api';
   import { onMount } from 'svelte';
-  import Cards from '../components/Cards.svelte';
+  import Cards from './cards/CardsPanel.svelte';
 
   export let fullParsedSatements;
 

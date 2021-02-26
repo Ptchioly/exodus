@@ -2,15 +2,13 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import HeaderBar from '../components/HearedBar.svelte';
-  import Cards from '../components/Cards.svelte';
-  import UnbudgetedCategories from '../components/UnbudgetedCategories.svelte';
   import { getStatement } from '../endpointApi';
-  import type { ChartData, Statement, Account } from '../types/Api';
+  import type { Account, ChartData, Statement } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { waitFor } from '../utils';
-  import Accounts from './Accounts.svelte';
+  import Accounts from '../components/Accounts.svelte';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
 

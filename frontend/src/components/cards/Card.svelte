@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  import type { CardType } from '../types/Api';
+  import type { CardType } from '../../types/Api';
 
   export let activeCard: number;
   export let index: number = -1;
@@ -28,13 +28,7 @@
   let style = `background: linear-gradient(150deg, ${grad}, ${bg})`;
 </script>
 
-<div
-  class="w-24 mr-2 cursor-pointer"
-  on:click={(e) => {
-    dispatch('click', e);
-    activeCard = index;
-  }}
->
+<div class="w-24 mr-2 cursor-pointer" on:click={(e) => dispatch('click', e)}>
   <div
     class="card rounded-md flex items-end p-1 h-12 flex-col justify-between border-gray-600"
     {style}
