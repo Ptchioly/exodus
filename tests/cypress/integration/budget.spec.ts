@@ -9,33 +9,34 @@ describe('Budget and limits', () => {
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
-    cy.loginByAPI()
+    // cy.loginByAPI()
     cy.visit('/')
+    cy.manualLogin()
   })
 
 // it('edits limit with input', () => {
 // })
 
-  // it('edits limit with setter (drag and drop)', () => {
-  //   cy.getBySel('limit-button')
-  //     .first()
-  //     .click()
-  //   cy.getBySel('limit-setter')
-  //     .first()
-  //     .then($limit => {
-  //       const limit = $limit.attr('data-value')
-  //       cy.getBySel('limit-hover')
-  //         .first()
-  //         .trigger('mouseover', 'right')
-  //       cy.getBySel('limit-setter')
-  //         .first()
-  //         .trigger('mousedown', { button: 0 })
-  //         .trigger('mousemove', { clientX: 500 })
-  //         .trigger('mouseup')
-  //         .should('have.attr', 'data-value')
-  //         .and('not.equal', limit)
-  //     })
-  // })
+  it('edits limit with setter (drag and drop)', () => {
+    cy.getBySel('limit-button')
+      .first()
+      .click()
+    cy.getBySel('limit-setter')
+      .first()
+      .then($limit => {
+        const limit = $limit.attr('data-value')
+        cy.getBySel('limit-hover')
+          .first()
+          .trigger('mouseover', 'right')
+        cy.getBySel('limit-setter')
+          .first()
+          .trigger('mousedown', { button: 0 })
+          .trigger('mousemove', { clientX: 500 })
+          .trigger('mouseup')
+          .should('have.attr', 'data-value')
+          .and('not.equal', limit)
+      })
+  })
 
   it('creates a budget for category', () => {
     cy.getBySel('unbudgeted-categories', { timeout: 80000 }).click()
