@@ -2,7 +2,7 @@
 /// <reference path="../support/index.d.ts" />
 
 describe('Budget and limits', () => {
-  before(function() {
+  before(() => {
     cy.waitInCIEnv()
   })
 
@@ -47,7 +47,7 @@ describe('Budget and limits', () => {
     cy.getBySel('category-title-unbudgeted')
       .contains('Путешествия')
       .click()
-    cy.getBySel(`category-title-budgeted`)
+    cy.getBySel('category-title-budgeted')
       .contains('Путешествия')
       .should('be.visible')
     cy.percySnapshot('new category budget')
