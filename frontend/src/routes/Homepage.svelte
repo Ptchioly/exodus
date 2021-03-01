@@ -30,6 +30,7 @@
 
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
+
     if (!isSuccessResponse(response)) return Promise.reject();
     const { statements, synced, all } = response.data;
 
@@ -37,6 +38,7 @@
       const initial = {
         all: parseStatements(all),
       };
+
       fullParsedSatements = statements.reduce(
         (acc, st) => ({
           ...acc,
