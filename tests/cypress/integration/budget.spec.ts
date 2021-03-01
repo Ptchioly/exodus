@@ -2,7 +2,7 @@
 /// <reference path="../support/index.d.ts" />
 
 describe('Budget and limits', () => {
-  before(function() {
+  before(() => {
     cy.waitInCIEnv()
   })
 
@@ -14,8 +14,8 @@ describe('Budget and limits', () => {
     cy.manualLogin()
   })
 
-// it('edits limit with input', () => {
-// })
+  // it('edits limit with input', () => {
+  // })
 
   // it('edits limit with setter (drag and drop)', () => {
   //   cy.getBySel('limit-button')
@@ -45,22 +45,17 @@ describe('Budget and limits', () => {
     cy.getBySel('unbudgeted-categories', { timeout: 80000 }).click()
     cy.contains('Unbudgeted').should('not.exist')
     cy.getBySel('category-title-unbudgeted')
-      .first()
-      .then($category => {
-        const name = $category.text()
-        cy.getBySel('category-title-unbudgeted')
-          .first()
-          .click()
-        cy.getBySel(`category-title-budgeted`)
-          .contains(name)
-          .should('be.visible')
-      })
+      .contains('Путешествия')
+      .click()
+    cy.getBySel('category-title-budgeted')
+      .contains('Путешествия')
+      .should('be.visible')
+    cy.percySnapshot('new category budget')
   })
 
-// it('deletes a budget for category', () => {
-// })
+  // it('deletes a budget for category', () => {
+  // })
 
-// it('shows a budget info from previous month', () => {
-// })
-
+  // it('shows a budget info from previous month', () => {
+  // })
 })

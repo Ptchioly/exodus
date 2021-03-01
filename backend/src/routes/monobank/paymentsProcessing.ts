@@ -15,7 +15,7 @@ export const getMccCategory = (mccNumber: number): Category =>
       mcc.numbers.includes(mccNumber) || isInRange(mcc.ranges, mccNumber)
   ) || categories[other];
 
-const getCategoriesTemplate = (categories: Category[]): Payment[] => {
+export const getCategoriesTemplate = (categories: Category[]): Payment[] => {
   return categories.map((category) => {
     return {
       category: category.category,

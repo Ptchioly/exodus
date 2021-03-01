@@ -1,9 +1,12 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-describe('settings actions', () => {
-  beforeEach(() => {
+describe('settings', () => {
+  before(() => {
     cy.waitInCIEnv()
+  })
+
+  beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
     cy.loginByAPI()

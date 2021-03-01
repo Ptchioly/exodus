@@ -1,15 +1,26 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-describe.only('Login', () => {
+describe('login', () => {
   before(() => {
     cy.waitInCIEnv()
+    cy.deleteMyUserIfExists()
+    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
-    cy.deleteMyUserIfExists()
-    cy.registerUserbyAPI()
     cy.visit('/')
+  })
+
+  it('displays "Sign In" greeting on the login page', () => {
+    cy.get('h1').should('contain', 'Sign in to Exodus')
+    cy.percySnapshot('login page')
+  })
+
+  it('displays "Sign Up" on navigating to Sign Up page', () => {
+    cy.getBySel('link-signup-button').click()
+    cy.get('h1').should('contain', 'Sign Up')
+    cy.percySnapshot('signup page')
   })
 
   it('displays register page on "Join now" click', () => {
@@ -60,7 +71,7 @@ describe.only('Login', () => {
     cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 200)
-    cy.getBySel('menu-button').should('be.visible')
-    cy.getCookie('jwt').should('have.property', 'value')
+    cy.checkHomePageLoaded()
+    cy.percySnapshot('home page after login')
   })
 })
