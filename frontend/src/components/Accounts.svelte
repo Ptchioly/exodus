@@ -72,7 +72,7 @@
   {/each}
 {/if}
 {#if other}
-  <div class="other-category">
+  <div class="other-category mb-20">
     <StackedBar
       current={other.current}
       previous={other.previous}
