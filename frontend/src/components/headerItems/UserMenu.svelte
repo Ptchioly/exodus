@@ -4,7 +4,6 @@
   import { slide } from 'svelte/transition';
 
   export let name: string;
-  export let showSettings: boolean;
   const dispatch = createEventDispatcher();
 </script>
 
@@ -17,7 +16,10 @@
   <div class="rounded-lg p-2 flex items-start">
     {name}
   </div>
-  <div class="p-2 pt-2 cursor-pointer" on:click={() => (showSettings = true)}>
+  <div
+    class="p-2 pt-2 cursor-pointer"
+    on:click={() => dispatch('openSettings', {})}
+  >
     Account settings
   </div>
   <div

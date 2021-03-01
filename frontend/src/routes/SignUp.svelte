@@ -2,16 +2,13 @@
   import { signUp } from '../endpointApi';
   import LoginForm from '../components/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
-  import PasswordInput from '../components/PasswordInput.svelte';
-  import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
-  import MonoLogo from '../components/MonoLogo.svelte';
+  import PasswordInput from '../components/inputs/PasswordInput.svelte';
+  import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
   import { isSuccessResponse } from '../types/guards';
   import statics from './statics';
-  import TokenInput from '../components/TokenInput.svelte';
+  import TokenInput from '../components/inputs/TokenInput.svelte';
 
-  const {
-    signUp: { label, link },
-  } = statics;
+  const { label, link } = statics.signUp;
 
   let phoneNumber: string;
   let pwd: string;

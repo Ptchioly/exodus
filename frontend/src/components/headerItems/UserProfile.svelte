@@ -1,33 +1,30 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { UserInfo } from '../types/Api';
   import UserMenu from './UserMenu.svelte';
 
-  export let user: string;
-  $: name = user;
+  export let username: string;
   const dispath = createEventDispatcher();
   let isOpen: boolean = false;
-  $: [first, last] = name.split(' ');
-  export let showSettings;
+  $: [first, last] = username ? username.split(' ') : [''];
 </script>
 
-<div>
+<div class="ml-2">
   <div>
     <div
       data-automation-id="menu-button"
-      on:click={(e) => {
-        e.stopPropagation();
-        isOpen = !isOpen;
-      }}
+      on:click|stopPropagation={() => (isOpen = !isOpen)}
       class="bg-coolGreen-default w-8 h-8 rounded-full text-white small shadow-lg border-coolGreen-dark border-4 flex items-center justify-center flex-row cursor-pointer "
     >
       <div class="pr-0.5">{first[0]}</div>
-      <div>{last[0]}</div>
+      <div>{last && last[0]}</div>
     </div>
     {#if isOpen}
       <UserMenu
-        bind:showSettings
-        {name}
+        name={username}
+        on:openSettings={() => {
+          isOpen = false;
+          dispath('openSettings', {});
+        }}
         on:logout={() => {
           isOpen = false;
           dispath('logout', {});

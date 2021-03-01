@@ -2,6 +2,11 @@
 ///<reference path="./index.d.ts" />
 // import { configs } from '../../../backend/src/config';
 
+const userData: { username: string; password: string } = {
+  username: Cypress.env('username'),
+  password: Cypress.env('password')
+}
+
 Cypress.Commands.add('getBySel', (selector, ...args) => {
   return cy.get(`[data-automation-id=${selector}]`, ...args)
 })
@@ -10,46 +15,32 @@ Cypress.Commands.add('getBySelLike', (selector, ...args) => {
   return cy.get(`[data-automation-id*=${selector}]`, ...args)
 })
 
-Cypress.Commands.add(
-  'loginByAPI',
-  (
-    user = {
-      username: Cypress.env('username'),
-      password: Cypress.env('password')
-    }
-  ) => {
-    return cy.request({
-      method: 'POST',
-      url: `${Cypress.env('apiUrl')}/login`,
-      body: {
-        ...user
-      },
-      failOnStatusCode: false
-    })
-  }
-)
+Cypress.Commands.add('loginByAPI', (options = {}) => {
+  const user = Cypress._.defaults({}, options, userData)
+  return cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/login`,
+    body: {
+      ...user
+    },
+    failOnStatusCode: false
+  })
+})
 
-Cypress.Commands.add(
-  'deleteMyUserIfExists',
-  (
-    user = {
-      username: Cypress.env('username'),
-      password: Cypress.env('password')
+Cypress.Commands.add('deleteMyUserIfExists', (options = {}) => {
+  const user = Cypress._.defaults({}, options, userData)
+  cy.loginByAPI(user)
+  cy.getCookie('jwt').then(val => {
+    if (val) {
+      cy.request({
+        method: 'DELETE',
+        url: `${Cypress.env('apiUrl')}/deleteUser`
+      })
+    } else {
+      cy.log(`Unable to login to delete user ${Cypress.env('username')}.`)
     }
-  ) => {
-    cy.loginByAPI(user)
-    cy.getCookie('jwt').then(val => {
-      if (val) {
-        cy.request({
-          method: 'DELETE',
-          url: `${Cypress.env('apiUrl')}/deleteUser`
-        })
-      } else {
-        cy.log(`Unable to login to delete user ${Cypress.env('username')}.`)
-      }
-    })
-  }
-)
+  })
+})
 
 Cypress.Commands.add('waitInCIEnv', () => {
   if (Cypress.env('CIWait') === true) {
@@ -61,8 +52,7 @@ Cypress.Commands.add('waitInCIEnv', () => {
 Cypress.Commands.add('sendSignUpRequest', (options = {}) => {
   const defaults = {
     // phone, password, xtoken
-    username: Cypress.env('username'),
-    password: Cypress.env('password'),
+    ...userData,
     xtoken: Cypress.env('xtoken')
   }
   const user = Cypress._.defaults({}, options, defaults)
@@ -91,22 +81,19 @@ Cypress.Commands.add('checkHomePageLoaded', () => {
   cy.getBySel('telegram-link', { timeout: 10000 }).should('be.visible')
   cy.getCookie('jwt').should('have.property', 'value')
   cy.getBySelLike('budgeted').should('be.visible')
+  cy.get('.card').should('be.visible')
 })
 
 // /**
 //  * Trim country code off the phone
 //  */
-const trimUsername = (username: string = Cypress.env('username')): string => username.slice(3)
+const trimUsername = (username: string = userData.username): string => username.slice(3)
 
 // /**
 //  * Do manual UI login
 //  */
 Cypress.Commands.add('manualLogin', (user = {}) => {
-  const defaults = {
-    username: Cypress.env('username'),
-    password: Cypress.env('password')
-  }
-  const userInfo = Cypress._.defaults({}, user, defaults)
+  const userInfo = Cypress._.defaults({}, user, userData)
   cy.getBySel('phone-input').type(trimUsername(userInfo.username))
   cy.getBySel('pwd-input').type(userInfo.password)
   cy.intercept('POST', 'login').as('login')
@@ -118,8 +105,7 @@ Cypress.Commands.add('manualLogin', (user = {}) => {
 //  */
 Cypress.Commands.add('manualRegisterUser', (user = {}) => {
   const defaults = {
-    username: Cypress.env('username'),
-    password: Cypress.env('password'),
+    ...userData,
     confirmPassword: Cypress.env('password'),
     xtoken: Cypress.env('xtoken')
   }

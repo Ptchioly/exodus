@@ -1,89 +1,56 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
-  import HeaderBar from '../components/HeaderBar.svelte';
+  import Accounts from '../components/Accounts.svelte';
+  import AlphaLabel from '../components/headerItems/AlphaLabel.svelte';
+  import TelegramLink from '../components/headerItems/TelegramLink.svelte';
+  import UpdateButton from '../components/headerItems/UpdateButton.svelte';
+  import UserProfile from '../components/headerItems/UserProfile.svelte';
+  import HearedBar from '../components/HeaderBar.svelte';
+  import Settings from '../components/accountSettings/Settings.svelte';
   import { getStatement } from '../endpointApi';
-  import type { Account, ChartData, Statement } from '../types/Api';
+  import type { Account, AccountId, ParsedStatements } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
-  import { waitFor } from '../utils';
-  import Accounts from '../components/Accounts.svelte';
+  import { parseStatements, waitFor } from '../utils';
+  import statics from './statics';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
-
-  type AccountId = string;
-  type ParsedStatements = {
-    budgeted: ChartData[];
-    unbudgeted: ChartData[];
-    other?: ChartData;
-  };
 
   let fullParsedSatements: Record<AccountId, ParsedStatements>;
 
   let username: string;
   let isEmpty: boolean;
-  let isLoading = false;
   let accounts: Account[];
   let currentAccountId: string;
-
-  const p2p = 16;
-
-  const isOtherCategory = ({ id }: ChartData | Statement) => id === p2p;
-
-  const hasValues = ({ limit, previous, current }: ChartData) =>
-    previous || limit || current;
+  let showSettings: boolean;
 
   const dispatch = createEventDispatcher();
 
-  //TODO: refactor
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
     if (!isSuccessResponse(response)) return Promise.reject();
-    const {
-      data: { statements, synced, all },
-    } = response;
+    const { statements, synced, all } = response.data;
 
-    if (!synced && fullParsedSatements) {
-      await waitFor(5);
-      return await fetchStatements();
-    }
-
-    fullParsedSatements = statements.reduce(
-      (acc, st) => {
-        return {
+    if (!fullParsedSatements || synced) {
+      const initial = {
+        all: parseStatements(all),
+      };
+      fullParsedSatements = statements.reduce(
+        (acc, st) => ({
           ...acc,
           [st.accountId]: parseStatements(st.statements),
-        };
-      },
-      {
-        all: parseStatements(all),
-      }
-    );
-
-    if (!synced) {
-      await waitFor(5);
-      return await fetchStatements();
+        }),
+        initial
+      );
+      if (synced) return;
     }
+
+    await waitFor(5);
+    return await fetchStatements();
   };
 
-  const parseStatements = (statement: ChartData[]): ParsedStatements => {
-    if (!statement) return { budgeted: [], unbudgeted: [] };
-
-    const budgeted = statement
-      .filter((chart) => !isOtherCategory(chart))
-      .filter(hasValues);
-
-    const [other] = statement.filter(isOtherCategory);
-
-    const unbudgeted = statement.filter((chart) => !hasValues(chart));
-
-    return {
-      budgeted,
-      other,
-      unbudgeted,
-    };
-  };
   const init = async () => {
     await pushTimedOutLimit();
     [{ name: username, accounts }] = await storage.getAll();
@@ -94,36 +61,39 @@
   onMount(init);
 </script>
 
-<!-- TODO: rename main -->
+{#if showSettings}
+  <Settings on:close={() => (showSettings = false)} />
+{/if}
 <home class="flex w-full flex-col items-center">
-  {#if accounts}
-    <HeaderBar
-      on:logout={(e) => dispatch('logout', e)}
-      bind:isLoading
-      onUpdate={init}
-      {username}
-    />{/if}
-  <section class="container p-0">
+  <HearedBar>
+    <div slot="left" class="flex">
+      <AlphaLabel label="alpha" />
+    </div>
+    <div slot="right" class="reight flex">
+      <UpdateButton on:click={init} />
+      <TelegramLink href={statics.tgBotLink} />
+      <UserProfile
+        {username}
+        on:logout={(e) => dispatch('logout', e)}
+        on:openSettings={() => (showSettings = true)}
+      />
+    </div>
+  </HearedBar>
+  <section class="w-full p-0">
     {#if fullParsedSatements}
-      {#each Object.entries(fullParsedSatements) as [account, { other, unbudgeted, budgeted }]}
-        {#if account === currentAccountId}
+      {#each Object.entries(fullParsedSatements) as [accountId, { budgeted, unbudgeted, other }]}
+        {#if accountId === currentAccountId}
           <Accounts
-            accountId={account}
-            {other}
-            {unbudgeted}
             {budgeted}
+            {unbudgeted}
+            {other}
+            {accountId}
             {isEmpty}
-            {fullParsedSatements}
             {accounts}
             bind:currentAccountId
           />
         {/if}
       {/each}
-    {/if}
-    {#if isEmpty}
-      <h1 class="w-full flex items-start text-gray-700">
-        You did not spend anything for current month
-      </h1>
     {/if}
   </section>
 </home>
