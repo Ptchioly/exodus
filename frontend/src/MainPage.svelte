@@ -11,6 +11,7 @@
   import SignUp from './routes/SignUp.svelte';
   import ErrorMessage from './components/ErrorMessage.svelte';
   import { onMount } from 'svelte';
+  import { logout } from './endpointApi';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
   export let authorized: boolean;
@@ -42,7 +43,11 @@
 <Router>
   <Route path="home">
     <Homepage
-      on:logout={() => storage.clear().then(() => setState('signIn'))}
+      on:logout={() =>
+        storage
+          .clear()
+          .then(logout)
+          .then(() => setState('signIn'))}
       {storage}
     />
   </Route>

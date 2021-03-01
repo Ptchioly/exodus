@@ -81,10 +81,12 @@
   </HearedBar>
   <section class="w-full p-0">
     {#if fullParsedSatements}
-      {#each Object.entries(fullParsedSatements) as [accountId, statement]}
+      {#each Object.entries(fullParsedSatements) as [accountId, { budgeted, unbudgeted, other }]}
         {#if accountId === currentAccountId}
           <Accounts
-            {...statement}
+            {budgeted}
+            {unbudgeted}
+            {other}
             {accountId}
             {isEmpty}
             {accounts}
