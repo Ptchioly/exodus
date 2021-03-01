@@ -1,19 +1,20 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+
   import DeleteUser from './DeleteUser.svelte';
-  import ErrorMessage from './ErrorMessage.svelte';
+  import ErrorMessage from '../ErrorMessage.svelte';
   import PasswordChange from './PasswordChange.svelte';
   import XtokenChange from './XtokenChange.svelte';
-
   let state: 'password' | 'x-token' | 'deleteUser' = 'password';
   let error = false;
   let errorMessage = '';
 
-  export let showSettings: boolean;
+  const dispatch = createEventDispatcher();
 </script>
 
 <div id="bg" class="w-full z-0">
   {#if error}
-    <ErrorMessage bind:visible={error} {errorMessage} />
+    <ErrorMessage message={errorMessage} />
   {/if}
   <div
     id="content"
@@ -45,7 +46,7 @@
       </div>
       <div
         class="cursor-pointer sm:absolute xs:mt-2 m-auto w-1/4 sm:bottom-5 bg-red-600 py-1 px-3 rounded-md text-white text-center"
-        on:click={() => (showSettings = false)}
+        on:click={() => dispatch('close')}
         data-automation-id="close-settings"
       >
         Close
@@ -81,15 +82,12 @@
     user-select: none;
     background-color: rgba(0, 121, 191, 0.3);
   }
-
   #content {
     min-height: 20rem;
   }
-
   .overlay {
     z-index: 4000;
   }
-
   .nav-button {
     @apply cursor-pointer xs:mt-2 sm:mt-5;
   }

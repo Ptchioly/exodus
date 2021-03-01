@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Validator } from '../types/Layout';
+  import type { Validator } from '../../types/Layout';
 
   export let value: string;
   export let dataAut = 'pwd-input';

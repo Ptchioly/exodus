@@ -5,8 +5,6 @@
   import { onMount } from 'svelte';
   import Cards from './cards/CardsPanel.svelte';
 
-  export let fullParsedSatements;
-
   export let accountId: string;
   export let isEmpty: boolean;
   export let other: ChartData;

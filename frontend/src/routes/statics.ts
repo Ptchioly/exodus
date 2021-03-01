@@ -14,7 +14,10 @@ const signUp = {
   },
 };
 
+const tgBotLink = 'https://t.me/exodus_MonobankBudgetBot';
+
 export default {
   signIn,
   signUp,
+  tgBotLink,
 };
