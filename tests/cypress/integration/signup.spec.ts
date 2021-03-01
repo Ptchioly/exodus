@@ -34,13 +34,7 @@ describe('sign up', () => {
   })
 
   it('does not register new user with incorrect data in password', () => {
-    const invalidPasswords = [
-      // 'testuserdata3@',
-      'TESTUSERDATA4@',
-      'TESTuserdata@',
-      'Test1@',
-      'Testuserdata 4456@'
-    ]
+    const invalidPasswords = ['testuserdata3@', 'TESTUSERDATA4@', 'TESTuserdata@', 'Test1@', 'Testuserdata 4456@']
     invalidPasswords.forEach(pwd => {
       cy.sendSignUpRequest({ password: pwd }).then(response => {
         expect(response.status).to.eq(400)
