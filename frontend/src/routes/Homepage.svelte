@@ -24,6 +24,7 @@
   let isEmpty: boolean;
   let accounts: Account[];
   let currentAccountId: string;
+  let showSettings: boolean;
 
   const dispatch = createEventDispatcher();
 
@@ -32,7 +33,7 @@
     if (!isSuccessResponse(response)) return Promise.reject();
     const { statements, synced, all } = response.data;
 
-    if (synced || !fullParsedSatements) {
+    if (!fullParsedSatements || synced) {
       const initial = {
         all: parseStatements(all),
       };
@@ -43,7 +44,7 @@
         }),
         initial
       );
-      return;
+      if (synced) return;
     }
 
     await waitFor(5);
@@ -58,12 +59,10 @@
   };
 
   onMount(init);
-
-  let showSettings: boolean;
 </script>
 
 {#if showSettings}
-  <Settings showSettings on:close={() => (showSettings = false)} />
+  <Settings on:close={() => (showSettings = false)} />
 {/if}
 <home class="flex w-full flex-col items-center">
   <HearedBar>
