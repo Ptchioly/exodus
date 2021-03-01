@@ -57,10 +57,12 @@
   </h1>
 {/if}
 {#if budgeted}
-  {#each budgeted as category}
+  {#each budgeted as { current, previous, title, limit }}
     <StackedBar
-      {...category}
-      bind:limit={category.limit}
+      {current}
+      {previous}
+      {title}
+      bind:limit
       account={accountId}
       {maxValue}
       on:updateMaxValue={({ detail }) => {
@@ -72,7 +74,9 @@
 {#if other}
   <div class="other-category">
     <StackedBar
-      {...other}
+      current={other.current}
+      previous={other.previous}
+      title={other.title}
       bind:limit={other.limit}
       maxValue={p2pMax}
       account={accountId}

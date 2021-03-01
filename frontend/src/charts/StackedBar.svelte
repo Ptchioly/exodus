@@ -2,17 +2,14 @@
   let setLimitCallback: () => Promise<void> | null = null;
 
   export const pushTimedOutLimit = async () => {
-    // console.log('pushTimedOutLimit => setLimitCallback', setLimitCallback);
     if (setLimitCallback) {
       await setLimitCallback();
       setLimitCallback = null;
-      // console.log('pushTimedOutLimit => setLimitCallback', setLimitCallback);
     }
   };
 </script>
 
 <script lang="ts">
-  // import { onMount } from 'svelte';
   import Bars from './Bars.svelte';
   import type { LabelPosition, StackedBars } from '../types/charts';
   import { createEventDispatcher } from 'svelte';
@@ -25,7 +22,6 @@
   export let limit: number;
   export let maxValue;
   export let account: string;
-
   const dispatch = createEventDispatcher();
 
   let apiRequest: StackedBars;
@@ -40,7 +36,12 @@
     handleChange();
   };
 
-  const generateChartData = (maxValue, limit): StackedBars => {
+  const generateChartData = (
+    maxValue,
+    limit,
+    previous: number,
+    current: number
+  ): StackedBars => {
     const currentBar = {
       value: current,
       limits: ['current'],
@@ -86,10 +87,7 @@
     activeInput: limit > 0,
   };
 
-  $: {
-    limit = limit;
-    apiRequest = generateChartData(maxValue, limit);
-  }
+  $: apiRequest = generateChartData(maxValue, limit, previous, current);
 
   const updateInput = ({ detail }) => {
     limit = +detail.limit.value;
