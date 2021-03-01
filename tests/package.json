@@ -20,6 +20,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@percy/cypress": "^2.3.4",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "cypress": "^6.5.0",

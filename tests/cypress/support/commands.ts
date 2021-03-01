@@ -88,14 +88,10 @@ Cypress.Commands.add('registerUserbyAPI', (options = {}) => {
 //  * Check home page loaded when you login or signup
 //  */
 Cypress.Commands.add('checkHomePageLoaded', () => {
-  cy.getBySel('telegram-link', { timeout: 8000 }).should('be.visible')
-  cy.getBySel('menu-button').should('be.visible')
-  // cy.get('section>div.limits')
-  //   .first()
-  //   .should('exist') //not visible height 0px wtf??
-  // cy.getBySel('limit-setter').should('be.visible');
-  // cy.getBySel('limit-input').should('be.visible');
+  cy.getBySel('telegram-link', { timeout: 10000 }).should('be.visible')
   cy.getCookie('jwt').should('have.property', 'value')
+  cy.getBySelLike('budgeted').should('be.visible')
+  cy.percySnapshot('home page')
 })
 
 // /**
