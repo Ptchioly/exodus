@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { updatePassword } from '../endpointApi';
-  import { isSuccessResponse } from '../types/guards';
-  import Input from './Input.svelte';
+  import { updatePassword } from '../../endpointApi';
+  import { isSuccessResponse } from '../../types/guards';
+  import Input from '../inputs/Input.svelte';
 
   export let error: boolean;
   export let errorMessage: string;

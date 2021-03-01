@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { updateXToken } from '../endpointApi';
-  import { isSuccessResponse } from '../types/guards';
+  import { updateXToken } from '../../endpointApi';
+  import { isSuccessResponse } from '../../types/guards';
 
   export let error: boolean;
   export let errorMessage: string;
