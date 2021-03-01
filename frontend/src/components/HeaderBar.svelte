@@ -22,7 +22,7 @@
 <div class="header flex justify-between w-full mt-4 mb-10">
   <div class="w-8/12 flex justify-between ">
     <div
-      class="mr-8 mt-1 py-0.5 px-4 text-sm bg-coolGreen-lessLight h-6 rounded-lg shadow-md font-bold text-white"
+      class="mr-8 mt-1 py-0.5 px-4 text-sm bg-coolGreen-default h-6 rounded-lg shadow-md font-bold text-white transform -rotate-12"
     >
       alpha
     </div>

@@ -1,30 +1,37 @@
 /// <reference types="cypress" />
 /// <reference path="../support/index.d.ts" />
 
-describe('budget', () => {
-  before(() => {
+describe('Budget and limits', () => {
+  before(function() {
     cy.waitInCIEnv()
   })
 
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
-    cy.loginByAPI()
+    // cy.loginByAPI()
     cy.visit('/')
+    cy.manualLogin()
   })
 
   // it('edits limit with input', () => {
   // })
 
   // it('edits limit with setter (drag and drop)', () => {
-  //   cy.getBySel(`limit-button`)
+  //   cy.getBySel('limit-button')
   //     .first()
   //     .click()
-  //   cy.getBySel(`limit-setter`)
+  //   cy.getBySel('limit-setter')
   //     .first()
   //     .then($limit => {
   //       const limit = $limit.attr('data-value')
-  //       cy.getBySel(`limit-setter`)
+  //       // cy.getBySel('limit-hover')
+  //       cy.get('.limit[data-name="current"]')
+  //         .first()
+  //         // .find('.limit[data-name="current"]')
+  //         // .should('have.attr', 'data-name', 'current')
+  //         .trigger('mouseover')
+  //       cy.getBySel('limit-setter')
   //         .first()
   //         .trigger('mousedown', { button: 0 })
   //         .trigger('mousemove', { clientX: 500 })
