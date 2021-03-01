@@ -154,3 +154,9 @@ export type ChartData = {
 };
 
 export type StatementHandler = (statement: LimitCategory) => number;
+
+export type MergedStatement = {
+  message: string;
+  accountId?: string;
+  statements?: ChartData[];
+};
