@@ -63,6 +63,7 @@ describe('sign up', () => {
   it('registers new user', () => {
     cy.manualRegisterUser()
     cy.checkHomePageLoaded()
+    cy.percySnapshot('home page after signup')
   })
 
   it('does not register new user without incorrect X-Token', () => {
