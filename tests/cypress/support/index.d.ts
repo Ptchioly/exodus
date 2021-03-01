@@ -53,12 +53,4 @@ declare namespace Cypress {
 
     waitInCIEnv(): void
   }
-  interface Chainer<Subject> {
-    /**
-     * Custom Chai assertion that checks if the given subject is in viewport
-     * @example
-    cy.getBySel('menu-button').should('beInViewport')
-    */
-    (chainer: 'beInViewport'): Chainable<Subject>
-  }
 }

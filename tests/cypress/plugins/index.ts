@@ -1,6 +1,10 @@
 /// <reference types="cypress" />
+import { percyHealthCheck } from '@percy/cypress/task'
 
 export default (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions): Cypress.PluginConfigOptions => {
+  on('task', {
+    percyHealthCheck
+  })
   const env = config.env.config || 'production'
   switch (env) {
     case 'development':
