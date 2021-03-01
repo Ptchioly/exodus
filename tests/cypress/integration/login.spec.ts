@@ -4,11 +4,11 @@
 describe('login', () => {
   before(() => {
     cy.waitInCIEnv()
+    cy.deleteMyUserIfExists()
+    cy.registerUserbyAPI()
   })
 
   beforeEach(() => {
-    cy.deleteMyUserIfExists()
-    cy.registerUserbyAPI()
     cy.visit('/')
   })
 
@@ -72,5 +72,6 @@ describe('login', () => {
       .its('response.statusCode')
       .should('eq', 200)
     cy.checkHomePageLoaded()
+    cy.percySnapshot('home page after login')
   })
 })

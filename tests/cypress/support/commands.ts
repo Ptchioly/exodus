@@ -91,7 +91,6 @@ Cypress.Commands.add('checkHomePageLoaded', () => {
   cy.getBySel('telegram-link', { timeout: 10000 }).should('be.visible')
   cy.getCookie('jwt').should('have.property', 'value')
   cy.getBySelLike('budgeted').should('be.visible')
-  cy.percySnapshot('home page')
 })
 
 // /**
