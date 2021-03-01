@@ -44,7 +44,7 @@ jobs:
     timeout-minutes: 2
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/staging' }}
     runs-on: ubuntu-latest
-    # needs: setup-and-run-ui-tests
+    needs: setup-and-run-ui-tests
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1
