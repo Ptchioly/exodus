@@ -28,7 +28,7 @@
     />
   </div>
   <button
-    class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
+    class="mt-4 self-start bg-indigo-400 py-1 px-3 rounded-md text-white"
     data-automation-id="change-xtoken"
     on:click={() => handleXTokenChange(xToken)}>{$_("settings.change_token.btn")}</button
   >

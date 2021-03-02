@@ -1,15 +1,17 @@
 <script lang="ts">
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
-  import type { ChartData } from '../types/Api';
+  import type { ChartData, Total } from '../types/Api';
   import { onMount } from 'svelte';
   import { _ } from "svelte-i18n";
+  import TotalSpendings from './TotalSpendings.svelte';
 
   export let accountId: string;
   export let isEmpty: boolean;
   export let other: ChartData;
   export let budgeted: ChartData[];
   export let unbudgeted: ChartData[];
+  export let total: Total;
 
   let maxValue = 0;
   let p2pMax = 0;
@@ -32,16 +34,18 @@
     maxValue = maxBarSize(budgeted, maxValue);
     p2pMax = maxBarSize([other], p2pMax);
   });
+
 </script>
 
-<div class="flex flex-col mb-5">
+<div class="flex flex-col">
   <div>
-    <div class="mb-8 mt-8 flex justify-end">
+    <div class="my-7 sm:mb-20 md:mb-12 flex flex-col md:h-20 justify-start items-start">
+      <TotalSpendings {total} />
       {#if unbudgeted && unbudgeted.length}
         <UnbudgetedCategories
           bind:categories={unbudgeted}
           on:addCategory={handleAddCategory}
-        />
+      />
       {/if}
     </div>
   </div>

@@ -1,4 +1,10 @@
-import type { APIResponse, ChartData, Statement, UserInfo } from './types/Api';
+import type {
+  APIResponse,
+  ChartData,
+  Statement,
+  Total,
+  UserInfo,
+} from './types/Api';
 
 const baseUrl: string = process.env.host;
 const loginEndpoint = `${baseUrl}/login`;
@@ -78,9 +84,10 @@ export const getStatement = async (
   accountIds: string[]
 ): Promise<
   APIResponse<{
-    statements: { statements: ChartData[]; accountId: string }[];
+    statements: { statements: ChartData[]; accountId: string; total: Total }[];
     all: ChartData[];
     synced: boolean;
+    total: Total;
   }>
 > => {
   const response = await fetch(

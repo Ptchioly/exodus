@@ -125,7 +125,7 @@
   <button
     type="submit"
     on:click={() => changePassword(currentPass, newPass, confirmPass)}
-    class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white xs:mb-5"
+    class="mt-4 self-start bg-indigo-400 py-1 px-3 rounded-md text-white xs:mb-5"
     data-automation-id="change-password">{$_('settings.change_pwd.change')}</button
   >
 </div>

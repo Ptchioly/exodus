@@ -17,12 +17,18 @@ export type UserInfo = {
   ];
 };
 
+export type Total = {
+  current: number;
+  previous: number;
+};
+
 export type ChartData = {
   id: number;
   title: string;
   previous: number;
   current: number;
   limit: number;
+  total: Total;
 };
 
 export type Statement = {
@@ -56,4 +62,5 @@ export type ParsedStatements = {
   budgeted: ChartData[];
   unbudgeted: ChartData[];
   other?: ChartData;
+  total?: Total;
 };

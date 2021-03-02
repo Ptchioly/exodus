@@ -17,7 +17,7 @@
   class="shadow-xl max-w-xl max-h-none w-full md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
 >
   <h1
-    class="containter text-3xl text-coolGreen-default font-bold big-text pt-20 lg:pt-11 pb-3 leading-9"
+    class="containter text-3xl text-indigo-400 font-bold big-text pt-20 lg:pt-11 pb-3 leading-9"
   >
     {title}
   </h1>
@@ -30,7 +30,7 @@
       type="button"
       data-automation-id={actionButton.dataAut}
       on:click|preventDefault={actionButton.onclick}
-      class="text-gray-50 bg-coolGreen-default py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl focus:outline-none hover:shadow-lg hover:bg-coolGreen-dark active:bg-coolGreen-darkest active:shadow-xl"
+      class="text-gray-50 bg-indigo-400 py-1 px-5 text-xl uppercase font-medium mt-10 rounded-3xl focus:outline-none hover:shadow-lg hover:bg-indigo-500 active:bg-indigo-600 active:shadow-xl"
       >{actionButton.label}</button
     >
   </form>

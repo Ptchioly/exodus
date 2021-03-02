@@ -1,4 +1,9 @@
-import type { ChartData, ParsedStatements, Statement } from './types/Api';
+import type {
+  ChartData,
+  ParsedStatements,
+  Statement,
+  Total,
+} from './types/Api';
 import type { Validator } from './types/Layout';
 
 const isUpper = (char: string): boolean => char === char.toUpperCase();
@@ -19,7 +24,10 @@ const isOtherCategory = ({ id }: ChartData | Statement): boolean => id === p2p;
 const hasValues = ({ limit, previous, current }: ChartData): boolean =>
   !!(previous || limit || current);
 
-export const parseStatements = (statement: ChartData[]): ParsedStatements => {
+export const parseStatements = (
+  statement: ChartData[],
+  total: Total
+): ParsedStatements => {
   if (!statement) return { budgeted: [], unbudgeted: [] };
 
   const budgeted = statement
@@ -34,5 +42,6 @@ export const parseStatements = (statement: ChartData[]): ParsedStatements => {
     budgeted,
     other,
     unbudgeted,
+    total: total,
   };
 };

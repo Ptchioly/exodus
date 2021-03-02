@@ -234,6 +234,7 @@
 
   .bar {
     height: 100%;
+    color: white;
     position: absolute;
     top: 0;
   }

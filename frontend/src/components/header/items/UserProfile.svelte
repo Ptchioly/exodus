@@ -13,7 +13,7 @@
     <div
       data-automation-id="menu-button"
       on:click|stopPropagation={() => (isOpen = !isOpen)}
-      class="bg-coolGreen-default w-8 h-8 rounded-full text-white small shadow-lg border-coolGreen-dark border-4 flex items-center justify-center flex-row cursor-pointer "
+      class=" bg-indigo-600 w-8 h-8 rounded-full text-white small shadow-lg border-4 flex items-center justify-center flex-row cursor-pointer "
     >
       <div class="pr-0.5">{first[0]}</div>
       <div>{last && last[0]}</div>

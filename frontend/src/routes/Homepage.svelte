@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import { getStatement } from '../endpointApi';
-  import type { Account, AccountId, ParsedStatements } from '../types/Api';
+  import type { Account, AccountId, ParsedStatements, Total } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
@@ -29,17 +29,16 @@
     const response = await getStatement(accounts.map(({ id }) => id));
 
     if (!isSuccessResponse(response)) return Promise.reject();
-    const { statements, synced, all } = response.data;
-
+    const { statements, synced, all, total } = response.data;
     if (!fullParsedSatements || synced) {
       const initial = {
-        all: parseStatements(all),
+        all: parseStatements(all, total),
       };
 
       fullParsedSatements = statements.reduce(
         (acc, st) => ({
           ...acc,
-          [st.accountId]: parseStatements(st.statements),
+          [st.accountId]: parseStatements(st.statements, st.total),
         }),
         initial
       );
