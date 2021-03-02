@@ -22,52 +22,54 @@
   $: mobileFly = isMobile ? fly : () => null;
 </script>
 
-<div
-  class="flex cards max-h-16"
-  bind:offsetWidth
-  on:click={() => (isOpen = !isOpen)}
-  class:isMobile
->
-  <!-- Closed cards for mobile version -->
-  {#if isMobile && !isOpen}
-    <div class="my-2">
-      {#if activeCard > -1}
-        <Card
-          {...accounts[activeCard]}
-          type={currentCardType}
-          index={activeCard}
-          {activeCard}
-        />
-      {:else}
-        <MultipleCards {accounts} index={-1} {activeCard} />
-      {/if}
-    </div>
-
-    <!-- Opened cards in row for both versions -->
-  {:else}
-    <div class="w-full flex flex-row max-h-16" class:isMobile>
-      {#each accounts as account, i}
-        <div class="my-2" in:mobileFly={{ duration: 500, x: i && -100 }}>
+<div class="flex justify-center">
+  <div
+    class="flex cards max-h-16"
+    bind:offsetWidth
+    on:click={() => (isOpen = !isOpen)}
+    class:isMobile
+  >
+    <!-- Closed cards for mobile version -->
+    {#if isMobile && !isOpen}
+      <div class="my-2">
+        {#if activeCard > -1}
           <Card
-            {...account}
-            index={i}
-            bind:activeCard
-            on:click={() => (activeCard = i)}
+            {...accounts[activeCard]}
+            type={currentCardType}
+            index={activeCard}
+            {activeCard}
           />
-        </div>
-      {/each}
-
-      {#if accounts.length > 1}
-        <div
-          on:click={() => (activeCard = -1)}
-          class="my-2"
-          in:mobileFly={{ duration: 500, x: -100 }}
-        >
+        {:else}
           <MultipleCards {accounts} index={-1} {activeCard} />
-        </div>
-      {/if}
-    </div>
-  {/if}
+        {/if}
+      </div>
+
+      <!-- Opened cards in row for both versions -->
+    {:else}
+      <div class="w-full flex flex-row max-h-16" class:isMobile>
+        {#each accounts as account, i}
+          <div class="my-2" in:mobileFly={{ duration: 500, x: i && -100 }}>
+            <Card
+              {...account}
+              index={i}
+              bind:activeCard
+              on:click={() => (activeCard = i)}
+            />
+          </div>
+        {/each}
+
+        {#if accounts.length > 1}
+          <div
+            on:click={() => (activeCard = -1)}
+            class="my-2"
+            in:mobileFly={{ duration: 500, x: -100 }}
+          >
+            <MultipleCards {accounts} index={-1} {activeCard} />
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </div>
 </div>
 
 <style>

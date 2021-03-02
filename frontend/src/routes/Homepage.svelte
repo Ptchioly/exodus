@@ -7,7 +7,12 @@
   import { onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import { getStatement } from '../endpointApi';
-  import type { Account, AccountId, ParsedStatements, Total } from '../types/Api';
+  import type {
+    Account,
+    AccountId,
+    ParsedStatements,
+    Total,
+  } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
@@ -75,9 +80,7 @@
   />
   <section class="w-full p-0">
     {#if accounts}
-      <div class="flex justify-center">
-        <CardsPanel {accounts} bind:currentAccountId />
-      </div>
+      <CardsPanel {accounts} bind:currentAccountId />
     {/if}
     {#if fullParsedSatements}
       {#each Object.entries(fullParsedSatements) as [accountId, statement]}

@@ -105,7 +105,7 @@ export const getStatement = async (
 };
 
 export const updateLimit = async (
-  category: string,
+  categoryId: number,
   value: number,
   accountId: string
 ): Promise<void> => {
@@ -113,7 +113,7 @@ export const updateLimit = async (
     ...defaultInit,
     method: 'POST',
     body: JSON.stringify({
-      category,
+      categoryId,
       value,
     }),
   });
