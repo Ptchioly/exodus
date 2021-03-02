@@ -14,7 +14,7 @@
 
   addMessages('English', en);
   addMessages('Русский', ru);
-  addMessages('Український', ua);
+  addMessages('Українська', ua);
   init({ fallbackLocale: 'English', initialLocale: localStorage.getItem('language') });
 
   let authorized: boolean | undefined;

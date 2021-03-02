@@ -75,6 +75,7 @@
         "close": "Close"
     },
     "faq": {
+        "title": "FAQ",
         "about": {
             "q": "Q: What this service is about?",
             "a": "A: Here you can do multiple things such as monitoring your monobank spendings, setting limits for each spending category and much more!"

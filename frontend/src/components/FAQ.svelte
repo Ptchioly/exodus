@@ -11,7 +11,7 @@
 >
   <div class="flex flex-col relative justify-between px-5 pt-5 text-left">
     <div class="flex justify-between flex-row mb-5">
-      <div class="text-lg font-bold">FAQ</div>
+      <div class="text-lg font-bold">{$_('faq.title')}</div>
       <div
         class="flex text-lg font-bold p-3 mr-5 rounded-3xl bg-red-600 w-3 h-3 justify-center text-center align-center items-center text-white cursor-pointer"
         on:click={() => dispatch('closeFAQ')}
