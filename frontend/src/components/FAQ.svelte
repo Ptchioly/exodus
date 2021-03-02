@@ -12,7 +12,7 @@
     <div class="flex justify-between flex-row mb-5">
       <div class="text-lg font-bold">FAQ</div>
       <div
-        class="flex text-lg font-bold p-3 mr-5 rounded-3xl bg-red-600 w-3 h-3 justify-center items-center text-white cursor-pointer"
+        class="flex text-lg font-bold p-3 mr-5 rounded-3xl bg-red-600 w-3 h-3 justify-center text-center align-center items-center text-white cursor-pointer"
         on:click={() => dispatch('closeFAQ')}
       >
         x

@@ -1,4 +1,4 @@
-import type { ChartData, Statement } from './types/Api';
+import type { ChartData, ParsedStatements, Statement } from './types/Api';
 import type { Validator } from './types/Layout';
 
 const isUpper = (char: string): boolean => char === char.toUpperCase();
