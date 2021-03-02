@@ -115,6 +115,14 @@ export type Account = {
   currency: string;
 };
 
+export type StatementItems = {
+  type: 'StatementItem';
+  data: {
+    account: string;
+    statementItem: MonoStatement;
+  };
+};
+
 export type MonoStatements = MonoStatement[];
 
 export type MonoStatement = {
@@ -159,4 +167,9 @@ export type MergedStatement = {
   message: string;
   accountId?: string;
   statements?: ChartData[];
+};
+
+export type EndpointRes = {
+  SuccessResponse: (data?: Record<string, any>, status?: number) => void;
+  FailureResponse: (message?: string, status?: number) => void;
 };

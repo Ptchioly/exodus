@@ -104,8 +104,8 @@ export const deleteItem = async <T extends Tables>(
 };
 
 const buildUpdateParam = (obj: Record<string, any>) => {
-  const ExpressionAttributeNames: Record<string, any> = {};
-  const ExpressionAttributeValues: Record<string, any> = {};
+  const ExpressionAttributeNames: Record<string, string> = {};
+  const ExpressionAttributeValues: Record<string, string> = {};
 
   const keys = Object.keys(obj).map((k) => {
     ExpressionAttributeNames['#' + k] = k;
