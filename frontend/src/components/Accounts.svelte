@@ -1,17 +1,14 @@
 <script lang="ts">
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
-  import type { ChartData, Account } from '../types/Api';
+  import type { ChartData } from '../types/Api';
   import { onMount } from 'svelte';
-  import Cards from './cards/CardsPanel.svelte';
 
   export let accountId: string;
   export let isEmpty: boolean;
   export let other: ChartData;
   export let budgeted: ChartData[];
   export let unbudgeted: ChartData[];
-  export let accounts: Account[];
-  export let currentAccountId: string;
 
   let maxValue = 0;
   let p2pMax = 0;
@@ -37,9 +34,6 @@
 </script>
 
 <div class="flex flex-col mb-5">
-  <div class="flex justify-center">
-    <Cards {accounts} bind:currentAccountId />
-  </div>
   <div>
     <div class="mb-8 mt-8 flex justify-end">
       {#if unbudgeted && unbudgeted.length}

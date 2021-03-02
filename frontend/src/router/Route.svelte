@@ -1,7 +1,10 @@
 <script lang="ts">
-  import { state } from './Router.svelte';
+  import { getContext } from 'svelte';
+  import { KEY } from './store';
+
   export let path: string;
-  $: show = $state === path;
+
+  const { state } = getContext(KEY);
 </script>
 
-{#if show}<slot />{/if}
+{#if $state === path}<slot />{/if}

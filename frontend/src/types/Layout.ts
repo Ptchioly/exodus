@@ -1,3 +1,10 @@
 export type NavigationState = 'home' | 'signIn' | 'signUp' | 'loading';
 
-export type Validator = (value: string) => boolean;
+export type BarEvent = 'logout' | 'settings' | 'update' | 'tgBot';
+
+export type HeaderBarItem = {
+  component: any;
+  position: 'left' | 'right';
+  event?: BarEvent;
+  props?: any;
+};

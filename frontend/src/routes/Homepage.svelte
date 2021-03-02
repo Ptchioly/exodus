@@ -2,6 +2,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import Accounts from '../components/Accounts.svelte';
+  import CardsPanel from '../components/cards/CardsPanel.svelte';
   import AlphaLabel from '../components/headerItems/AlphaLabel.svelte';
   import TelegramLink from '../components/headerItems/TelegramLink.svelte';
   import UpdateButton from '../components/headerItems/UpdateButton.svelte';
@@ -73,27 +74,24 @@
     </div>
     <div slot="right" class="reight flex">
       <UpdateButton on:click={init} />
-      <TelegramLink href={statics.tgBotLink} />
+      <TelegramLink on:click={() => window.open(statics.tgBotLink)} />
       <UserProfile
         {username}
-        on:logout={(e) => dispatch('logout', e)}
+        on:logout
         on:openSettings={() => (showSettings = true)}
       />
     </div>
   </HearedBar>
   <section class="w-full p-0">
+    {#if accounts}
+      <div class="flex justify-center">
+        <CardsPanel {accounts} bind:currentAccountId />
+      </div>
+    {/if}
     {#if fullParsedSatements}
-      {#each Object.entries(fullParsedSatements) as [accountId, { budgeted, unbudgeted, other }]}
+      {#each Object.entries(fullParsedSatements) as [accountId, statement]}
         {#if accountId === currentAccountId}
-          <Accounts
-            {budgeted}
-            {unbudgeted}
-            {other}
-            {accountId}
-            {isEmpty}
-            {accounts}
-            bind:currentAccountId
-          />
+          <Accounts {...statement} {accountId} {isEmpty} />
         {/if}
       {/each}
     {/if}

@@ -3,8 +3,7 @@
   import type { UserMeta } from './types/ClientStorage';
   import type { Account } from './types/Api';
 
-  import Router, { setState } from './router/Router.svelte';
-  import Route from './router/Route.svelte';
+  import { Router, Route, setState } from './router/router';
 
   import Homepage from './routes/Homepage.svelte';
   import SignIn from './routes/SignIn.svelte';
