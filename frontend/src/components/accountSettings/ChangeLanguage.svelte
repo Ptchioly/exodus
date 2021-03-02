@@ -40,9 +40,8 @@
     </select>
   </div>
   <button
-    class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white"
+    class="mt-4 self-start bg-indigo-500 py-1 px-3 rounded-md text-white"
     data-automation-id="change-xtoken"
-    on:click|preventDefault={saveLanguage}
-    >{$_('settings.change_lang.btn')}</button
+    on:click|preventDefault={saveLanguage}>{$_('settings.change_lang.btn')}</button
   >
 </div>
