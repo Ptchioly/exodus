@@ -53,14 +53,14 @@
   linkButton={signInButton}
 >
   <div class="flex justify-center flex-col">
-    <div class="phone flex items-center justify-center w-3/4 self-center">
+    <div class="input-wrapper items-center">
       <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
     </div>
 
-    <div class="flex justify-center w-3/4 self-center relative">
+    <div class="input-wrapper">
       <PasswordInput placeholder="Password" bind:value={pwd} />
     </div>
-    <div class="flex justify-center w-3/4 self-center relative">
+    <div class="input-wrapper">
       <PasswordInput
         placeholder="Confirm Password"
         bind:value={confirmPwd}
@@ -75,7 +75,7 @@
 </LoginForm>
 
 <style lang="postcss">
-  .password-input {
-    @apply flex items-center justify-center w-full relative;
+  .input-wrapper {
+    @apply flex justify-center w-3/4 self-center relative;
   }
 </style>
