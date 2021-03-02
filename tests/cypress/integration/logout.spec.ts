@@ -22,4 +22,10 @@ describe('Logout', () => {
     cy.get('h1').should('contain', 'Sign in to Exodus')
     cy.getCookie('jwt').should('not.exist')
   })
+
+  it('logs out when deleting the jwt cookie', () => {
+    cy.clearCookies()
+    cy.get('h1').should('contain', 'Sign in to Exodus')
+    cy.getCookie('jwt').should('not.exist')
+  })
 })
