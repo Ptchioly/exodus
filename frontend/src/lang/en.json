@@ -61,11 +61,11 @@
             "btn": "Send"
         },
         "delete_usr": {
-            "title": "Delete User",
-            "msg": "Delete User?",
+            "title": "Delete Account",
+            "msg": "Delete account?",
             "btn": "Delete",
-            "confirmation_msg": "Do you really want to delete your user and all your data? This action is irreversible!",
-            "error_msg": "Failed to delete user"
+            "confirmation_msg": "Do you really want to delete your account and all your data? This action is irreversible!",
+            "error_msg": "Failed to delete account"
         },
         "change_lang": {
             "title": "Change Language",
