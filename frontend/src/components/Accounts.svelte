@@ -3,7 +3,7 @@
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
   import type { ChartData, Total } from '../types/Api';
   import { onMount } from 'svelte';
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
   import TotalSpendings from './TotalSpendings.svelte';
 
   export let accountId: string;
@@ -34,18 +34,19 @@
     maxValue = maxBarSize(budgeted, maxValue);
     p2pMax = maxBarSize([other], p2pMax);
   });
-
 </script>
 
 <div class="flex flex-col">
   <div>
-    <div class="my-7 sm:mb-20 md:mb-12 flex flex-col md:h-20 justify-start items-start">
+    <div
+      class="my-7 sm:mb-20 md:mb-12 flex flex-col md:h-20 justify-start items-start"
+    >
       <TotalSpendings {total} />
       {#if unbudgeted && unbudgeted.length}
         <UnbudgetedCategories
           bind:categories={unbudgeted}
           on:addCategory={handleAddCategory}
-      />
+        />
       {/if}
     </div>
   </div>

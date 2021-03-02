@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import { _ } from 'svelte-i18n';
 
   const dispatch = createEventDispatcher();
 </script>
@@ -19,59 +20,37 @@
       </div>
     </div>
     <div class="faq-structure">
-      <div class="question">Q: What this service is about?</div>
-      <div class="answer">
-        A: Here you can do multiple things such as monitoring your monobank
-        spendings, setting limits for each spending category and much more!
-      </div>
+      <div class="question">{$_('faq.about.q')}</div>
+      <div class="answer">{$_('faq.about.a')}</div>
     </div>
     <div class="faq-structure">
-      <div class="question">Q: Is my information private?</div>
-      <div class="answer">
-        A: Yes of course! Your information is 100% secure and will not be handed
-        over to any 3-rd parties.
-      </div>
+      <div class="question">{$_('faq.privacy.q')}</div>
+      <div class="answer">{$_('faq.privacy.a')}</div>
     </div>
     <div class="faq-structure">
-      <div class="question">Q: How do I start working with the service?</div>
-      <div class="answer">
-        A: In order to do so, you need to register with your phone number and
-        provide an X-Token than Monobank gives you.
-      </div>
+      <div class="question">{$_('faq.start.q')}</div>
+      <div class="answer">{$_('faq.start.a')}</div>
     </div>
     <div class="faq-structure">
-      <div class="question">Q: Where do I get Monobank token?</div>
+      <div class="question">{$_('faq.token.q')}</div>
       <div class="answer">
-        A: You can get it by visiting <a
+        {$_('faq.token.a-before')}<a
           href="https://api.monobank.ua"
-          class="text-blue-500">this</a
-        >
-        link or by clicking on Mono logo on sign-up page.
+          class="text-blue-500">{$_('faq.token.link-title')}</a
+        >{$_('faq.token.a-after')}
       </div>
     </div>
     <div class="faq-structure">
-      <div class="question">
-        Q: What is the point of setting limits for categories?
-      </div>
-      <div class="answer">
-        A: If you set a limit and then exceed it, you will get a notification on
-        Telegram (if you have set up notifications before).
-      </div>
+      <div class="question">{$_('faq.limits-point.q')}</div>
+      <div class="answer">{$_('faq.limits-point.a')}</div>
     </div>
     <div class="faq-structure">
-      <div class="question">Q: How to set up Telegram notifications?</div>
-      <div class="answer">
-        A: Just click Telegram link at the top after entering and follow the
-        insructions.
-      </div>
+      <div class="question">{$_('faq.telegram.q')}</div>
+      <div class="answer">{$_('faq.telegram.a')}</div>
     </div>
     <div class="faq-structure">
-      <div class="question">Q: How to set a limit?</div>
-      <div class="answer">
-        A: Click on '+' sign on the left of the catefory bar and then type the
-        amount you want. You can also drag the limit without typing but that
-        feature is currently unavailable on mobile devices.
-      </div>
+      <div class="question">{$_('faq.limits-set.q')}</div>
+      <div class="answer">{$_('faq.limits-set.a')}</div>
     </div>
   </div>
 </div>

@@ -73,5 +73,37 @@
             "btn": "Save"
         },
         "close": "Close"
+    },
+    "faq": {
+        "about": {
+            "q": "Q: What this service is about?",
+            "a": "A: Here you can do multiple things such as monitoring your monobank spendings, setting limits for each spending category and much more!"
+        },
+        "privacy": {
+            "q": "Q: Is my information private?",
+            "a": "A: Yes of course! Your information is 100% secure and will not be handed over to any 3-rd parties."
+        },
+        "start": {
+            "q": "Q: How do I start working with the service?",
+            "a": "A: In order to do so, you need to register with your phone number and provide an X-Token than Monobank gives you."
+        },
+        "token": {
+            "q": "Q: Where do I get Monobank token?",
+            "a-before": "A: You can get it by visiting",
+            "a-after": "link or by clicking on Mono logo on sign-up page.",
+            "link-title": "this"
+        },
+        "limits-point": {
+            "q": "Q: What is the point of setting limits for categories?",
+            "a": "A: If you set a limit and then exceed it, you will get a notification on Telegram (if you have set up notifications before)."
+        },
+        "telegram": {
+            "q": "Q: How to set up Telegram notifications?",
+            "a": "A: Just click Telegram button at the top right after entering and follow the insructions."
+        },
+        "limits-set": {
+            "q": "Q: How to set a limit?",
+            "a": "A: Click on '+' sign on the left of the catefory bar and then type the amount you want. You can also drag the limit without typing but that feature is currently unavailable on mobile devices."
+        }
     }
 }

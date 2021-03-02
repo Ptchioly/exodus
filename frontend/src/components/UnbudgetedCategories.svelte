@@ -24,12 +24,12 @@
       class="flex rounded-2xl text-sm bg-indigo-200 px-3 py-0.5 cursor-pointer items-center"
       in:fly={{ duration: 500, x: -100 }}
     >
-    <div
-      class="ml-2 rounded-2xl sm:w-5 sm:h-5 hover:opacity-100 opacity-50 p-1"
-      on:click={() => (isActive = false)}
-    >
-      <img alt="close" src="images/close.svg" />
-    </div>
+      <div
+        class="ml-2 rounded-2xl sm:w-5 sm:h-5 hover:opacity-100 opacity-50 p-1"
+        on:click={() => (isActive = false)}
+      >
+        <img alt="close" src="images/close.svg" />
+      </div>
       <div class="flex flex-wrap justify-center">
         {#each categories as category}
           <div
@@ -38,7 +38,9 @@
             on:mouseleave={() => (activeCategotegory = null)}
             on:click={handleClick(category)}
           >
-            <div data-automation-id="category-title-unbudgeted">{$_(`categories.${category.id}`)}</div>
+            <div data-automation-id="category-title-unbudgeted">
+              {$_(`categories.${category.id}`)}
+            </div>
             <div
               class="ml-2 add opacity-0 mr-0.5"
               class:active={activeCategotegory === category.title}
@@ -48,8 +50,6 @@
           </div>
         {/each}
       </div>
-
-     
     </div>
   {:else}
     <div
