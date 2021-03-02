@@ -1,9 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
+  import { _ } from 'svelte-i18n';
   import { signIn } from '../endpointApi';
-  import statics from './statics';
-
+  
   import LoginForm from '../components/LoginForm.svelte';
   import PasswordInput from '../components/inputs/PasswordInput.svelte';
   import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
@@ -13,7 +12,6 @@
   let countryCode: string = '380';
   let pwd: string;
 
-  const { label, link } = statics.signIn;
 
   const dispatch = createEventDispatcher();
 
@@ -25,12 +23,13 @@
   };
 
   const signInButton = {
-    label,
+    label: $_('sign_in.btn'),
     onclick: dispatchResponse,
     dataAut: 'signin-button',
   };
   const signUpButton = {
-    ...link,
+    label: $_('sign_in.link'),
+    prefix: $_('sign_in.msg'),
     onclick: () => dispatch('openSignUp', {}),
     dataAut: 'link-signup-button',
   };
@@ -39,7 +38,7 @@
 </script>
 
 <LoginForm
-  title="Sign in to Exodus"
+  title={$_('sign_in.title')}
   linkButton={signUpButton}
   actionButton={signInButton}
 >
@@ -48,7 +47,7 @@
       <PhoneNumberInput bind:countryCode bind:value={phoneNumber} />
     </div>
     <div class="flex justify-center w-3/4 self-center relative">
-      <PasswordInput bind:value={pwd} placeholder={'Password'} />
+      <PasswordInput bind:value={pwd} placeholder={$_('sign_in.pwd')} />
     </div>
   </div>
 </LoginForm>

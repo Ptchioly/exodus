@@ -1,6 +1,7 @@
 <script lang="ts">
   import MonoLogo from './MonoLogo.svelte';
 
+  export let placeholder: string;
   export let token: string;
 </script>
 
@@ -8,7 +9,7 @@
   <input
     class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 px-2"
     type="text"
-    placeholder="Monobank token"
+    placeholder={placeholder}
     required
     data-automation-id="xtoken-input"
     bind:value={token}

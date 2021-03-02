@@ -2,6 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
   import type { ChartData } from '../types/Api';
+  import { _ } from 'svelte-i18n';
 
   export let categories: ChartData[];
 
@@ -31,7 +32,7 @@
             on:mouseleave={() => (activeCategotegory = null)}
             on:click={handleClick(category)}
           >
-            <div data-automation-id="category-title-unbudgeted">{category.title}</div>
+            <div data-automation-id="category-title-unbudgeted">{$_(`categories.${category.id}`)}</div>
             <div
               class="ml-2 add opacity-0 mr-0.5"
               class:active={activeCategotegory === category.title}
@@ -54,7 +55,7 @@
       on:click={() => (isActive = true)}
       class="flex rounded-2xl text-sm bg-gree bg-coolGreen-light px-3 py-1.5 cursor-pointer"
     >
-      <div class="mr-2">Unbudgeted</div>
+      <div class="mr-2">{$_('homepage.unpudgeted')}</div>
       <div class="rounded-3xl bg-coolGreen-darkest px-1.5 text-indigo-50">
         {categories.length}
       </div>

@@ -3,6 +3,7 @@
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
   import type { ChartData } from '../types/Api';
   import { onMount } from 'svelte';
+  import { _ } from "svelte-i18n";
 
   export let accountId: string;
   export let isEmpty: boolean;
@@ -47,15 +48,15 @@
 </div>
 {#if isEmpty}
   <h1 class="w-full flex items-start text-gray-700">
-    You did not spend anything for current month
+    {$_(`homepage.no_spendings_msg`)}
   </h1>
 {/if}
 {#if budgeted}
-  {#each budgeted as { current, previous, title, limit }}
+  {#each budgeted as { current, previous, limit, id }}
     <StackedBar
       {current}
       {previous}
-      {title}
+      title={$_(`categories.${id}`)}
       bind:limit
       account={accountId}
       {maxValue}
@@ -70,7 +71,7 @@
     <StackedBar
       current={other.current}
       previous={other.previous}
-      title={other.title}
+      title={$_(`categories.${other.id}`)}
       bind:limit={other.limit}
       maxValue={p2pMax}
       account={accountId}

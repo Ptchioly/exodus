@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-
+  import { _ } from "svelte-i18n";
   import { slide } from 'svelte/transition';
 
   export let name: string;
@@ -20,14 +20,14 @@
     class="p-2 pt-2 cursor-pointer"
     on:click={() => dispatch('openSettings', {})}
   >
-    Account settings
+    {$_('menu.acc_sett')}
   </div>
   <div
     data-automation-id="logout"
     class="p-2 cursor-pointer"
     on:click={() => dispatch('logout', {})}
   >
-    Logout
+    {$_('menu.logout')}
   </div>
 </main>
 

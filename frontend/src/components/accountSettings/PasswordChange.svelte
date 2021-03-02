@@ -2,6 +2,7 @@
   import { updatePassword } from '../../endpointApi';
   import { isSuccessResponse } from '../../types/guards';
   import Input from '../inputs/Input.svelte';
+  import { _ } from "svelte-i18n";
 
   export let error: boolean;
   export let errorMessage: string;
@@ -30,9 +31,9 @@
 <div class="flex flex-col">
   <div class="flex flex-row">
     <div class="flex flex-col min-w-max-content text-left">
-      <div class="">Current Password</div>
-      <div class="mt-4">New Password</div>
-      <div class="mt-4">Confirm Password</div>
+      <div class="">{$_('settings.change_pwd.curr_pwd')}</div>
+      <div class="mt-4">{$_('settings.change_pwd.new_pwd')}</div>
+      <div class="mt-4">{$_('settings.change_pwd.conf_pwd')}</div>
     </div>
     <div class="flex flex-col">
       <div class="relative">
@@ -40,7 +41,7 @@
           <Input
             type="text"
             bind:value={currentPass}
-            placeholder="Current"
+            placeholder={$_('settings.change_pwd.curr_pwd_holder')}
             dataAutomationId="current-password"
             className={label}
           />
@@ -48,7 +49,7 @@
           <Input
             type="password"
             bind:value={currentPass}
-            placeholder="Current"
+            placeholder={$_('settings.change_pwd.curr_pwd_holder')}
             dataAutomationId="current-password"
             className={label}
           />
@@ -68,7 +69,7 @@
           <Input
             type="text"
             bind:value={newPass}
-            placeholder="New"
+            placeholder={$_('settings.change_pwd.new_pwd_holder')}
             dataAutomationId="new-password"
             className={`${label} mt-3`}
           />
@@ -76,7 +77,7 @@
           <Input
             type="password"
             bind:value={newPass}
-            placeholder="New"
+            placeholder={$_('settings.change_pwd.new_pwd_holder')}
             dataAutomationId="new-password"
             className={`${label} mt-3`}
           />
@@ -96,7 +97,7 @@
           <Input
             type="text"
             bind:value={confirmPass}
-            placeholder="Confirm"
+            placeholder={$_('settings.change_pwd.conf_pwd_holder')}
             dataAutomationId="password-check"
             className={`${label} mt-3`}
           />
@@ -104,7 +105,7 @@
           <Input
             type="password"
             bind:value={confirmPass}
-            placeholder="Confirm"
+            placeholder={$_('settings.change_pwd.conf_pwd_holder')}
             dataAutomationId="password-check"
             className={`${label} mt-3`}
           />
@@ -125,7 +126,7 @@
     type="submit"
     on:click={() => changePassword(currentPass, newPass, confirmPass)}
     class="mt-4 self-start bg-coolGreen-default py-1 px-3 rounded-md text-white xs:mb-5"
-    data-automation-id="change-password">Change</button
+    data-automation-id="change-password">{$_('settings.change_pwd.change')}</button
   >
 </div>
 
