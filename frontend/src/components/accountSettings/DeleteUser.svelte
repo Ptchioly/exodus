@@ -1,9 +1,13 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+
   import { deleteUser } from '../../endpointApi';
   import { isSuccessResponse } from '../../types/guards';
 
   export let error: boolean;
   export let errorMessage: string;
+
+  const dispatch = createEventDispatcher();
 
   const handleDeleteUser = async () => {
     const confirmResponse = confirm(
@@ -11,13 +15,9 @@
     );
     if (confirmResponse) {
       const response = await deleteUser();
-      if (!isSuccessResponse(response)) {
-        error = true;
-        errorMessage = 'Failed to delete user';
-      } else {
-        localStorage.clear();
-        location.reload();
-      }
+      if (isSuccessResponse(response)) return dispatch('logout');
+      error = true;
+      errorMessage = 'Failed to delete user';
     }
   };
 </script>

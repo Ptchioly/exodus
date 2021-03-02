@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import Accounts from '../components/Accounts.svelte';
   import CardsPanel from '../components/cards/CardsPanel.svelte';
-
+  import Bar from '../components/header/Bar.svelte';
   import Settings from '../components/accountSettings/Settings.svelte';
+
+  import { onMount } from 'svelte';
+  import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import { getStatement } from '../endpointApi';
   import type { Account, AccountId, ParsedStatements } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { parseStatements, waitFor } from '../utils';
-  import Bar from '../components/header/Bar.svelte';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
 
@@ -59,7 +59,7 @@
 </script>
 
 {#if showSettings}
-  <Settings on:close={() => (showSettings = false)} />
+  <Settings on:close={() => (showSettings = false)} on:logout />
 {/if}
 <home class="flex w-full flex-col items-center">
   <Bar

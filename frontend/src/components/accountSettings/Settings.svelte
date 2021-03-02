@@ -58,7 +58,7 @@
       {:else if state === 'x-token'}
         <XtokenChange bind:error bind:errorMessage />
       {:else if state === 'deleteUser'}
-        <DeleteUser bind:error bind:errorMessage />
+        <DeleteUser bind:error bind:errorMessage on:logout />
       {/if}
     </div>
   </div>
