@@ -42,19 +42,19 @@ const pushNotificationIfLimitReached = async (
 const checkIfCurrentMonthExist = async (accountId: string): Promise<void> => {
   // rewrite to conditional check
   // https://docs.aws.amazon.com/sdk-for-ruby/v2/api/Aws/DynamoDB/Types/ConditionCheck.html
-  const r = await getItem(Tables.STATEMENTS, { accountId });
-  if (!isFailure(r)) {
+  const statementResponse = await getItem(Tables.STATEMENTS, { accountId });
+  if (!isFailure(statementResponse)) {
     const currentMonth = startMonth('cur');
 
-    if (!hasKey(r.Item, currentMonth)) {
-      const obj = {
+    if (!hasKey(statementResponse.Item, currentMonth)) {
+      const currentMonthTemplate = {
         [currentMonth]: {
           rawData: [],
           processedData: getCategoriesTemplate(categories),
         },
       };
 
-      await updateItem(Tables.STATEMENTS, { accountId }, obj);
+      await updateItem(Tables.STATEMENTS, { accountId }, currentMonthTemplate);
     }
   }
 };
