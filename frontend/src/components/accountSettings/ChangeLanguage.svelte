@@ -2,6 +2,12 @@
   import { _, locale, dictionary } from 'svelte-i18n';
   import { onDestroy } from 'svelte';
 
+  enum ReadableLanguage {
+    en = 'English',
+    ru = 'Русский',
+    ua = 'Українська',
+  }
+
   let languages: string[] = [];
   let currentLanguage: string;
 
@@ -35,7 +41,7 @@
       bind:value={currentLanguage}
     >
       {#each languages as language}
-        <option value={language}>{language}</option>
+        <option value={language}>{ReadableLanguage[language] || language}</option>
       {/each}
     </select>
   </div>
