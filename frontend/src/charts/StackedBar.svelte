@@ -17,6 +17,7 @@
   import { onDestroy } from 'svelte';
   import { updateLimit } from '../endpointApi';
   export let title: string;
+  export let id: number;
   export let current: number;
   export let previous: number;
   export let limit: number;
@@ -112,7 +113,7 @@
     setLimitCallback = async () => {
       if (account === 'all') return; // deny set limit for all cards (temporary solution)
       if (timeoutId) clearInterval(timeoutId);
-      await updateLimit(title, +limit, account);
+      await updateLimit(id, +limit, account);
     };
     timeoutId = setTimeout(pushTimedOutLimit, delay);
   };

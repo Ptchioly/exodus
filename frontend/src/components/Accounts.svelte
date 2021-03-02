@@ -61,6 +61,7 @@
     <StackedBar
       {current}
       {previous}
+      {id}
       title={$_(`categories.${id}`)}
       bind:limit
       account={accountId}

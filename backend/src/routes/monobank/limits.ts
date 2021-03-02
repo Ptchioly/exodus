@@ -16,12 +16,12 @@ export const limit = Router().post(
 
     const userFromDB = await getItem(Tables.USERS, { username });
 
-    const { category, value } = req.body;
+    const { categoryId, value } = req.body;
 
     if (!isFailure(userFromDB)) {
-      await updateLimit(accountId, category, value);
+      await updateLimit(accountId, categoryId, value);
 
-      return respond.SuccessResponse({ newLimit: value, category });
+      return respond.SuccessResponse({ newLimit: value, categoryId });
     }
     return respond.FailureResponse('Failed to get user from db');
   }

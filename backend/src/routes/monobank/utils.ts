@@ -116,7 +116,7 @@ export const statementUpdate = async (
 
 export const updateLimit = async (
   accountId: string,
-  category: string,
+  categoryId: number,
   value: number,
   timestamp = startMonth('cur')
 ): Promise<void> => {
@@ -125,7 +125,7 @@ export const updateLimit = async (
   if (!isFailure(statements)) {
     const newData = statements.Item[timestamp].processedData.reduce(
       (accum: any, el) => {
-        if (el.category === category) el.limit = value;
+        if (el.id === categoryId) el.limit = value;
         accum.push(el);
         return accum;
       },
