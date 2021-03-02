@@ -16,8 +16,9 @@ describe('Logout', () => {
 
   it('logs out using the menu buton', () => {
     cy.getBySel('menu-button').click()
-    cy.getBySel('menu-dropdown').should('have.attr', 'style')
-    cy.getBySel('logout').click()
+    cy.getBySel('menu-dropdown')
+      .find('[data-automation-id=logout]')
+      .click()
     cy.get('h1').should('contain', 'Sign in to Exodus')
     cy.getCookie('jwt').should('not.exist')
   })

@@ -1,15 +1,17 @@
 import { Router } from 'express';
+import { categories } from '../../../mccCategories';
 import {
   appendStatement,
   getItem,
   incrementStatementSpendings,
+  updateItem,
 } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { sendTelegramMessage } from '../telegram/sendMessage';
-import { isFailure } from '../types/guards';
+import { hasKey, isFailure } from '../types/guards';
 import { MonoStatement, Tables } from '../types/types';
-import { getMccCategory } from './paymentsProcessing';
-import { moneySpentToLimit } from './utils';
+import { getCategoriesTemplate, getMccCategory } from './paymentsProcessing';
+import { moneySpentToLimit, startMonth } from './utils';
 
 export const hook = Router();
 
@@ -45,6 +47,26 @@ const pushNotificationIfLimitReached = async (
   }
 };
 
+const checkIfCurrentMonthExist = async (accountId: string): Promise<void> => {
+  // rewrite to conditional check
+  // https://docs.aws.amazon.com/sdk-for-ruby/v2/api/Aws/DynamoDB/Types/ConditionCheck.html
+  const r = await getItem(Tables.STATEMENTS, { accountId });
+  if (!isFailure(r)) {
+    const currentMonth = startMonth('cur');
+
+    if (!hasKey(r.Item, currentMonth)) {
+      const obj = {
+        [currentMonth]: {
+          rawData: [],
+          processedData: getCategoriesTemplate(categories),
+        },
+      };
+
+      await updateItem(Tables.STATEMENTS, { accountId }, obj);
+    }
+  }
+};
+
 hook.post('/hook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
@@ -55,6 +77,8 @@ hook.post('/hook', async (req: any, res) => {
   const { account, statementItem } = (req.body as StatementItems).data;
 
   const { id, category } = getMccCategory(statementItem.mcc);
+
+  checkIfCurrentMonthExist(account);
 
   const updateUserRawStatement = await appendStatement(
     {

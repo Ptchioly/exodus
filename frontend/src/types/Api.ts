@@ -50,3 +50,10 @@ export type CardType =
   | 'fop'
   | 'yellow'
   | 'all';
+
+export type AccountId = string;
+export type ParsedStatements = {
+  budgeted: ChartData[];
+  unbudgeted: ChartData[];
+  other?: ChartData;
+};

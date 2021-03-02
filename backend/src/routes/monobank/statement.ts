@@ -1,13 +1,27 @@
 import { Router } from 'express';
+import { categories } from '../../../mccCategories';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
-import { hasKey, isFailure } from '../types/guards';
-import { Tables } from '../types/types';
+import { hasKey, isFailure, isFetchedStatement } from '../types/guards';
+import { ChartData, Tables } from '../types/types';
 import mergeStatements from './mergeStatements';
+import { getCategoriesTemplate } from './paymentsProcessing';
 import { startMonth } from './utils';
 
 export const statement = Router();
+
+const countTotal = (data: ChartData[], field: 'previous' | 'current'): number =>
+  data.reduce((acc, info) => (acc += info[field]), 0);
+
+// refactor
+const formTotal = (
+  data: ChartData[]
+): { [k in 'previous' | 'current']: number } =>
+  ['previous', 'current'].reduce(
+    (acc, field: any) => ({ ...acc, [field]: countTotal(data, field) }),
+    {} as any
+  );
 
 // REFACTOR
 statement.get('/statement', authenticateToken, async (req: any, res) => {
@@ -27,31 +41,26 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
       if (isFailure(statement)) return { message: statement.message };
       if (!statement.Item) return { message: 'Statement is empty' };
 
-      if (
-        hasKey(statement.Item, current) &&
-        hasKey(statement.Item[current], 'processedData')
-      ) {
-        const currentStatement = statement.Item[current].processedData;
-        const previousStatement = statement.Item[previous]?.processedData;
-        const merged = mergeStatements(currentStatement, previousStatement);
-        synced = !!previousStatement;
-        return {
-          accountId,
-          statements: merged,
-          message: 'OK',
-        };
-      }
+      const currentStatement = hasKey(statement.Item, current)
+        ? statement.Item[current].processedData
+        : getCategoriesTemplate(categories);
+      const previousStatement = statement.Item[previous]?.processedData;
+      const merged = mergeStatements(currentStatement, previousStatement);
+      synced = !!previousStatement;
       return {
-        message: 'Not found',
+        accountId,
+        total: formTotal(merged),
+        statements: merged,
+        message: 'OK',
       };
     })
   );
 
-  const mergeAll = statements.reduce((acc: any, account) => {
-    if (account.message !== 'OK') return acc;
+  const mergeAll = statements.reduce((acc: ChartData[], account) => {
+    if (!isFetchedStatement(account)) return acc;
     if (acc.length === 0) return account.statements;
-    return account.statements!.map((a) => {
-      const found = acc.find((el: any) => el.id === a.id) as any;
+    const mergedChart = account.statements.map((a) => {
+      const found = acc.find((el) => el.id === a.id) as ChartData;
       return {
         ...found,
         previous: found.previous + a.previous,
@@ -59,7 +68,11 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
         limit: +found.limit + +a.limit,
       };
     });
+    if (!mergedChart) return acc;
+    return mergedChart;
   }, []);
 
-  return respond.SuccessResponse({ all: mergeAll, statements, synced });
+  const total = formTotal(mergeAll);
+
+  return respond.SuccessResponse({ all: mergeAll, statements, synced, total });
 });

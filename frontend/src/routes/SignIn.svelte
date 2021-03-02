@@ -5,17 +5,15 @@
   import statics from './statics';
 
   import LoginForm from '../components/LoginForm.svelte';
-  import PasswordInput from '../components/PasswordInput.svelte';
-  import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
+  import PasswordInput from '../components/inputs/PasswordInput.svelte';
+  import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
   import { isSuccessResponse } from '../types/guards';
 
   let phoneNumber: string;
   let countryCode: string = '380';
   let pwd: string;
 
-  const {
-    signIn: { label, link },
-  } = statics;
+  const { label, link } = statics.signIn;
 
   const dispatch = createEventDispatcher();
 

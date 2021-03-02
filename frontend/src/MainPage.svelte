@@ -11,6 +11,7 @@
   import SignUp from './routes/SignUp.svelte';
   import ErrorMessage from './components/ErrorMessage.svelte';
   import { onMount } from 'svelte';
+  import { logout } from './endpointApi';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
   export let authorized: boolean;
@@ -21,7 +22,6 @@
     detail,
   }: CustomEvent<{ name: string; accounts: Account[] }>) => {
     const { name, accounts } = detail;
-    localStorage.setItem('name', name);
     await storage.putItem({ name, accounts });
     message = null;
     setState('home');
@@ -29,6 +29,12 @@
 
   const handleError = ({ detail }: CustomEvent<{ message: string }>) => {
     message = detail.message;
+  };
+
+  const handleLogout = async () => {
+    await storage.clear();
+    await logout();
+    setState('signIn');
   };
 
   onMount(() => {
@@ -41,10 +47,7 @@
 {/if}
 <Router>
   <Route path="home">
-    <Homepage
-      on:logout={() => storage.clear().then(() => setState('signIn'))}
-      {storage}
-    />
+    <Homepage on:logout={handleLogout} {storage} />
   </Route>
   <Route path="signIn">
     <SignIn

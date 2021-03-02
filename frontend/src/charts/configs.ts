@@ -4,5 +4,5 @@ export const staticValues = {
   currentBgColor: '#2F9E9E',
   limitColor: '#A04343',
   detailedSpace: 70,
-  valueString: '$${value}',
+  valueString: '₴${value}',
 };

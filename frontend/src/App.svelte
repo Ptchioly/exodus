@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
   import MainPage from './MainPage.svelte';
-  import { AccountsStorage } from './storage/accountsStorage';
+  import storages from './storage/storages';
   import TailwindCss from './TailwindCss.svelte';
   import type ClientStorage from './types/ClientStorage';
   import type { UserMeta } from './types/ClientStorage';
@@ -12,7 +12,7 @@
 
   onMount(async () => {
     authorized = await isAuthenticated();
-    storage = await AccountsStorage();
+    storage = await storages.Accounts();
   });
 </script>
 
