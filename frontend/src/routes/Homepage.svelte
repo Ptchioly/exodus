@@ -12,6 +12,7 @@
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { parseStatements, waitFor } from '../utils';
+  import FAQ from '../components/FAQ.svelte';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
 
@@ -22,6 +23,7 @@
   let accounts: Account[];
   let currentAccountId: string;
   let showSettings: boolean;
+  let showFAQ: boolean;
 
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
@@ -61,12 +63,16 @@
 {#if showSettings}
   <Settings on:close={() => (showSettings = false)} on:logout />
 {/if}
+{#if showFAQ}
+  <FAQ on:closeFAQ={() => (showFAQ = false)} />
+{/if}
 <home class="flex w-full flex-col items-center">
   <Bar
     {username}
     on:logout
     on:settings={() => (showSettings = true)}
     on:update={init}
+    on:openFAQ={() => (showFAQ = true)}
   />
   <section class="w-full p-0">
     {#if accounts}
