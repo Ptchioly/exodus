@@ -8,6 +8,7 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import tailwind from 'tailwindcss';
+import json from '@rollup/plugin-json';
 
 const production = !process.env.ROLLUP_WATCH;
 const staging = process.argv.reverse()[0] === '--staging';
@@ -52,6 +53,7 @@ export default {
     file: 'public/build/bundle.js',
   },
   plugins: [
+    json(),
     svelte({
       preprocess: sveltePreprocess({
         postcss: {

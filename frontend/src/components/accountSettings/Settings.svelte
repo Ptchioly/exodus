@@ -5,7 +5,10 @@
   import ErrorMessage from '../ErrorMessage.svelte';
   import PasswordChange from './PasswordChange.svelte';
   import XtokenChange from './XtokenChange.svelte';
-  let state: 'password' | 'x-token' | 'deleteUser' = 'password';
+  import ChangeLanguage from './ChangeLanguage.svelte';
+  import { _ } from "svelte-i18n";
+
+  let state: 'password' | 'x-token' | 'deleteUser' | 'changeLanguage' = 'password';
   let error = false;
   let errorMessage = '';
 
@@ -28,28 +31,35 @@
         on:click={() => (state = 'password')}
         data-automation-id="change-password-nav"
       >
-        Change password
+      {$_("settings.change_pwd.title")}
       </div>
       <div
         class="nav-button"
         on:click={() => (state = 'x-token')}
         data-automation-id="change-token-nav"
       >
-        Change X-Token
+      {$_("settings.change_token.title")}
       </div>
       <div
         class="nav-button"
         on:click={() => (state = 'deleteUser')}
         data-automation-id="delete-user-nav"
       >
-        Delete User
+      {$_("settings.delete_usr.title")}
       </div>
+      <div
+      class="nav-button"
+      on:click={() => (state = 'changeLanguage')}
+      data-automation-id="change-language"
+    >
+    {$_("settings.change_lang.title")}
+    </div>
       <div
         class="cursor-pointer sm:absolute xs:mt-2 m-auto w-1/4 sm:bottom-5 bg-red-600 py-1 px-3 rounded-md text-white text-center"
         on:click={() => dispatch('close')}
         data-automation-id="close-settings"
       >
-        Close
+      {$_("settings.close")}
       </div>
     </div>
     <div class="ml-10 mt-5">
@@ -59,6 +69,8 @@
         <XtokenChange bind:error bind:errorMessage />
       {:else if state === 'deleteUser'}
         <DeleteUser bind:error bind:errorMessage />
+      {:else if state === 'changeLanguage'}
+        <ChangeLanguage />
       {/if}
     </div>
   </div>

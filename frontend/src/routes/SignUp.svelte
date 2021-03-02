@@ -5,10 +5,8 @@
   import PasswordInput from '../components/inputs/PasswordInput.svelte';
   import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
   import { isSuccessResponse } from '../types/guards';
-  import statics from './statics';
   import TokenInput from '../components/inputs/TokenInput.svelte';
-
-  const { label, link } = statics.signUp;
+  import { _ } from 'svelte-i18n';
 
   let phoneNumber: string;
   let pwd: string;
@@ -31,24 +29,25 @@
         ? dispatch('signUp', resp.data)
         : dispatch('error', { message: resp.message });
     }
-    return dispatch('error', { message: 'Passwords do not match' });
+    return dispatch('error', { message: $_('sign_up.error_msg_pwd_mismatch') });
   };
 
   const singUpButton = {
     dataAut: 'signup-button',
-    label,
+    label: $_('sign_up.btn'),
     onclick: dispatchResponse,
   };
 
   const signInButton = {
-    ...link,
+    label: $_('sign_up.link'),
+    prefix: $_('sign_up.msg'),
     dataAut: 'link-signin-button',
     onclick: () => dispatch('openSignIn', {}),
   };
 </script>
 
 <LoginForm
-  title="Sign Up"
+  title={$_('sign_up.title')}
   actionButton={singUpButton}
   linkButton={signInButton}
 >
@@ -58,18 +57,18 @@
     </div>
 
     <div class="flex justify-center w-3/4 self-center relative">
-      <PasswordInput placeholder="Password" bind:value={pwd} />
+      <PasswordInput placeholder={$_('sign_up.pwd')} bind:value={pwd} />
     </div>
     <div class="flex justify-center w-3/4 self-center relative">
       <PasswordInput
-        placeholder="Confirm Password"
+        placeholder={$_('sign_up.conf_pwd')}
         bind:value={confirmPwd}
         dataAut="confirm-pwd-input"
       />
     </div>
 
     <div class="flex items-center w-full justify-center">
-      <TokenInput bind:token />
+      <TokenInput bind:token placeholder={$_('sign_up.bank_token')} />
     </div>
   </div>
 </LoginForm>
