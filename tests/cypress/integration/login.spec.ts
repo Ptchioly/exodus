@@ -47,7 +47,7 @@ describe('login', () => {
   })
 
   it('should error for an invalid user', () => {
-    cy.manualLogin({ username: `123456789123` })
+    cy.manualLogin({ username: '123456789123' })
     cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 400)
@@ -57,7 +57,7 @@ describe('login', () => {
   })
 
   it('should error for an invalid password for existing user', () => {
-    cy.manualLogin({ password: `Wr0ngPa$$word` })
+    cy.manualLogin({ password: 'Wr0ngPa$$word' })
     cy.wait('@login')
       .its('response.statusCode')
       .should('eq', 400)
