@@ -79,7 +79,6 @@
     padding-top: 32px;
     justify-content: center;
     align-items: center;
-    user-select: none;
     background-color: rgba(0, 121, 191, 0.3);
   }
   #content {

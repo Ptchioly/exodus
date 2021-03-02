@@ -192,8 +192,6 @@
     display: flex;
     flex-direction: row;
     padding: 0.25em 0;
-    user-select: none;
-    -webkit-user-select: none;
     justify-content: space-between;
     overflow: hidden;
   }

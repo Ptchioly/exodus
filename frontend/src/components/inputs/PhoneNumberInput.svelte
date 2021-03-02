@@ -47,11 +47,6 @@
 
   .login-input.code {
     background-color: rgba(218, 218, 218, 0.686);
-    user-select: none;
-    -moz-user-select: none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
-    -o-user-select: none;
   }
 
   input:-webkit-autofill::first-line {
