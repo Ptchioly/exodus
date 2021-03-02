@@ -2,7 +2,7 @@
   import { updatePassword } from '../../endpointApi';
   import { isSuccessResponse } from '../../types/guards';
   import Input from '../inputs/Input.svelte';
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   export let error: boolean;
   export let errorMessage: string;
@@ -125,8 +125,9 @@
   <button
     type="submit"
     on:click={() => changePassword(currentPass, newPass, confirmPass)}
-    class="mt-4 self-start bg-indigo-400 py-1 px-3 rounded-md text-white xs:mb-5"
-    data-automation-id="change-password">{$_('settings.change_pwd.change')}</button
+    class="mt-4 self-start bg-indigo-500 py-1 px-3 rounded-md text-white xs:mb-5"
+    data-automation-id="change-password"
+    >{$_('settings.change_pwd.change')}</button
   >
 </div>
 

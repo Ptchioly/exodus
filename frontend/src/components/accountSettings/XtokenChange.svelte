@@ -1,7 +1,7 @@
 <script lang="ts">
   import { updateXToken } from '../../endpointApi';
   import { isSuccessResponse } from '../../types/guards';
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   export let error: boolean;
   export let errorMessage: string;
@@ -28,8 +28,9 @@
     />
   </div>
   <button
-    class="mt-4 self-start bg-indigo-400 py-1 px-3 rounded-md text-white"
+    class="mt-4 self-start bg-indigo-500 py-1 px-3 rounded-md text-white"
     data-automation-id="change-xtoken"
-    on:click={() => handleXTokenChange(xToken)}>{$_("settings.change_token.btn")}</button
+    on:click={() => handleXTokenChange(xToken)}
+    >{$_('settings.change_token.btn')}</button
   >
 </div>

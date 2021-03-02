@@ -4,6 +4,7 @@
     "include": ["src/**/*"],
     "exclude": ["node_modules/*", "public/*"],
     "compilerOptions": {
-      "types": ["node", "svelte"]
+      "types": ["node", "svelte"],
+      "resolveJsonModule": true,
     }
   }

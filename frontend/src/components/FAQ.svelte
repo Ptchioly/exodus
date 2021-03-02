@@ -42,7 +42,10 @@
     <div class="faq-structure">
       <div class="question">Q: Where do I get Monobank token?</div>
       <div class="answer">
-        A: You can get it by visiting <a href="https://api.monobank.ua">this</a>
+        A: You can get it by visiting <a
+          href="https://api.monobank.ua"
+          class="text-blue-500">this</a
+        >
         link or by clicking on Mono logo on sign-up page.
       </div>
     </div>
