@@ -10,7 +10,7 @@
   class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl mx-2 "
   on:click={(e) => {
     isLoading = true;
-    dispatch('click', e);
+    dispatch('update', e);
     setTimeout(() => (isLoading = false), duration);
   }}
 >

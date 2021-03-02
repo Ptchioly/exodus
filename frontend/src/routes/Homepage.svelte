@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import Accounts from '../components/Accounts.svelte';
   import CardsPanel from '../components/cards/CardsPanel.svelte';
-  import AlphaLabel from '../components/headerItems/AlphaLabel.svelte';
-  import TelegramLink from '../components/headerItems/TelegramLink.svelte';
-  import UpdateButton from '../components/headerItems/UpdateButton.svelte';
-  import UserProfile from '../components/headerItems/UserProfile.svelte';
-  import HearedBar from '../components/HeaderBar.svelte';
+
   import Settings from '../components/accountSettings/Settings.svelte';
   import { getStatement } from '../endpointApi';
   import type { Account, AccountId, ParsedStatements } from '../types/Api';
@@ -15,7 +11,7 @@
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { parseStatements, waitFor } from '../utils';
-  import statics from './statics';
+  import Bar from '../components/header/Bar.svelte';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
 
@@ -26,8 +22,6 @@
   let accounts: Account[];
   let currentAccountId: string;
   let showSettings: boolean;
-
-  const dispatch = createEventDispatcher();
 
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
@@ -68,20 +62,12 @@
   <Settings on:close={() => (showSettings = false)} />
 {/if}
 <home class="flex w-full flex-col items-center">
-  <HearedBar>
-    <div slot="left" class="flex">
-      <AlphaLabel label="alpha" />
-    </div>
-    <div slot="right" class="reight flex">
-      <UpdateButton on:click={init} />
-      <TelegramLink on:click={() => window.open(statics.tgBotLink)} />
-      <UserProfile
-        {username}
-        on:logout
-        on:openSettings={() => (showSettings = true)}
-      />
-    </div>
-  </HearedBar>
+  <Bar
+    {username}
+    on:logout
+    on:settings={() => (showSettings = true)}
+    on:update={init}
+  />
   <section class="w-full p-0">
     {#if accounts}
       <div class="flex justify-center">

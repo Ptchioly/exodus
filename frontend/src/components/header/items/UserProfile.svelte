@@ -23,7 +23,7 @@
         name={username}
         on:openSettings={() => {
           isOpen = false;
-          dispath('openSettings', {});
+          dispath('settings', {});
         }}
         on:logout={() => {
           isOpen = false;
