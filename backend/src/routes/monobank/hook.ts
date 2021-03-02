@@ -9,19 +9,11 @@ import {
 import { endpointRespond } from '../../utils';
 import { sendTelegramMessage } from '../telegram/sendMessage';
 import { hasKey, isFailure } from '../types/guards';
-import { MonoStatement, Tables } from '../types/types';
+import { StatementItems, Tables } from '../types/types';
 import { getCategoriesTemplate, getMccCategory } from './paymentsProcessing';
 import { moneySpentToLimit, startMonth } from './utils';
 
 export const hook = Router();
-
-type StatementItems = {
-  type: 'StatementItem';
-  data: {
-    account: string;
-    statementItem: MonoStatement;
-  };
-};
 
 const pushNotificationIfLimitReached = async (
   accountId: string,

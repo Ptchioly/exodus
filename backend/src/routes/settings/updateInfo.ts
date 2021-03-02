@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { getItem, updateItem } from '../../dynamoAPI';
+import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { hash, isValidPassword } from '../auth/utils';
 import { authenticateToken } from '../auth/validate';
 import { getClientInfo } from '../monobank/endpoints';
 import { atLeast, isFailedFetchMono, isFailure } from '../types/guards';
 import { Tables } from '../types/types';
+import { updateUserInfo } from './settingUtils';
 
 export const updateInfo = Router();
 
@@ -23,42 +24,32 @@ updateInfo.post('/updateInfo', authenticateToken, async (req: any, res) => {
   const userFromDB = await getItem(Tables.USERS, {
     username,
   });
-  if (!isFailure(userFromDB)) {
-    const user = userFromDB.Item;
-    if (newPassword !== undefined) {
-      if (!isValidPassword(newPassword))
-        return respond.FailureResponse(
-          'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
-        );
 
-      const oldHash = hash(oldPassword, user.key);
-      if (oldHash !== user.password)
-        return respond.FailureResponse('Old password is incorrect');
+  if (isFailure(userFromDB))
+    return respond.FailureResponse('Failed to get user from database');
 
-      const encryptedPass = hash(newPassword, userFromDB.Item.key);
-
-      const updateUserResponse = await updateItem(
-        Tables.USERS,
-        { username },
-        { password: encryptedPass }
+  const {
+    Item: { key, password },
+  } = userFromDB;
+  const updateUser = updateUserInfo(username, respond);
+  if (newPassword !== undefined) {
+    if (!isValidPassword(newPassword))
+      return respond.FailureResponse(
+        'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
       );
-      if (isFailure(updateUserResponse))
-        return respond.FailureResponse('Failed to update user info');
-      return respond.SuccessResponse();
-    } else if (newXtoken !== undefined) {
-      const tokenCheck = await getClientInfo(newXtoken);
-      if (!isFailure(tokenCheck) && !isFailedFetchMono(tokenCheck)) {
-        const updateUserResponse = await updateItem(
-          Tables.USERS,
-          { username },
-          { xtoken: newXtoken }
-        );
-        if (isFailure(updateUserResponse))
-          return respond.FailureResponse('Failed to update user info');
-        return respond.SuccessResponse();
-      }
-      return respond.FailureResponse('X-Token is not valid');
-    }
+
+    if (hash(oldPassword, key) !== password)
+      return respond.FailureResponse('Old password is incorrect');
+
+    const encryptedPass = hash(newPassword, key);
+
+    return await updateUser({ password: encryptedPass });
+  } else if (newXtoken !== undefined) {
+    const tokenCheck = await getClientInfo(newXtoken);
+
+    return !isFailure(tokenCheck) && !isFailedFetchMono(tokenCheck)
+      ? await updateUser({ xtoken: newXtoken })
+      : respond.FailureResponse('X-Token is not valid');
   }
-  return respond.FailureResponse('Failed to get user from database');
+  // should users be able possibility to change his telergamID?
 });

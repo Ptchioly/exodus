@@ -24,7 +24,7 @@ export const startTelegramBody = () => ({
 export const sendTelegramMessage = (chat_id: string) => async (
   text: string,
   startBody = {}
-) => {
+): Promise<void> => {
   await fetch(`${telegramURL}/sendMessage`, {
     method: 'POST',
     headers: {

@@ -1,7 +1,8 @@
 import { AWSError } from 'aws-sdk';
 import { NextFunction, Request, Response } from 'express';
+import { EndpointRes } from './routes/types/types';
 
-export const endpointRespond = (res: Response) => ({
+export const endpointRespond = (res: Response): EndpointRes => ({
   SuccessResponse: (data = {}, status = 200): void => {
     res.status(status).json(data).end();
   },
