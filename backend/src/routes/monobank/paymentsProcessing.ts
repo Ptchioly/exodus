@@ -26,7 +26,7 @@ const addAmount = ({ id }: Category, amount: number) => (
     ? pay
     : {
         ...pay,
-        moneySpent: pay.moneySpent + Math.abs(amount / 100),
+        moneySpent: pay.moneySpent + Math.abs(Math.floor(amount / 100)),
       };
 
 export const categorize = (payments: MonoStatements): LimitCategory[] =>
