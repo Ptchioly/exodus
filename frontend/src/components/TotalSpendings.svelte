@@ -1,12 +1,13 @@
 <script lang="ts">
     import type { Total } from "../types/Api";
+    import { _ } from 'svelte-i18n';
 
     export let total: Total;
 </script>
 
 <div class="total-spendings flex content-center justify-around bg-indigo-100 rounded-2xl mb-2 text-sm">
     <div class="flex justify-center items-center pl-3">
-      Total spendings:
+      {$_('homepage.total_spendings')}:
     </div>
     <div class="ml-3 flex">
       <div class="bg-indigo-500 cell" style="width:6rem">

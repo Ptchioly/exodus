@@ -10,9 +10,11 @@
   import { addMessages, init } from "svelte-i18n";
   import en from './lang/en.json';
   import ru from './lang/ru.json';
+  import ua from './lang/ua.json';
 
   addMessages('English', en);
   addMessages('Русский', ru);
+  addMessages('Український', ua);
   init({ fallbackLocale: 'English', initialLocale: localStorage.getItem('language') });
 
   let authorized: boolean | undefined;

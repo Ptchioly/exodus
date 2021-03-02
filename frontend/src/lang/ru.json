@@ -19,6 +19,7 @@
     },
     "homepage": {
         "unpudgeted": "Не предусмотренный в бюджете",
+        "total_spendings": "Общие расходы",
         "no_spendings_msg": "Вы ничего не тратили в текущем месяце"
     },
     "menu": {

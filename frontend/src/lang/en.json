@@ -19,6 +19,7 @@
     },
     "homepage": {
         "unpudgeted": "Unbudgeted",
+        "total_spendings": "Total spendings",
         "no_spendings_msg": "You did not spend anything for current month"
     },
     "menu": {
