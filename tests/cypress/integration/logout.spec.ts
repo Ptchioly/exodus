@@ -9,7 +9,6 @@ describe('Logout', () => {
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
-    // cy.loginByAPI()
     cy.visit('/')
     cy.manualLogin()
   })
