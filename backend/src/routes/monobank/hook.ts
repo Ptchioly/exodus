@@ -93,7 +93,7 @@ hook.post('/hook', async (req: any, res) => {
       {
         accountId: account,
       },
-      Math.abs(statementItem.amount) / 100,
+      Math.abs(Math.floor(statementItem.amount / 100)),
       id
     );
 
