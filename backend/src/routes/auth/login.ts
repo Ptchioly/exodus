@@ -5,7 +5,11 @@ import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
 import { Tables } from '../types/types';
 import { hash } from './utils';
-import { generateAccessToken, validateUserInfo } from './validate';
+import {
+  generateAccessToken,
+  validateUserInfo,
+  validateWebhook,
+} from './validate';
 
 export const login = Router();
 
@@ -30,6 +34,8 @@ login.post('/login', async (req, res) => {
   const user = userResponse.Item;
   if (!user) return respond.FailureResponse('User does not exist.');
   const { xtoken, name } = user;
+
+  validateWebhook(xtoken, name);
 
   const encrypt = hash(password, user.key);
 
