@@ -16,13 +16,13 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div id="bg" class="w-full z-0">
+<div id="bg" class="w-full z-0 bg-shade dark:bg-shadeDark">
   {#if error}
     <ErrorMessage message={errorMessage} />
   {/if}
   <div
     id="content"
-    class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay"
+    class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay dark:bg-dark dark:text-gray-300"
   >
     <div
       class="xs:flex-row xs:justify-between sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-solid sm:border-r-2 border-gray-600 relative"
@@ -81,7 +81,6 @@
   #bg {
     position: fixed;
     height: 100%;
-    background: rgb(0, 121, 191);
     top: 0;
     right: 0;
     bottom: 0;
@@ -92,7 +91,7 @@
     padding-top: 32px;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 121, 191, 0.3);
+    backdrop-filter: blur(2px);
   }
   #content {
     min-height: 20rem;

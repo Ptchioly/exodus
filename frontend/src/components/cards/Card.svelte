@@ -58,6 +58,6 @@
   }
   .card.isActive {
     border: none;
-    box-shadow: 0 0 2px 2px #a5a5a5;
+    box-shadow: 0 0 2px 2px #6366f1;
   }
 </style>

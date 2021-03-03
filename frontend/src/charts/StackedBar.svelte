@@ -154,7 +154,7 @@
       {#if !props.activeInput}
         <button
           data-automation-id="limit-button"
-          class="action action--addLimit"
+          class="action action--addLimit dark:hover:bg-darker"
           on:click={handleInitLimit}
         >
           <img src="/images/add.svg" alt="+" />
@@ -167,13 +167,16 @@
           on:keydown={handlePress}
           on:change={handleChange}
           data-automation-id="limit-input"
-          class="action action--setLimit"
+          class="action action--setLimit dark:bg-darker dark:text-gray-300 bg-barBg"
         />
       {/if}
     </section>
 
     <section class="title">
-      <div data-automation-id="category-title-budgeted" class="title__name">
+      <div
+        data-automation-id="category-title-budgeted"
+        class="title__name dark:text-gray-400"
+      >
         {title}
       </div>
     </section>
@@ -204,7 +207,6 @@
 
   .top {
     width: 30%;
-    padding-right: 1em;
     box-sizing: border-box;
     flex-shrink: 100;
   }
@@ -227,10 +229,9 @@
     align-items: center;
     justify-content: center;
     border: none;
-    background-color: transparent;
-    height: 2em;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
+    height: 1.8em;
+    padding-left: 1em;
+    padding-right: 1em;
     border-radius: 8px;
     cursor: pointer;
   }
@@ -240,7 +241,7 @@
   }
 
   .action:hover {
-    background-color: #e7f4ec;
+    /* background-color: #e7f4ec; */
   }
 
   .action--setLimit {
@@ -248,7 +249,8 @@
     height: 2em;
     padding: none;
     border: none;
-    background-color: #e7f4ec;
+    box-sizing: border-box;
+    /* background-color: #e7f4ec; */
     text-align: center;
     border-radius: 8px;
     font-size: 0.75em;
@@ -267,7 +269,6 @@
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #333;
   }
   @media (max-width: 50em) {
     .wrapper-s {

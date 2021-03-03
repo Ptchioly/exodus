@@ -23,7 +23,7 @@
     <input
       bind:value={xToken}
       placeholder="X-Token"
-      class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5"
+      class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 dark:bg-darker dark:border-black"
       data-automation-id="new-xtoken"
     />
   </div>

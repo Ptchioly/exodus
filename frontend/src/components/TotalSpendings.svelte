@@ -6,9 +6,9 @@
 </script>
 
 <div
-  class="total-spendings flex content-center justify-around bg-indigo-200 rounded-2xl mb-2 text-sm"
+  class="total-spendings flex content-center justify-around bg-indigo-200 rounded-2xl mb-2 text-sm dark:bg-darker"
 >
-  <div class="flex justify-center items-center pl-3">
+  <div class="flex justify-center items-center pl-3 dark:text-gray-400">
     {$_('homepage.total_spendings')}:
   </div>
   <div class="ml-3 flex">
