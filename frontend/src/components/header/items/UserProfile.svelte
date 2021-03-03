@@ -21,7 +21,7 @@
     {#if isOpen}
       <UserMenu
         name={username}
-        on:openSettings={() => {
+        on:settings={() => {
           isOpen = false;
           dispath('settings', {});
         }}

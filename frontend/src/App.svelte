@@ -7,7 +7,7 @@
   import type ClientStorage from './types/ClientStorage';
   import type { UserMeta } from './types/ClientStorage';
 
-  import { addMessages, init, getLocaleFromNavigator } from "svelte-i18n";
+  import { addMessages, init, getLocaleFromNavigator } from 'svelte-i18n';
   import en from './lang/en.json';
   import ru from './lang/ru.json';
   import ua from './lang/ua.json';
@@ -15,7 +15,10 @@
   addMessages('en', en);
   addMessages('ru', ru);
   addMessages('ua', ua);
-  init({ fallbackLocale: 'en', initialLocale: localStorage.getItem('language') || getLocaleFromNavigator() });
+  init({
+    fallbackLocale: 'en',
+    initialLocale: localStorage.getItem('language') || getLocaleFromNavigator(),
+  });
 
   let authorized: boolean | undefined;
   let storage: ClientStorage<UserMeta, 'name'>;

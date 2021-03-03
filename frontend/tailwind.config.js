@@ -46,6 +46,10 @@ module.exports = {
         darkest: '#2b9090',
       },
     },
+    fontSize: {
+      ...defaultTheme.fontSize,
+      tiny: '0.55rem',
+    },
   },
   plugins: [require('@tailwindcss/ui')],
   purge: {

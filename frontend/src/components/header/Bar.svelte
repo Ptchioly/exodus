@@ -11,10 +11,13 @@
 </script>
 
 <HeaderContainer>
-  <div slot="left" class="flex">
+  <div slot="left" class="flex transform md:scale-100 xs:scale-125">
     <AlphaLabel label="alpha" />
   </div>
-  <div slot="right" class="reight flex">
+  <div
+    slot="right"
+    class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10"
+  >
     <InfoButton on:openFAQ />
     <UpdateButton on:update />
     <TelegramLink href={tgBotLink} />

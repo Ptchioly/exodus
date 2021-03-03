@@ -17,14 +17,15 @@
   let offsetWidth: number;
   let isOpen = false;
 
-  $: isMobile = offsetWidth < 500;
+  $: isMobile = offsetWidth < 400;
   $: currentAccountId = accounts[activeCard]?.id || 'all';
+  $: currentCardType = accounts[activeCard]?.type || 'all';
   $: mobileFly = isMobile ? fly : () => null;
 </script>
 
-<div class="flex justify-center">
+<div class="flex justify-start">
   <div
-    class="flex cards max-h-16"
+    class="flex cards w-1/2 md:max-h-16 xs:h-28"
     bind:offsetWidth
     on:click={() => (isOpen = !isOpen)}
     class:isMobile
@@ -46,7 +47,7 @@
 
       <!-- Opened cards in row for both versions -->
     {:else}
-      <div class="w-full flex flex-row max-h-16" class:isMobile>
+      <div class="w-full flex flex-row max-h-16 xs:h-28" class:isMobile>
         {#each accounts as account, i}
           <div class="my-2" in:mobileFly={{ duration: 500, x: i && -100 }}>
             <Card
@@ -79,8 +80,5 @@
 
   .isMobile {
     flex-direction: row;
-  }
-  .cards {
-    width: 100%;
   }
 </style>
