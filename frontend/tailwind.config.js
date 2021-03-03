@@ -48,7 +48,7 @@ module.exports = {
     },
     fontSize: {
       ...defaultTheme.fontSize,
-      tiny: '0.55rem',
+      tiny: ['0.55rem', { lineHeight: '0.6rem' }],
     },
   },
   plugins: [require('@tailwindcss/ui')],

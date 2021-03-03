@@ -33,17 +33,17 @@
   on:click={(e) => dispatch('click', e)}
 >
   <div
-    class="card rounded-md flex items-end md:p-1 xs:p-1 md:h-12 xs:h-16 flex-col md:justify-center xs:justify-between border-gray-600"
+    class="card rounded-md flex items-end md:p-1 xs:p-1 md:h-12 xs:h-16 flex-col justify-between  border-gray-600"
     {style}
     class:isActive={activeCard === index}
   >
     <div
-      class="pan md:text-tiny xs:text-sm font-bold xs:mt-2 md:mt-0"
+      class="pan md:text-tiny xs:text-sm font-bold md:mt-0"
       style="color: {text}"
     >
       {type}
     </div>
-    <div class="xs:mb-2 md:mb-0 flex flex-col items-end">
+    <div class="md:mb-0 flex flex-col items-end">
       {#each pan as p}
         <div
           class="pan self-end items-end md:text-tiny xs:text-sm ml-4 p-0 "
