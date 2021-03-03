@@ -13,8 +13,30 @@ describe('Budget and limits', () => {
     cy.manualLogin()
   })
 
-  // it('edits limit with input', () => {
-  // })
+  it.only('edits limit with input', () => {
+    cy.getBySel('limit-button')
+      .first()
+      .click()
+    cy.getBySel('limit-setter')
+      .first()
+      .then($limit => {
+        const limit = $limit.attr('data-value')
+        cy.get('.limit[data-automation-id="limit-hover"][data-name="current"]')
+          .first()
+          .trigger('mouseover')
+        cy.getBySel('limit-input')
+          .first()
+          .clear()
+          .type(limit + '5')
+        cy.get('.limit[data-automation-id="limit-hover"][data-name="current"]')
+          .first()
+          .trigger('mouseover')
+        cy.getBySel('limit-setter')
+          .first()
+          .should('have.attr', 'data-value')
+          .and('eq', limit + '5')
+      })
+  })
 
   it('edits limit with setter (drag and drop)', () => {
     cy.getBySel('limit-button')
