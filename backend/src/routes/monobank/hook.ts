@@ -68,37 +68,42 @@ hook.post('/hook', async (req: any, res) => {
 
   const { account, statementItem } = (req.body as StatementItems).data;
 
-  const { id, category } = getMccCategory(statementItem.mcc);
+  if (Math.sign(statementItem.amount) === -1) {
+    const { id, category } = getMccCategory(statementItem.mcc);
 
-  checkIfCurrentMonthExist(account);
+    checkIfCurrentMonthExist(account);
 
-  const updateUserRawStatement = await appendStatement(
-    {
-      accountId: account,
-    },
-    statementItem,
-    'rawData'
-  );
+    const updateUserRawStatement = await appendStatement(
+      {
+        accountId: account,
+      },
+      statementItem,
+      'rawData'
+    );
 
-  if (isFailure(updateUserRawStatement)) {
-    console.log('Failed to update user raw statement', updateUserRawStatement);
-    return respond.SuccessResponse();
+    if (isFailure(updateUserRawStatement)) {
+      console.log(
+        'Failed to update user raw statement',
+        updateUserRawStatement
+      );
+      return respond.SuccessResponse();
+    }
+
+    const incrementResponse = await incrementStatementSpendings(
+      {
+        accountId: account,
+      },
+      Math.abs(statementItem.amount) / 100,
+      id
+    );
+
+    if (isFailure(incrementResponse)) {
+      console.log('Failed to increment proccess', incrementResponse);
+      return respond.SuccessResponse();
+    }
+
+    pushNotificationIfLimitReached(account, id, category);
+
+    return respond.SuccessResponse(updateUserRawStatement);
   }
-
-  const incrementResponse = await incrementStatementSpendings(
-    {
-      accountId: account,
-    },
-    Math.abs(statementItem.amount) / 100,
-    id
-  );
-
-  if (isFailure(incrementResponse)) {
-    console.log('Failed to increment proccess', incrementResponse);
-    return respond.SuccessResponse();
-  }
-
-  pushNotificationIfLimitReached(account, id, category);
-
-  return respond.SuccessResponse(updateUserRawStatement);
 });
