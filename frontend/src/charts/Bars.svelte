@@ -313,6 +313,11 @@
     cursor: move;
   }
 
+  .limits > .limit:not(:hover) > .limit-handle.draggable {
+    width: 1px;
+    background-color: transparent !important;
+  }
+
   .limit-handle.moveable::after {
     content: attr(data-value);
     font-family: monospace;
