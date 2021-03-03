@@ -35,13 +35,12 @@ login.post('/login', async (req, res) => {
   if (!user) return respond.FailureResponse('User does not exist.');
   const { xtoken, name } = user;
 
-  validateWebhook(xtoken, name);
-
   const encrypt = hash(password, user.key);
 
   if (user.password !== encrypt)
     return respond.FailureResponse('Incorrect password.');
 
+  validateWebhook(xtoken, name);
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 

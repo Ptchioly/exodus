@@ -67,7 +67,7 @@ const validateStatement = (xtoken: string, username: string) => async ({
 }: MonoAccount): Promise<void> => {
   const currentMonth = startMonth('cur');
   const monoRawStatements = await getStatements(
-    { account, from: currentMonth },
+    { account, from: currentMonth, to: startMonth('next') },
     xtoken
   );
   if (!isFailedFetchMono(monoRawStatements)) {
