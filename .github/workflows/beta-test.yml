@@ -2,7 +2,7 @@ name: CI - Run Tests on Beta
 
 on:
   schedule:
-    - cron:  '0 */6 * * *' #run every six hours
+    - cron:  '0 */12 * * *' #run every twelve hours
 
 jobs:
   setup-and-run-ui-tests:
