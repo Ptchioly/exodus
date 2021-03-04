@@ -86,7 +86,7 @@ hook.post('/hook', async (req: any, res) => {
         'Failed to update user raw statement',
         updateUserRawStatement
       );
-      return respond.SuccessResponse();
+      return respond.FailureResponse('Failed to update user raw statement');
     }
 
     const incrementResponse = await incrementStatementSpendings(
@@ -99,7 +99,7 @@ hook.post('/hook', async (req: any, res) => {
 
     if (isFailure(incrementResponse)) {
       console.log('Failed to increment proccess', incrementResponse);
-      return respond.SuccessResponse();
+      return respond.FailureResponse('Failed to update user raw statement');
     }
 
     pushNotificationIfLimitReached(account, id, category);
