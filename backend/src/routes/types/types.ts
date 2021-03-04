@@ -159,9 +159,12 @@ export type ChartData = {
   previous: number;
   current: number;
   limit: number;
+  prevLimit?: number;
 };
 
-export type StatementHandler = (statement: LimitCategory) => number;
+export interface StatementHandler {
+  (statement: LimitCategory): Pick<LimitCategory, 'limit' | 'moneySpent'>;
+}
 
 export type MergedStatement = {
   message: string;

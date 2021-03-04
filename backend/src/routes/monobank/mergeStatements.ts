@@ -10,13 +10,18 @@ const processStatement = (
   forCurrent: StatementHandler,
   forPrevious: StatementHandler
 ) => (statement: LimitCategory): ChartData => {
-  const { id, limit, category } = statement;
+  const { id, category } = statement;
+  const { moneySpent: current, limit } = forCurrent(statement);
+  console.log(1);
+  const { moneySpent: previous, limit: prevLimit } = forPrevious(statement);
+  console.log(2);
   return {
-    previous: forPrevious(statement),
-    current: forCurrent(statement),
+    previous,
+    current,
     limit: limit || 0,
     title: category,
     id,
+    prevLimit,
   };
 };
 
@@ -24,25 +29,28 @@ export default (
   currentMonth: LimitCategory[],
   previousMonth?: LimitCategory[]
 ): ChartData[] => {
-  const current = currentMonth.map(
-    processStatement(
-      (current) => current.moneySpent,
-      (previous) =>
-        (previousMonth &&
-          previousMonth.find(equalId(previous.id))?.moneySpent) ||
-        0
-    )
+  const processCurrentStatement = processStatement(
+    ({ moneySpent, limit }) => ({ moneySpent, limit }),
+    ({ id }: LimitCategory) => {
+      const cat = previousMonth?.find(equalId(id));
+      return {
+        moneySpent: cat?.moneySpent || 0,
+        limit: cat?.limit || 0,
+      };
+    }
   );
+
+  const processPreviousStatement = processStatement(
+    (_) => ({ moneySpent: 0, limit: 0 }),
+    ({ moneySpent, limit }) => ({ moneySpent, limit })
+  );
+
+  const current = currentMonth.map(processCurrentStatement);
 
   const previous = previousMonth
     ? previousMonth
         .filter(({ id }) => !currentMonth.find(equalId(id)))
-        .map(
-          processStatement(
-            (_) => 0,
-            (previous) => previous.moneySpent
-          )
-        )
+        .map(processPreviousStatement)
     : [];
 
   return [...current, ...previous].sort(limitPrioriry);
