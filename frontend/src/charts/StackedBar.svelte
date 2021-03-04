@@ -1,28 +1,14 @@
-<script context="module" lang="ts">
-  let setLimitCallback: () => Promise<void> | null = null;
-
-  export const pushTimedOutLimit = async () => {
-    if (setLimitCallback) {
-      await setLimitCallback();
-      setLimitCallback = null;
-    }
-  };
-</script>
-
 <script lang="ts">
   import Bars from './Bars.svelte';
   import type { LabelPosition, StackedBars } from '../types/charts';
   import { createEventDispatcher } from 'svelte';
   import { staticValues } from './configs';
-  import { onDestroy } from 'svelte';
-  import { updateLimit } from '../endpointApi';
   export let title: string;
-  export let id: number;
   export let current: number;
   export let previous: number;
   export let limit: number;
   export let maxValue;
-  export let account: string;
+
   const dispatch = createEventDispatcher();
 
   let apiRequest: StackedBars;
@@ -95,32 +81,14 @@
     dispatch('updateMaxValue', { limit });
   };
 
-  let timeoutId: any;
-  let delay = 1000;
-
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
     if (+limit <= 0) {
       props.activeInput = false;
       limit = 0;
     }
-    if (typeof +limit === 'number' && +limit >= 0) setLimit();
+    if (typeof +limit === 'number' && +limit >= 0) dispatch('limit', { limit });
     dispatch('updateMaxValue', { limit });
-  };
-
-  const setLimit = () => {
-    if (timeoutId) clearInterval(timeoutId);
-    setLimitCallback = async () => {
-      if (account === 'all') return; // deny set limit for all cards (temporary solution)
-      if (timeoutId) clearInterval(timeoutId);
-      await updateLimit(id, +limit, account);
-    };
-    timeoutId = setTimeout(pushTimedOutLimit, delay);
-  };
-
-  // sets event every time after setLimitCallback has been initialized
-  $: window.onbeforeunload = (e) => {
-    pushTimedOutLimit();
   };
 
   const handlePress = (e) => {
@@ -142,10 +110,9 @@
 
   $: {
     // Force reload for cases where there are no new values for prev, limit, or curr fields
+    // Max: ????
     maxValue = maxValue;
   }
-
-  onDestroy(pushTimedOutLimit);
 </script>
 
 <div class="wrapper-s">

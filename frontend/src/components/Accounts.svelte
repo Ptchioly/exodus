@@ -1,10 +1,16 @@
+<script context="module" lang="ts">
+  const limitHandler = new LimitHandler(2000);
+  export const pushTimedOutLimit = () => limitHandler.force();
+</script>
+
 <script lang="ts">
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
   import type { ChartData, Total } from '../types/Api';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import TotalSpendings from './TotalSpendings.svelte';
+  import LimitHandler from './LimitHandler';
 
   export let accountId: string;
   export let other: ChartData;
@@ -30,10 +36,25 @@
     budgeted = [...budgeted, detail];
   };
 
+  const handleLimit = (categoryId: number) => ({
+    detail,
+  }: CustomEvent<{ limit: number }>) => {
+    if (accountId !== 'all')
+      limitHandler.push(detail.limit, categoryId, accountId);
+  };
+
   onMount(() => {
     maxValue = maxBarSize(budgeted, maxValue);
     p2pMax = maxBarSize([other], p2pMax);
   });
+
+  onDestroy(() => {
+    limitHandler.force();
+  });
+
+  window.onbeforeunload = () => {
+    limitHandler.force();
+  };
 </script>
 
 <div class="flex flex-col">
@@ -60,12 +81,12 @@
   {#each budgeted as category}
     <StackedBar
       {...category}
-      title={$_(`categories.${category.id}`)}
-      account={accountId}
       {maxValue}
+      title={$_(`categories.${category.id}`)}
       on:updateMaxValue={({ detail }) => {
         maxValue = maxBarSize(budgeted, detail.limit);
       }}
+      on:limit={handleLimit(category.id)}
     />
   {/each}
 {/if}
@@ -75,10 +96,10 @@
       {...other}
       title={$_(`categories.${other.id}`)}
       maxValue={p2pMax}
-      account={accountId}
       on:updateMaxValue={({ detail }) => {
         p2pMax = maxBarSize([other], detail.limit);
       }}
+      on:limit={handleLimit(other.id)}
     />
   </div>
 {/if}

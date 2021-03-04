@@ -1,18 +1,12 @@
 <script lang="ts">
-  import Accounts from '../components/Accounts.svelte';
+  import Accounts, { pushTimedOutLimit } from '../components/Accounts.svelte';
   import CardsPanel from '../components/cards/CardsPanel.svelte';
   import Bar from '../components/header/Bar.svelte';
   import Settings from '../components/accountSettings/Settings.svelte';
 
   import { onMount } from 'svelte';
-  import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
   import { getStatement } from '../endpointApi';
-  import type {
-    Account,
-    AccountId,
-    ParsedStatements,
-    Total,
-  } from '../types/Api';
+  import type { Account, AccountId, ParsedStatements } from '../types/Api';
   import type ClientStorage from '../types/ClientStorage';
   import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
