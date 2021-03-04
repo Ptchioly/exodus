@@ -9,6 +9,7 @@
   export let username: string;
   const tgBotLink = 'https://t.me/exodus_MonobankBudgetBot';
 
+
   let dark: boolean = document.querySelector('html').classList.contains('dark');
   const toggleTheme = () => {
     const html = document.querySelector('html');

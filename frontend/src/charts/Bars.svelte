@@ -154,7 +154,7 @@
                 >
                   {#if limit.value > bar.value}
                     <div
-                      class="remaining-wrap {limit.visible}"
+                      class="remaining-wrap {limit.visible} dark:text-indigo-600"
                       style="border-color: {bar.background};"
                     >
                       <div

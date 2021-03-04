@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
   import { isAuthenticated } from './endpointApi';
   import MainPage from './MainPage.svelte';
   import storages from './storage/storages';
@@ -17,8 +18,8 @@
   addMessages('ua', ua);
   init({ fallbackLocale: 'en', initialLocale: localStorage.getItem('language') || getLocaleFromNavigator() });
 
-  const theme: string = localStorage.getItem('theme') || 'light';
-  if (theme === 'dark') document.querySelector('html').classList.add('dark');
+  export const theme = writable(localStorage.getItem('theme') || 'light');
+  if ($theme === 'dark') document.querySelector('html').classList.add('dark');
 
   let authorized: boolean | undefined;
   let storage: ClientStorage<UserMeta, 'name'>;
