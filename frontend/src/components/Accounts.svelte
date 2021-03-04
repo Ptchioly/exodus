@@ -78,6 +78,7 @@
       current={other.current}
       previous={other.previous}
       title={$_(`categories.${other.id}`)}
+      id={other.id}
       bind:limit={other.limit}
       maxValue={p2pMax}
       account={accountId}
