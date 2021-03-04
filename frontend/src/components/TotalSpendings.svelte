@@ -13,10 +13,10 @@
   </div>
   <div class="ml-3 flex">
     <div class="bg-indigo-500 cell" style="width:6rem">
-      <div>{total.current}</div>
+      <div data-automation-id="total-current">{total.current}</div>
     </div>
     <div class="bg-indigo-400 cell" style="width:6rem">
-      <div>{total.previous}</div>
+      <div data-automation-id="total-previous">{total.previous}</div>
     </div>
   </div>
 </div>
