@@ -78,7 +78,7 @@
         "title": "FAQ",
         "about": {
             "q": "Q: What this service is about?",
-            "a": "A: Here you can do multiple things such as monitoring your monobank spendings, setting limits for each spending category and much more!"
+            "a": "A: Here you can do multiple things such as monitoring your Monobank spendings, setting limits for each spending category, and much more!"
         },
         "privacy": {
             "q": "Q: Is my information private?",
@@ -86,7 +86,7 @@
         },
         "start": {
             "q": "Q: How do I start working with the service?",
-            "a": "A: In order to do so, you need to register with your phone number and provide an X-Token than Monobank gives you."
+            "a": "A: In order to do so, you need to register with your phone number and provide an X-Token that Monobank gives you."
         },
         "token": {
             "q": "Q: Where do I get Monobank token?",
@@ -100,11 +100,11 @@
         },
         "telegram": {
             "q": "Q: How to set up Telegram notifications?",
-            "a": "A: Just click Telegram button at the top right after entering and follow the insructions."
+            "a": "A: Just click the Telegram button at the top right after entering and follow the instructions."
         },
         "limits-set": {
             "q": "Q: How to set a limit?",
-            "a": "A: Click on '+' sign on the left of the catefory bar and then type the amount you want. You can also drag the limit without typing but that feature is currently unavailable on mobile devices."
+            "a": "A: Click on the '+' sign on the left of the category bar and then type the amount you want. You can also drag the limit without typing but that feature is currently unavailable on mobile devices."
         }
     }
 }
