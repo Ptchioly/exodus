@@ -16,6 +16,7 @@ export type Bar = {
   label: string;
   labelPosition?: LabelPosition;
   detailedLabel?: string;
+  class?: string;
 };
 
 export type Limit = {
@@ -23,7 +24,7 @@ export type Limit = {
   value: number;
   color: string;
   draggable?: boolean;
-
+  class?: string;
   overlapStyle?: 'stripes' | '';
   visible?: 'hover' | 'static';
 };
@@ -33,4 +34,5 @@ export type StackedBars = {
   conf?: { [k: string]: any };
   bars: Bar[];
   limits: Limit[];
+  class?: string;
 };

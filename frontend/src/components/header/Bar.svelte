@@ -8,18 +8,34 @@
 
   export let username: string;
   const tgBotLink = 'https://t.me/exodus_MonobankBudgetBot';
+
+
+  let dark: boolean = document.querySelector('html').classList.contains('dark');
+  const toggleTheme = () => {
+    const html = document.querySelector('html');
+    localStorage.setItem('theme', html.classList.contains('dark') ? 'light' : 'dark');
+    html.classList.toggle('dark');
+    dark = document.querySelector('html').classList.contains('dark');
+  }
 </script>
 
 <HeaderContainer>
-  <div slot="left" class="flex transform md:scale-100 xs:scale-125">
+  <div slot="left" class="flex transform scale-100">
     <AlphaLabel label="alpha" />
   </div>
-  <div
-    slot="right"
-    class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10"
-  >
-    <InfoButton on:openFAQ />
+  <div slot="right" class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10">
+    <div
+    class="h-8 w-8 rounded-2xl cursor-pointer mx-2 flex justify-center"
+    on:click={toggleTheme}
+    >
+      {#if dark}
+        <img src="images/sun.svg" alt="info" />
+      {:else}
+        <img src="images/mode_night.svg" alt="info" />
+      {/if}
+    </div>  
     <UpdateButton on:update />
+    <InfoButton on:openFAQ />
     <TelegramLink href={tgBotLink} />
     <UserProfile on:settings on:logout {username} />
   </div>

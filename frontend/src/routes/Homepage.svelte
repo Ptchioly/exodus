@@ -70,7 +70,7 @@
 {#if showFAQ}
   <FAQ on:closeFAQ={() => (showFAQ = false)} />
 {/if}
-<home class="flex w-full flex-col items-center">
+<home class="flex w-full flex-col items-center dark:bg-dark">
   <Bar
     {username}
     on:logout

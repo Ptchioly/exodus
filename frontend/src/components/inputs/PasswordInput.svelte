@@ -16,7 +16,7 @@
 
 {#if show}
   <input
-    class="pwd-input text-lg"
+    class="pwd-input text-lg dark:bg-dark dark:border-darker border-gray-200 dark:text-gray-300 text-gray-700"
     data-automation-id={dataAut}
     type="text"
     {placeholder}
@@ -25,7 +25,7 @@
   />
 {:else}
   <input
-    class="pwd-input text-lg"
+    class="pwd-input text-lg dark:bg-dark dark:border-darker border-gray-200 dark:text-gray-300 text-gray-700"
     data-automation-id={dataAut}
     type="password"
     {placeholder}
@@ -47,7 +47,7 @@
   }
 
   .pwd-input {
-    @apply flex content-center self-center text-gray-700 placeholder-gray-500 border-gray-200 pl-1 border-2 mt-5 py-2 rounded-lg w-full;
+    @apply flex content-center self-center placeholder-gray-500 pl-1 border-2 mt-5 py-2 rounded-lg w-full;
   }
 
   input:-webkit-autofill::first-line {

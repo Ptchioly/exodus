@@ -13,7 +13,7 @@ describe('Budget and limits', () => {
     cy.manualLogin()
   })
 
-  it.only('edits limit with input', () => {
+  it('edits limit with input', () => {
     cy.getBySel('limit-button')
       .first()
       .click()
@@ -74,6 +74,12 @@ describe('Budget and limits', () => {
   // it('deletes a budget for category', () => {
   // })
 
-  // it('shows a budget info from previous month', () => {
-  // })
+  it('shows budget info from current and previous month', () => {
+    cy.getBySel('total-current')
+      .invoke('text')
+      .should('not.eq', '0', { timeout: 80000 })
+    cy.getBySel('total-previous')
+      .invoke('text')
+      .should('not.eq', '0', { timeout: 80000 })
+  })
 })
