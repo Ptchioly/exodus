@@ -84,8 +84,8 @@
 >
   <section class="bar-placeholder">
     <div
-      class="bar--placeholder"
-      style="background: {bars.conf.background}; height: {isDetailed
+      class="bar--placeholder bg-barBg dark:bg-darker"
+      style="height: {isDetailed
         ? bars.bars.length * 2 * (bars.conf.detailedSpace / 100) + 2
         : 2}em"
     />
@@ -154,7 +154,7 @@
                 >
                   {#if limit.value > bar.value}
                     <div
-                      class="remaining-wrap {limit.visible}"
+                      class="remaining-wrap {limit.visible} dark:text-indigo-600"
                       style="border-color: {bar.background};"
                     >
                       <div
@@ -212,7 +212,7 @@
   .bar--placeholder {
     height: 2em;
     border-radius: 0.5em;
-    background-color: #edf8f4;
+    /* background-color: #edf8f4; */
     transition: height 0.3s;
   }
 
@@ -307,10 +307,14 @@
     position: absolute;
     right: -0.55em;
     border-radius: 2px;
-    width: 0;
+    width: 0px;
     height: 100%;
     transition: all 0.1s;
     cursor: move;
+  }
+  .limits > .limit:not(:hover) > .limit-handle.draggable {
+    width: 1px;
+    background-color: transparent !important;
   }
 
   .limits > .limit:not(:hover) > .limit-handle.draggable {

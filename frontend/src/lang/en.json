@@ -90,8 +90,8 @@
         },
         "token": {
             "q": "Q: Where do I get Monobank token?",
-            "a-before": "A: You can get it by visiting",
-            "a-after": "link or by clicking on Mono logo on sign-up page.",
+            "a-before": "A: You can get it by visiting ",
+            "a-after": " link or by clicking on Mono logo on sign-up page.",
             "link-title": "this"
         },
         "limits-point": {

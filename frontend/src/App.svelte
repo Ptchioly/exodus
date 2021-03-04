@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
   import { isAuthenticated } from './endpointApi';
   import MainPage from './MainPage.svelte';
   import storages from './storage/storages';
@@ -20,6 +21,9 @@
     initialLocale: localStorage.getItem('language') || getLocaleFromNavigator(),
   });
 
+  export const theme = writable(localStorage.getItem('theme') || 'light');
+  if ($theme === 'dark') document.querySelector('html').classList.add('dark');
+
   let authorized: boolean | undefined;
   let storage: ClientStorage<UserMeta, 'name'>;
 
@@ -31,7 +35,7 @@
 
 <TailwindCss />
 <main
-  class="font-main h-screen mx-10 md:mx-20 text-center flex content-center my-10"
+  class="font-main h-full box-border px-10 md:px-20 text-center flex content-center dark:bg-dark overscroll-y-auto overflow-y-scroll"
 >
   {#if storage}
     <MainPage {storage} {authorized} />

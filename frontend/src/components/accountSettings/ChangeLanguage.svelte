@@ -37,7 +37,7 @@
   <div class="flex flex-row mt-2 items-center">
     <div>{$_('settings.change_lang.languages')}</div>
     <select
-      class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5"
+      class="ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 dark:bg-darker dark:border-black p-1"
       bind:value={currentLanguage}
     >
       {#each languages as language}

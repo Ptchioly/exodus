@@ -13,14 +13,14 @@
 
 <input
   type="text"
-  class="login-input code w-1/5"
+  class="login-input code w-1/5 dark:bg-dark dark:border-darker focus:dark:border-darker text-gray-700 dark:text-gray-300 border-gray-200"
   data-automation-id="country-code--input"
   readonly
   required
   bind:value={countryCode}
 />
 <input
-  class="login-input tel w-4/5"
+  class="login-input tel w-4/5 dark:bg-dark dark:border-darker focus:dark:border-darker text-gray-700 dark:text-gray-300 border-gray-200"
   type="text"
   data-automation-id="phone-input"
   placeholder="XX-XXX-XXXX"
@@ -31,7 +31,7 @@
 
 <style lang="postcss">
   .login-input {
-    @apply w-3/4 text-lg text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
+    @apply w-3/4 text-lg placeholder-gray-500 rounded-lg border-2 py-1 px-0 pl-2 mt-8;
   }
   .login-input.tel:focus {
     @apply border-gray-400 border-2;
@@ -43,10 +43,6 @@
 
   .login-input.tel {
     @apply w-4/5;
-  }
-
-  .login-input.code {
-    background-color: rgba(218, 218, 218, 0.686);
   }
 
   input:-webkit-autofill::first-line {

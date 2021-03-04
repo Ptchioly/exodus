@@ -14,7 +14,7 @@
 </script>
 
 <div
-  class="shadow-xl max-w-xl max-h-none w-full md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white"
+  class="shadow-xl max-w-xl max-h-none w-full md:max-w-sm  m-auto bg-opacity-50 rounded-3xl border-white md:border-gray-200 border-2 bg-white dark:bg-lightdark"
 >
   <h1
     class="containter text-3xl text-indigo-500   font-bold big-text pt-20 lg:pt-11 pb-3 leading-9"
@@ -37,7 +37,7 @@
 
   <div
     on:click={linkButton.onclick}
-    class="mt-9 pb-5 lg:pb-10 flex justify-center cursor-pointer"
+    class="mt-9 pb-5 lg:pb-10 flex justify-center cursor-pointer dark:text-gray-300"
   >
     <p>{linkButton.prefix}</p>
     <p class="cursor-pointer ml-2" data-automation-id={linkButton.dataAut}>
