@@ -1,28 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
   import { isAuthenticated } from './endpointApi';
   import MainPage from './MainPage.svelte';
   import storages from './storage/storages';
   import TailwindCss from './TailwindCss.svelte';
   import type ClientStorage from './types/ClientStorage';
   import type { UserMeta } from './types/ClientStorage';
-
-  import { addMessages, init, getLocaleFromNavigator } from 'svelte-i18n';
-  import en from './lang/en.json';
-  import ru from './lang/ru.json';
-  import ua from './lang/ua.json';
-
-  addMessages('en', en);
-  addMessages('ru', ru);
-  addMessages('ua', ua);
-  init({
-    fallbackLocale: 'en',
-    initialLocale: localStorage.getItem('language') || getLocaleFromNavigator(),
-  });
-
-  export const theme = writable(localStorage.getItem('theme') || 'light');
-  if ($theme === 'dark') document.querySelector('html').classList.add('dark');
 
   let authorized: boolean | undefined;
   let storage: ClientStorage<UserMeta, 'name'>;
