@@ -12,9 +12,7 @@ const processStatement = (
 ) => (statement: LimitCategory): ChartData => {
   const { id, category } = statement;
   const { moneySpent: current, limit } = forCurrent(statement);
-  console.log(1);
   const { moneySpent: previous, limit: prevLimit } = forPrevious(statement);
-  console.log(2);
   return {
     previous,
     current,
