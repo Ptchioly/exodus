@@ -8,7 +8,7 @@ import type {
 export const waitFor = (seconds: number): Promise<void> =>
   new Promise((res) => setTimeout(res, seconds * 1000));
 
-const p2p = 16;
+const p2p = 17;
 
 const isOtherCategory = ({ id }: ChartData | Statement): boolean => id === p2p;
 

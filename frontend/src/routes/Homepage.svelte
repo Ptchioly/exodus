@@ -30,6 +30,9 @@
   let showSettings: boolean;
   let showFAQ: boolean;
 
+  const p2p = 17;
+
+  //TODO: refactor
   const fetchStatements = async () => {
     const response = await getStatement(accounts.map(({ id }) => id));
 

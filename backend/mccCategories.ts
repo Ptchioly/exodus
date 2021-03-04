@@ -151,14 +151,10 @@ export const categories: Category[] = [
   {
     mcc: {
       numbers: [
-        5172,
         5511,
         5531,
         5532,
         5533,
-        5541,
-        5542,
-        5983,
         7511,
         7523,
         7531,
@@ -170,7 +166,7 @@ export const categories: Category[] = [
       ],
       ranges: [],
     },
-    category: 'Авто и АЗС',
+    category: 'Авто',
     id: 6,
   },
   {
@@ -260,11 +256,19 @@ export const categories: Category[] = [
   },
   {
     mcc: {
+      numbers: [4900],
+      ranges: [],
+    },
+    category: 'Коммунальные платежи',
+    id: 15,
+  },
+  {
+    mcc: {
       numbers: [],
       ranges: [],
     },
     category: 'Другое',
-    id: 15,
+    id: 16,
   },
   {
     mcc: {
@@ -272,6 +276,6 @@ export const categories: Category[] = [
       ranges: [],
     },
     category: 'Переводы на карту',
-    id: 16,
+    id: 17,
   },
 ];

@@ -33,7 +33,7 @@
         "3": "Cafes and restaurants",
         "4": "Groceries and supermarkets",
         "5": "Cinema",
-        "6": "Auto and gas station",
+        "6": "Auto",
         "7": "Clothes and footwear",
         "8": "Taxi",
         "9": "Animals",
@@ -42,8 +42,9 @@
         "12": "Appliances",
         "13": "Gas station",
         "14": "Fast food",
-        "15": "Other",
-        "16": "Transfers to a card"
+        "15": "Communal payments",
+        "16": "Other",
+        "17": "Transfers to a card"
     },
     "settings": {
         "change_pwd": {
