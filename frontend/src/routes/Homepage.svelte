@@ -24,7 +24,6 @@
   let fullParsedSatements: Record<AccountId, ParsedStatements>;
 
   let username: string;
-  let isEmpty: boolean;
   let accounts: Account[];
   let currentAccountId: string;
   let showSettings: boolean;
@@ -85,7 +84,7 @@
     {#if fullParsedSatements}
       {#each Object.entries(fullParsedSatements) as [accountId, statement]}
         {#if accountId === currentAccountId}
-          <Accounts {...statement} {accountId} {isEmpty} />
+          <Accounts {...statement} {accountId} />
         {/if}
       {/each}
     {/if}

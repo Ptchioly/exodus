@@ -7,12 +7,12 @@
   import TotalSpendings from './TotalSpendings.svelte';
 
   export let accountId: string;
-  export let isEmpty: boolean;
   export let other: ChartData;
   export let budgeted: ChartData[];
   export let unbudgeted: ChartData[];
   export let total: Total;
 
+  let isEmpty: boolean;
   let maxValue = 0;
   let p2pMax = 0;
 
@@ -57,13 +57,10 @@
   </h1>
 {/if}
 {#if budgeted}
-  {#each budgeted as { current, previous, limit, id }}
+  {#each budgeted as category}
     <StackedBar
-      {current}
-      {previous}
-      {id}
-      title={$_(`categories.${id}`)}
-      bind:limit
+      {...category}
+      title={$_(`categories.${category.id}`)}
       account={accountId}
       {maxValue}
       on:updateMaxValue={({ detail }) => {
@@ -75,11 +72,8 @@
 {#if other}
   <div class="other-category mb-20">
     <StackedBar
-      current={other.current}
-      previous={other.previous}
+      {...other}
       title={$_(`categories.${other.id}`)}
-      id={other.id}
-      bind:limit={other.limit}
       maxValue={p2pMax}
       account={accountId}
       on:updateMaxValue={({ detail }) => {
