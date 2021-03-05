@@ -1,6 +1,6 @@
 <script lang="ts">
   import { signUp } from '../endpointApi';
-  import LoginForm from '../components/LoginForm.svelte';
+  import LoginForm from '../components/authorization/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
   import PasswordInput from '../components/inputs/PasswordInput.svelte';
   import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
@@ -42,7 +42,7 @@
     label: $_('sign_up.link'),
     prefix: $_('sign_up.msg'),
     dataAut: 'link-signin-button',
-    onclick: () => dispatch('openSignIn', {}),
+    onclick: () => dispatch('stateChange', { state: 'signIn' }),
   };
 </script>
 

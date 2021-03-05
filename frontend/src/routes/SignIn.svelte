@@ -2,8 +2,8 @@
   import { createEventDispatcher } from 'svelte';
   import { _ } from 'svelte-i18n';
   import { signIn } from '../endpointApi';
-  
-  import LoginForm from '../components/LoginForm.svelte';
+
+  import LoginForm from '../components/authorization/LoginForm.svelte';
   import PasswordInput from '../components/inputs/PasswordInput.svelte';
   import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
   import { isSuccessResponse } from '../types/guards';
@@ -11,7 +11,6 @@
   let phoneNumber: string;
   let countryCode: string = '380';
   let pwd: string;
-
 
   const dispatch = createEventDispatcher();
 
@@ -30,8 +29,8 @@
   const signUpButton = {
     label: $_('sign_in.link'),
     prefix: $_('sign_in.msg'),
-    onclick: () => dispatch('openSignUp', {}),
     dataAut: 'link-signup-button',
+    onclick: () => dispatch('stateChange', { state: 'signUp' }),
   };
 
   $: summaryPhone = countryCode + phoneNumber;

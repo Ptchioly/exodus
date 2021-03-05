@@ -3,22 +3,19 @@
   import CardsPanel from '../components/cards/CardsPanel.svelte';
   import Bar from '../components/header/Bar.svelte';
   import Settings from '../components/accountSettings/Settings.svelte';
+  import FAQ from '../components/FAQ.svelte';
 
   import { onMount } from 'svelte';
   import { getStatement } from '../endpointApi';
   import type { Account, AccountId, ParsedStatements } from '../types/Api';
-  import type ClientStorage from '../types/ClientStorage';
-  import type { UserMeta } from '../types/ClientStorage';
   import { isSuccessResponse } from '../types/guards';
   import { parseStatements, waitFor } from '../utils';
-  import FAQ from '../components/FAQ.svelte';
 
-  export let storage: ClientStorage<UserMeta, 'name'>;
+  export let username: string;
+  export let accounts: Account[];
 
   let fullParsedSatements: Record<AccountId, ParsedStatements>;
 
-  let username: string;
-  let accounts: Account[];
   let currentAccountId: string;
   let showSettings: boolean;
   let showFAQ: boolean;
@@ -49,7 +46,6 @@
 
   const init = async () => {
     await pushTimedOutLimit();
-    [{ name: username, accounts }] = await storage.getAll();
     currentAccountId = accounts[0]?.id;
     fetchStatements();
   };
