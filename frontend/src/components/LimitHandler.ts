@@ -20,7 +20,7 @@ export default class LimitHandler {
 
   public push(limit: number, categoryId: number, accountId: string): void {
     const request: Request = () => updateLimit(categoryId, limit, accountId);
-    const timeout = setTimeout(request, 4000);
+    const timeout = setTimeout(request, this._delay);
     const hash = hashLimit(accountId, categoryId);
     if (this._requests[hash]) clearTimeout(this._requests[hash].timeout);
 

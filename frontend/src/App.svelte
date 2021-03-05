@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
-  import MainPage from './MainPage.svelte';
+  import MainController from './MainController.svelte';
   import storages from './storage/storages';
   import TailwindCss from './TailwindCss.svelte';
   import type ClientStorage from './types/ClientStorage';
@@ -21,7 +21,7 @@
   class="font-main h-full box-border px-10 md:px-20 text-center flex content-center dark:bg-dark overscroll-y-auto overflow-y-scroll"
 >
   {#if storage}
-    <MainPage {storage} {authorized} />
+    <MainController {storage} {authorized} />
   {/if}
 </main>
 
