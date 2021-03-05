@@ -11,7 +11,7 @@
   import { isSuccessResponse } from '../types/guards';
   import { parseStatements, waitFor } from '../utils';
 
-  export let username: string;
+  export let name: string;
   export let accounts: Account[];
 
   let fullParsedSatements: Record<AccountId, ParsedStatements>;
@@ -61,7 +61,7 @@
 {/if}
 <home class="flex w-full flex-col items-center dark:bg-dark">
   <Bar
-    {username}
+    username={name}
     on:logout
     on:settings={() => (showSettings = true)}
     on:update={init}
