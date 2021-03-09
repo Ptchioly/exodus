@@ -14,7 +14,7 @@
 {#if username}
   <HeaderContainer>
     <div slot="left" class="flex transform scale-100">
-      <AlphaLabel label="alpha" />
+      <AlphaLabel label="beta" />
     </div>
     <div
       slot="right"

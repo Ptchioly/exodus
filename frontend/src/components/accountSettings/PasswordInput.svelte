@@ -7,6 +7,7 @@
   export let dataAut: string;
   export let label: string;
   export let margin: string;
+  export let type: 'curr' | 'new' | 'conf';
 </script>
 
 <div class="relative">
@@ -14,7 +15,7 @@
     <Input
       type="text"
       bind:value={inputValue}
-      placeholder={$_('settings.change_pwd.curr_pwd_holder')}
+      placeholder={$_(`settings.change_pwd.${type}_pwd_holder`)}
       dataAutomationId={dataAut}
       className={`${label} ${margin}`}
     />
@@ -22,7 +23,7 @@
     <Input
       type="password"
       bind:value={inputValue}
-      placeholder={$_('settings.change_pwd.curr_pwd_holder')}
+      placeholder={$_(`settings.change_pwd.${type}_pwd_holder`)}
       dataAutomationId={dataAut}
       className={`${label} ${margin}`}
     />

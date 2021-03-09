@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let label = 'alpha';
+  export let label = 'beta';
 </script>
 
 <div

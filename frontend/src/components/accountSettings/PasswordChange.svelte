@@ -43,6 +43,7 @@
         bind:show
         dataAut="current-password"
         {label}
+        type="curr"
       />
       <PasswordInput
         bind:inputValue={newPass}
@@ -50,6 +51,7 @@
         bind:show
         dataAut="new-password"
         {label}
+        type="new"
       />
       <PasswordInput
         bind:inputValue={confirmPass}
@@ -57,6 +59,7 @@
         bind:show
         dataAut="password-check"
         {label}
+        type="conf"
       />
     </div>
   </div>

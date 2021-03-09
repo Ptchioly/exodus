@@ -37,10 +37,11 @@
   });
 </script>
 
+<!-- svelte-ignore a11y-no-onchange -->
 <HeaderContainer>
   <div slot="left" class="flex transform scale-100">
     <select
-      class="ml-3 border-gray-300 border-2 rounded-md pl-3 mr-5 bg-transparent dark:border-gray-800 p-1 text-gray-500 dark:text-gray-500"
+      class="ml-3 border-gray-300 border-2 rounded-md pl-3 mr-5 bg-transparent dark:border-gray-800 p-1 dark:text-gray-200 text-gray-700"
       bind:value={currentLanguage}
       on:change={saveLanguage}
     >

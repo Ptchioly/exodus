@@ -23,7 +23,7 @@
     "no_spendings_msg": "You did not spend anything for current month"
   },
   "menu": {
-    "acc_sett": "Account Settings",
+    "acc_sett": "Settings",
     "logout": "Logout"
   },
   "categories": {
@@ -66,6 +66,11 @@
       "btn": "Delete",
       "confirmation_msg": "Do you really want to delete your account and all your data? This action is irreversible!",
       "error_msg": "Failed to delete account"
+    },
+    "change_lang": {
+      "title": "Change Language",
+      "languages": "Language",
+      "btn": "Save"
     },
     "menu": {
       "acc_sett": "Settings",
