@@ -37,13 +37,13 @@
     return dispatch('error', { message: $_('sign_up.error_msg_pwd_mismatch') });
   };
 
-  const singUpButton = {
+  $: singUpButton = {
     dataAut: 'signup-button',
     label: $_('sign_up.btn'),
     onclick: dispatchResponse,
   };
 
-  const signInButton = {
+  $: signInButton = {
     label: $_('sign_up.link'),
     prefix: $_('sign_up.msg'),
     dataAut: 'link-signin-button',
