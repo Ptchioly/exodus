@@ -1,25 +1,19 @@
 import { Router } from 'express';
+import { categories } from '../../../mccCategories';
 import {
   appendStatement,
   getItem,
   incrementStatementSpendings,
+  updateItem,
 } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { sendTelegramMessage } from '../telegram/sendMessage';
-import { isFailure } from '../types/guards';
-import { MonoStatement, Tables } from '../types/types';
-import { getMccCategory } from './paymentsProcessing';
-import { moneySpentToLimit } from './utils';
+import { hasKey, isFailure } from '../types/guards';
+import { APIError, StatementItems, Tables } from '../types/types';
+import { getCategoriesTemplate, getMccCategory } from './paymentsProcessing';
+import { moneySpentToLimit, startMonth } from './utils';
 
 export const hook = Router();
-
-type StatementItems = {
-  type: 'StatementItem';
-  data: {
-    account: string;
-    statementItem: MonoStatement;
-  };
-};
 
 const pushNotificationIfLimitReached = async (
   accountId: string,
@@ -45,44 +39,71 @@ const pushNotificationIfLimitReached = async (
   }
 };
 
+const checkIfCurrentMonthExist = async (accountId: string): Promise<void> => {
+  // rewrite to conditional check
+  // https://docs.aws.amazon.com/sdk-for-ruby/v2/api/Aws/DynamoDB/Types/ConditionCheck.html
+  const statementResponse = await getItem(Tables.STATEMENTS, { accountId });
+  if (!isFailure(statementResponse)) {
+    const currentMonth = startMonth('cur');
+
+    if (!hasKey(statementResponse.Item, currentMonth)) {
+      const currentMonthTemplate = {
+        [currentMonth]: {
+          rawData: [],
+          processedData: getCategoriesTemplate(categories),
+        },
+      };
+
+      await updateItem(Tables.STATEMENTS, { accountId }, currentMonthTemplate);
+    }
+  }
+};
+
 hook.post('/hook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
   if (!req.body) {
-    return respond.FailureResponse('Empty body.');
+    return respond.FailureResponse(APIError.EMPTY_BODY); //'Empty body.'
   }
 
   const { account, statementItem } = (req.body as StatementItems).data;
 
-  const { id, category } = getMccCategory(statementItem.mcc);
+  if (Math.sign(statementItem.amount) === -1) {
+    const { id, category } = getMccCategory(statementItem.mcc);
 
-  const updateUserRawStatement = await appendStatement(
-    {
-      accountId: account,
-    },
-    statementItem,
-    'rawData'
-  );
+    checkIfCurrentMonthExist(account);
 
-  if (isFailure(updateUserRawStatement)) {
-    console.log('Failed to update user raw statement', updateUserRawStatement);
-    return respond.SuccessResponse();
+    const updateUserRawStatement = await appendStatement(
+      {
+        accountId: account,
+      },
+      statementItem,
+      'rawData'
+    );
+
+    if (isFailure(updateUserRawStatement)) {
+      console.log(
+        'Failed to update user raw statement',
+        updateUserRawStatement
+      );
+      return respond.FailureResponse(APIError.CANT_UPDATE_STATEMENT); //'Failed to update user raw statement'
+    }
+
+    const incrementResponse = await incrementStatementSpendings(
+      {
+        accountId: account,
+      },
+      Math.abs(Math.round(statementItem.amount / 100)),
+      id
+    );
+
+    if (isFailure(incrementResponse)) {
+      console.log('Failed to increment proccess', incrementResponse);
+      return respond.FailureResponse(APIError.CANT_UPDATE_STATEMENT);
+    }
+
+    pushNotificationIfLimitReached(account, id, category);
+
+    return respond.SuccessResponse(updateUserRawStatement);
   }
-
-  const incrementResponse = await incrementStatementSpendings(
-    {
-      accountId: account,
-    },
-    Math.abs(statementItem.amount) / 100,
-    id
-  );
-
-  if (isFailure(incrementResponse)) {
-    console.log('Failed to increment proccess', incrementResponse);
-    return respond.SuccessResponse();
-  }
-
-  pushNotificationIfLimitReached(account, id, category);
-
-  return respond.SuccessResponse(updateUserRawStatement);
 });

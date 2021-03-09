@@ -1,18 +1,16 @@
 <script lang="ts">
   import { signUp } from '../endpointApi';
-  import LoginForm from '../components/LoginForm.svelte';
+  import LoginForm from '../components/authorization/LoginForm.svelte';
   import { createEventDispatcher } from 'svelte';
-  import PasswordInput from '../components/PasswordInput.svelte';
-  import PhoneNumberInput from '../components/PhoneNumberInput.svelte';
-  import MonoLogo from '../components/MonoLogo.svelte';
+  import PasswordInput from '../components/inputs/PasswordInput.svelte';
+  import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
   import { isSuccessResponse } from '../types/guards';
-  import statics from './statics';
-  import TokenInput from '../components/TokenInput.svelte';
+  import TokenInput from '../components/inputs/TokenInput.svelte';
+  import { _ } from 'svelte-i18n';
+  import BarSignin from '../components/header/BarSignin.svelte';
 
-  const {
-    signUp: { label, link },
-  } = statics;
-
+  import FAQ from '../components/FAQ.svelte';
+  let showFAQ: boolean;
   let phoneNumber: string;
   let pwd: string;
   let token: string;
@@ -32,53 +30,62 @@
       const resp = await signUp(countryCode + phoneNumber, pwd, token);
       return isSuccessResponse(resp)
         ? dispatch('signUp', resp.data)
-        : dispatch('error', { message: resp.message });
+        : dispatch('error', {
+            message: $_(`api-error.${resp.error}`),
+          });
     }
-    return dispatch('error', { message: 'Passwords do not match' });
+    return dispatch('error', { message: $_('sign_up.error_msg_pwd_mismatch') });
   };
 
-  const singUpButton = {
+  $: singUpButton = {
     dataAut: 'signup-button',
-    label,
+    label: $_('sign_up.btn'),
     onclick: dispatchResponse,
   };
 
-  const signInButton = {
-    ...link,
+  $: signInButton = {
+    label: $_('sign_up.link'),
+    prefix: $_('sign_up.msg'),
     dataAut: 'link-signin-button',
-    onclick: () => dispatch('openSignIn', {}),
+    onclick: () => dispatch('stateChange', { state: 'signIn' }),
   };
 </script>
 
-<LoginForm
-  title="Sign Up"
-  actionButton={singUpButton}
-  linkButton={signInButton}
->
-  <div class="flex justify-center flex-col">
-    <div class="phone flex items-center justify-center w-3/4 self-center">
-      <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
-    </div>
+{#if showFAQ}
+  <FAQ on:closeFAQ={() => (showFAQ = false)} />
+{/if}
+<div class="self-center pt-20">
+  <LoginForm
+    title={$_('sign_up.title')}
+    actionButton={singUpButton}
+    linkButton={signInButton}
+  >
+    <div class="flex justify-center flex-col">
+      <div class="input-wrapper items-center">
+        <PhoneNumberInput {countryCode} bind:value={phoneNumber} />
+      </div>
 
-    <div class="flex justify-center w-3/4 self-center relative">
-      <PasswordInput placeholder="Password" bind:value={pwd} />
-    </div>
-    <div class="flex justify-center w-3/4 self-center relative">
-      <PasswordInput
-        placeholder="Confirm Password"
-        bind:value={confirmPwd}
-        dataAut="confirm-pwd-input"
-      />
-    </div>
+      <div class="input-wrapper">
+        <PasswordInput placeholder={$_('sign_up.pwd')} bind:value={pwd} />
+      </div>
+      <div class="input-wrapper">
+        <PasswordInput
+          placeholder={$_('sign_up.conf_pwd')}
+          bind:value={confirmPwd}
+          dataAut="confirm-pwd-input"
+        />
+      </div>
 
-    <div class="flex items-center w-full justify-center">
-      <TokenInput bind:token />
+      <div class="flex items-center w-full justify-center">
+        <TokenInput bind:token placeholder={$_('sign_up.bank_token')} />
+      </div>
     </div>
-  </div>
-</LoginForm>
+  </LoginForm>
+  <BarSignin on:openFAQ={() => (showFAQ = true)} />
+</div>
 
 <style lang="postcss">
-  .password-input {
-    @apply flex items-center justify-center w-full relative;
+  .input-wrapper {
+    @apply flex justify-center w-3/4 self-center relative;
   }
 </style>

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
-  import MainPage from './MainPage.svelte';
-  import { AccountsStorage } from './storage/accountsStorage';
+  import MainController from './MainController.svelte';
+  import storages from './storage/storages';
   import TailwindCss from './TailwindCss.svelte';
   import type ClientStorage from './types/ClientStorage';
   import type { UserMeta } from './types/ClientStorage';
@@ -12,26 +12,19 @@
 
   onMount(async () => {
     authorized = await isAuthenticated();
-    storage = await AccountsStorage();
+    storage = await storages.Accounts();
   });
 </script>
 
 <TailwindCss />
-<main class="font-main h-screen md:mx-20 text-center flex content-center my-10">
+<main
+  class="font-main h-full box-border px-10 md:px-20 text-center flex content-center dark:bg-dark overscroll-y-auto overflow-y-scroll justify-center"
+>
   {#if storage}
-    <MainPage {storage} {authorized} />
+    <MainController {storage} {authorized} />
   {/if}
 </main>
 
 <svelte:head>
   <link rel="icon" type="image/png" href="images/favicon.png" />
 </svelte:head>
-
-<style>
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-</style>

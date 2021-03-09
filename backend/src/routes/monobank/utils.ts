@@ -11,10 +11,12 @@ import { KeyData, LimitCategory, Tables, Users } from '../types/types';
 import { getStatements } from './endpoints';
 import { categorize } from './paymentsProcessing';
 
+//Refactor
 export const statementsDate = (month: 'previous' | 'current'): number => {
   return month === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
+//Refactor
 export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
   const date = new Date();
   switch (variant) {
@@ -42,6 +44,7 @@ const retreiveCategorizedStatement = async (
   return { data, categorizedData };
 };
 
+//Refactor
 export const syncStatements = async (user: Users): Promise<void> => {
   const { accounts, xtoken, username } = user;
   const start = startMonth('prev');
@@ -116,7 +119,7 @@ export const statementUpdate = async (
 
 export const updateLimit = async (
   accountId: string,
-  category: string,
+  categoryId: number,
   value: number,
   timestamp = startMonth('cur')
 ): Promise<void> => {
@@ -125,7 +128,7 @@ export const updateLimit = async (
   if (!isFailure(statements)) {
     const newData = statements.Item[timestamp].processedData.reduce(
       (accum: any, el) => {
-        if (el.category === category) el.limit = value;
+        if (el.id === categoryId) el.limit = value;
         accum.push(el);
         return accum;
       },

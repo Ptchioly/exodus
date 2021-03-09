@@ -5,7 +5,7 @@ import { getItem, getTokens, putItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { syncStatements } from '../monobank/utils';
 import { exist, isFailure } from '../types/guards';
-import { Tables } from '../types/types';
+import { APIError, Tables } from '../types/types';
 import { hash, getAccounts, setHook } from './utils';
 import { generateAccessToken, validateUserInfo } from './validate';
 
@@ -16,11 +16,11 @@ signup.post('/signup', async (req, res) => {
   const { username, password, xtoken } = req.body;
 
   if (!exist(req.body, username, password, xtoken))
-    return respond.FailureResponse('Required fields are empty');
+    return respond.FailureResponse(APIError.MISSED_REQUIRED_FIELDS);
 
   const { message, data } = await validateUserInfo(req.body);
 
-  if (message !== 'OK') return respond.FailureResponse(message);
+  if (message !== APIError.OK) return respond.FailureResponse(message);
 
   const { clientId, name, accounts } = data;
 
@@ -29,20 +29,20 @@ signup.post('/signup', async (req, res) => {
   });
 
   if (isFailure(userResponse))
-    return respond.FailureResponse('Unable to get user.');
+    return respond.FailureResponse(APIError.UNABLE_GET_USER);
 
-  if (userResponse.Item) return respond.FailureResponse('User already exists.');
+  if (userResponse.Item)
+    return respond.FailureResponse(APIError.USER_ALREADY_EXISTS);
 
   const tokenResponse = await getTokens(Tables.USERS);
 
   if (isFailure(tokenResponse))
-    return respond.FailureResponse('Unable to get tokens');
+    return respond.FailureResponse(APIError.UNABLE_GET_TOKEN); //'Unable to get tokens'
 
-  if (!tokenResponse.Items)
-    return respond.FailureResponse('Unexpected error from db.');
+  if (!tokenResponse.Items) return respond.FailureResponse(APIError.DB_ERROR); //'Unexpected error from db.'
 
   if (tokenResponse.Items.some((e: any) => e.xtoken === xtoken))
-    return respond.FailureResponse('Monobank token is already registered.');
+    return respond.FailureResponse(APIError.TOKEN_ALREADY_REGISTRED); //'Monobank token is already registered.'
 
   const key = nanoid(21);
   const encryptedPassword = hash(password, key);
@@ -61,7 +61,7 @@ signup.post('/signup', async (req, res) => {
   const updateUserResponse = await putItem(Tables.USERS, user);
 
   if (isFailure(updateUserResponse))
-    return respond.FailureResponse('Unable to create user.');
+    return respond.FailureResponse(APIError.UNABLE_CREATE_USER); //'Unable to create user.'
 
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });

@@ -1,4 +1,4 @@
-name: CI - Run Tests on Beta and Deploy to Staging
+name: CI - Deploy to Staging
 
 on:
   push:
@@ -6,49 +6,12 @@ on:
       - beta
 
 jobs:
-  setup-and-run-ui-tests:
-    name: Run UI Tests - Chrome - Beta
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.1
-        with:
-          fetch-depth: 0
-      - name: Start Server
-        run: |
-          cd ./backend
-          npm ci 
-          export SESSION_TOKEN=${{ secrets.SESSION_TOKEN }}
-          export AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
-          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          export AWS_REGION=${{ secrets.AWS_REGION }}
-          npx tsc && node out/src/app.js &
-
-      - name: UI Tests - Chrome
-        uses: cypress-io/github-action@v2
-        with:
-          config: 'baseUrl=http://localhost:5000'
-          env: 'username="${{ secrets.TEST_USERNAME }}",password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080,CIWait=true'
-          start: npm run frontend:start
-          wait-on: 'http://localhost:5000, http://localhost:8080/'
-          command-prefix: 'percy exec -- npx'
-          wait-on-timeout: 120
-          browser: chrome
-          headless: true
-          working-directory: tests
-          group: 'UI - Chrome - Beta'
-          record: true
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-
   buildAndTest:
     name: CI Pipeline
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: ['12.x']
-    # needs: setup-and-run-ui-tests
     steps:
       - uses: actions/checkout@v2
 
@@ -68,11 +31,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # Install AWS CLI 2
-      - name: Install AWS CLI 2
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+      # - name: Install AWS CLI 2
+      #   run: |
+      #     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      #     unzip awscliv2.zip
+      #     sudo ./aws/install
 
       # Configure AWS credentials
       - name: Configure AWS credentials

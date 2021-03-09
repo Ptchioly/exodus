@@ -1,20 +1,24 @@
+<script context="module" lang="ts">
+  const limitHandler = new LimitHandler(2000);
+  export const pushTimedOutLimit = () => limitHandler.force();
+</script>
+
 <script lang="ts">
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
-  import type { ChartData, Account } from '../types/Api';
-  import { onMount } from 'svelte';
-  import Cards from './cards/CardsPanel.svelte';
-
-  export let fullParsedSatements;
+  import type { ChartData, Total } from '../types/Api';
+  import { onDestroy, onMount } from 'svelte';
+  import { _ } from 'svelte-i18n';
+  import TotalSpendings from './TotalSpendings.svelte';
+  import LimitHandler from './LimitHandler';
 
   export let accountId: string;
-  export let isEmpty: boolean;
   export let other: ChartData;
   export let budgeted: ChartData[];
   export let unbudgeted: ChartData[];
-  export let accounts: Account[];
-  export let currentAccountId: string;
+  export let total: Total;
 
+  let isEmpty: boolean;
   let maxValue = 0;
   let p2pMax = 0;
 
@@ -32,18 +36,33 @@
     budgeted = [...budgeted, detail];
   };
 
+  const handleLimit = (categoryId: number) => ({
+    detail,
+  }: CustomEvent<{ limit: number }>) => {
+    if (accountId !== 'all')
+      limitHandler.push(detail.limit, categoryId, accountId);
+  };
+
   onMount(() => {
     maxValue = maxBarSize(budgeted, maxValue);
     p2pMax = maxBarSize([other], p2pMax);
   });
+
+  onDestroy(() => {
+    limitHandler.force();
+  });
+
+  window.onbeforeunload = () => {
+    limitHandler.force();
+  };
 </script>
 
-<div class="flex flex-col mb-5">
-  <div class="flex justify-center">
-    <Cards {accounts} bind:currentAccountId />
-  </div>
+<div class="flex flex-col">
   <div>
-    <div class="mb-8 mt-8 flex justify-end">
+    <div
+      class="my-7 sm:mb-20 md:mb-12 flex flex-col md:h-20 justify-start items-start"
+    >
+      <TotalSpendings {total} />
       {#if unbudgeted && unbudgeted.length}
         <UnbudgetedCategories
           bind:categories={unbudgeted}
@@ -55,32 +74,32 @@
 </div>
 {#if isEmpty}
   <h1 class="w-full flex items-start text-gray-700">
-    You did not spend anything for current month
+    {$_(`homepage.no_spendings_msg`)}
   </h1>
 {/if}
 {#if budgeted}
   {#each budgeted as category}
     <StackedBar
       {...category}
-      bind:limit={category.limit}
-      account={accountId}
       {maxValue}
+      title={$_(`categories.${category.id}`)}
       on:updateMaxValue={({ detail }) => {
         maxValue = maxBarSize(budgeted, detail.limit);
       }}
+      on:limit={handleLimit(category.id)}
     />
   {/each}
 {/if}
 {#if other}
-  <div class="other-category">
+  <div class="other-category mb-20">
     <StackedBar
       {...other}
-      bind:limit={other.limit}
+      title={$_(`categories.${other.id}`)}
       maxValue={p2pMax}
-      account={accountId}
       on:updateMaxValue={({ detail }) => {
         p2pMax = maxBarSize([other], detail.limit);
       }}
+      on:limit={handleLimit(other.id)}
     />
   </div>
 {/if}

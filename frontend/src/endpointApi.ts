@@ -1,4 +1,4 @@
-import type { APIResponse, ChartData, Statement, UserInfo } from './types/Api';
+import type { APIResponse, ChartData, Total, UserInfo } from './types/Api';
 
 const baseUrl: string = process.env.host;
 const loginEndpoint = `${baseUrl}/login`;
@@ -24,8 +24,8 @@ const statusCheck = async (response: Response): Promise<APIResponse> => {
     const json = await response.json();
     return { status, data: json };
   }
-  const { message } = await response.json();
-  return { status, message };
+  const { error } = await response.json();
+  return { status, error };
 };
 
 export const signIn = async (
@@ -78,9 +78,10 @@ export const getStatement = async (
   accountIds: string[]
 ): Promise<
   APIResponse<{
-    statements: { statements: ChartData[]; accountId: string }[];
+    statements: { statements: ChartData[]; accountId: string; total: Total }[];
     all: ChartData[];
     synced: boolean;
+    total: Total;
   }>
 > => {
   const response = await fetch(
@@ -98,7 +99,7 @@ export const getStatement = async (
 };
 
 export const updateLimit = async (
-  category: string,
+  categoryId: number,
   value: number,
   accountId: string
 ): Promise<void> => {
@@ -106,7 +107,7 @@ export const updateLimit = async (
     ...defaultInit,
     method: 'POST',
     body: JSON.stringify({
-      category,
+      categoryId,
       value,
     }),
   });

@@ -1,0 +1,135 @@
+{
+  "title": "Exodus",
+  "sign_in": {
+    "title": "Sign in to Exodus",
+    "pwd": "Password",
+    "btn": "SIGN IN",
+    "msg": "New to Exodus?",
+    "link": "Join Now"
+  },
+  "sign_up": {
+    "title": "Sign Up",
+    "pwd": "Password",
+    "conf_pwd": "Confirm Password",
+    "bank_token": "Monobank Token",
+    "btn": "SIGN UP",
+    "msg": "Have an account?",
+    "link": "Sign In",
+    "error_msg_pwd_mismatch": "Passwords do not match"
+  },
+  "homepage": {
+    "unpudgeted": "Unbudgeted",
+    "total_spendings": "Total spendings",
+    "no_spendings_msg": "You did not spend anything for current month"
+  },
+  "menu": {
+    "acc_sett": "Settings",
+    "logout": "Logout"
+  },
+  "categories": {
+    "0": "Travels",
+    "1": "Beauty and medicine",
+    "2": "Entertainment and sport",
+    "3": "Cafes and restaurants",
+    "4": "Groceries and supermarkets",
+    "5": "Cinema",
+    "6": "Auto and gas station",
+    "7": "Clothes and footwear",
+    "8": "Taxi",
+    "9": "Animals",
+    "10": "Books",
+    "11": "Flowers",
+    "12": "Appliances",
+    "13": "Gas station",
+    "14": "Fast food",
+    "15": "Other",
+    "16": "Transfers to a card"
+  },
+  "settings": {
+    "change_pwd": {
+      "title": "Change Password",
+      "curr_pwd": "Current Password",
+      "new_pwd": "New Password",
+      "conf_pwd": "Confirm Password",
+      "curr_pwd_holder": "Current",
+      "new_pwd_holder": "New",
+      "conf_pwd_holder": "Confirm",
+      "change": "Change"
+    },
+    "change_token": {
+      "title": "Change X-Token",
+      "btn": "Send"
+    },
+    "delete_usr": {
+      "title": "Delete Account",
+      "msg": "Delete account?",
+      "btn": "Delete",
+      "confirmation_msg": "Do you really want to delete your account and all your data? This action is irreversible!",
+      "error_msg": "Failed to delete account"
+    },
+    "change_lang": {
+      "title": "Change Language",
+      "languages": "Language",
+      "btn": "Save"
+    },
+    "menu": {
+      "acc_sett": "Settings",
+      "logout": "Logout"
+    },
+    "close": "Close"
+  },
+  "faq": {
+    "title": "FAQ",
+    "about": {
+      "q": "Q: What this service is about?",
+      "a": "A: Here you can do multiple things such as monitoring your Monobank spendings, setting limits for each spending category, and much more!"
+    },
+    "privacy": {
+      "q": "Q: Is my information private?",
+      "a": "A: Yes of course! Your information is 100% secure and will not be handed over to any 3-rd parties."
+    },
+    "start": {
+      "q": "Q: How do I start working with the service?",
+      "a": "A: In order to do so, you need to register with your phone number and provide an X-Token that Monobank gives you."
+    },
+    "token": {
+      "q": "Q: Where do I get Monobank token?",
+      "a-before": "A: You can get it by visiting ",
+      "a-after": " link or by clicking on Mono logo on sign-up page.",
+      "link-title": "this"
+    },
+    "limits-point": {
+      "q": "Q: What is the point of setting limits for categories?",
+      "a": "A: If you set a limit and then exceed it, you will get a notification on Telegram (if you have set up notifications before)."
+    },
+    "telegram": {
+      "q": "Q: How to set up Telegram notifications?",
+      "a": "A: Just click the Telegram button at the top right after entering and follow the instructions."
+    },
+    "limits-set": {
+      "q": "Q: How to set a limit?",
+      "a": "A: Click on the '+' sign on the left of the category bar and then type the amount you want. You can also drag the limit without typing but that feature is currently unavailable on mobile devices."
+    }
+  },
+  "api-error": {
+    "0": "Required fields are empty",
+    "1": "Phone number is not valid",
+    "2": "Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers",
+    "3": "X-Token is not valid",
+    "4": "Unable to get user from db",
+    "5": "User does not exist",
+    "6": "Password is incorrect",
+    "7": "Unable to create user",
+    "8": "Unable to get token",
+    "9": "User already exists",
+    "10": "Unexpected error from db",
+    "11": "Token is already registred",
+    "12": "No token provided",
+    "13": "Verification error",
+    "14": "Unable to update statement",
+    "15": "Body is empty",
+    "16": "Unable to delete user",
+    "17": "Unable to update user",
+    "18": "Expected at least one not empty field"
+  }
+}

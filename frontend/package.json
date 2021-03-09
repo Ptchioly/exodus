@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.1.0",
     "@rollup/plugin-typescript": "^8.1.0",
     "@tailwindcss/ui": "^0.7.2",
@@ -51,6 +52,7 @@
     "sirv-cli": "^1.0.10",
     "svelte": "^3.32.0",
     "svelte-check": "^1.1.29",
+    "svelte-i18n": "^3.3.6",
     "svelte-preprocess": "^4.6.3",
     "svelte-routing": "^1.5.0",
     "tailwindcss": "^2.0.2",

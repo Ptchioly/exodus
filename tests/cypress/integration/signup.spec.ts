@@ -28,26 +28,15 @@ describe('sign up', () => {
     invalidUsernames.forEach(user => {
       cy.sendSignUpRequest({ username: user }).then(response => {
         expect(response.status).to.eq(400)
-        expect(response.body).to.have.property('message', 'Phone number is invalid.')
       })
     })
   })
 
   it('does not register new user with incorrect data in password', () => {
-    const invalidPasswords = [
-      // 'testuserdata3@',
-      'TESTUSERDATA4@',
-      'TESTuserdata@',
-      'Test1@',
-      'Testuserdata 4456@'
-    ]
+    const invalidPasswords = ['testuserdata3@', 'TESTUSERDATA4@', 'TESTuserdata@', 'Test1@', 'Testuserdata 4456@']
     invalidPasswords.forEach(pwd => {
       cy.sendSignUpRequest({ password: pwd }).then(response => {
         expect(response.status).to.eq(400)
-        expect(response.body).to.have.property(
-          'message',
-          'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
-        )
       })
     })
   })
@@ -56,7 +45,6 @@ describe('sign up', () => {
     cy.registerUserbyAPI()
     cy.sendSignUpRequest().then(response => {
       expect(response.status).to.eq(400)
-      expect(response.body).to.have.property('message', 'User already exists.')
     })
   })
 
@@ -70,7 +58,7 @@ describe('sign up', () => {
     cy.manualRegisterUser({ xtoken: 'test12345' })
     cy.getBySel('login-error-message')
       .should('be.visible')
-      .and('have.text', 'Invalid X-Token')
+      .and('have.text', 'X-Token is not valid')
   })
 
   it('does not register new user with "password" and "confirm password" inputs mismatched', () => {
