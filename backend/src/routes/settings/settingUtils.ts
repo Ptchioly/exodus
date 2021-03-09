@@ -1,6 +1,6 @@
 import { deleteItem, updateItem } from '../../dynamoAPI';
 import { isFailure } from '../types/guards';
-import { EndpointRes, Tables } from '../types/types';
+import { APIError, EndpointRes, Tables } from '../types/types';
 
 export const deleteAccounts = async (
   table: Tables.STATEMENTS,
@@ -17,6 +17,6 @@ export const updateUserInfo = (
   const updateUserResponse = await updateItem(Tables.USERS, { username }, obj);
 
   return isFailure(updateUserResponse)
-    ? respond.FailureResponse('Failed to update user info')
+    ? respond.FailureResponse(APIError.UNABLE_UPDATE_USER) //'Failed to update user info'
     : respond.SuccessResponse();
 };

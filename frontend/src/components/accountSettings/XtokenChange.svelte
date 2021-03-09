@@ -4,7 +4,7 @@
   import { _ } from 'svelte-i18n';
 
   export let error: boolean;
-  export let message: string;
+  export let errorMessage: number;
 
   let xToken = '';
 
@@ -12,7 +12,7 @@
     const response = await updateXToken(token);
     if (!isSuccessResponse(response)) {
       error = true;
-      message = response.message;
+      errorMessage = response.error;
     }
   };
 </script>

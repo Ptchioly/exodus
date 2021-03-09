@@ -5,7 +5,7 @@
   import PasswordInput from './PasswordInput.svelte';
 
   export let error: boolean;
-  export let message: string;
+  export let errorMessage: number;
 
   let currentPass: string;
   let newPass: string;
@@ -23,7 +23,7 @@
       const response = await updatePassword(current, newPass);
       if (!isSuccessResponse(response)) {
         error = true;
-        message = response.message;
+        errorMessage = response.error;
       }
     }
   };

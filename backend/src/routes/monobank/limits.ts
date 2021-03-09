@@ -3,7 +3,7 @@ import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
-import { Tables } from '../types/types';
+import { APIError, Tables } from '../types/types';
 import { updateLimit } from './utils';
 
 export const limit = Router().post(
@@ -23,6 +23,6 @@ export const limit = Router().post(
 
       return respond.SuccessResponse({ newLimit: value, categoryId });
     }
-    return respond.FailureResponse('Failed to get user from db');
+    return respond.FailureResponse(APIError.UNABLE_GET_USER);
   }
 );

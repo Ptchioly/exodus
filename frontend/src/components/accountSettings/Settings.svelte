@@ -12,28 +12,28 @@
   let state: 'password' | 'x-token' | 'deleteUser' | 'changeLanguage' =
     'password';
   let error = false;
-  let message: string | null;
+  let errorMessage: number;
 
-  const dispatch = createEventDispatcher();
+  $: message = $_(`api-error.${errorMessage}`);
 </script>
 
 <div id="bg" class="w-full z-0 bg-shade dark:bg-shadeDark">
-  {#if message}
-    <ErrorMessage bind:message />
+  {#if message && errorMessage}
+    <ErrorMessage {message} />
   {/if}
   <div
     id="content"
-    class="flex xs:flex-col md:flex-row bg-white rounded-lg xs:w-5/6 md:w-4/6 xs:h-1/3 overlay dark:bg-dark dark:text-gray-300 justify-between "
+    class="flex xs:flex-col md:flex-row bg-white rounded-lg xs:w-11/12 md:w-4/6 xs:h-1/3 overlay dark:bg-dark dark:text-gray-300 justify-between "
   >
     <Navigation bind:state on:close />
     <div class="ml-10 mt-5 md:w-2/3 xs:h-full md:h-5/6">
       <div class="flex justify-start xs:h-11/12 md:h-full ">
         {#if state === 'password'}
-          <PasswordChange bind:error bind:message />
+          <PasswordChange bind:error bind:errorMessage />
         {:else if state === 'x-token'}
-          <XtokenChange bind:error bind:message />
+          <XtokenChange bind:error bind:errorMessage />
         {:else if state === 'deleteUser'}
-          <DeleteUser bind:error bind:message on:logout />
+          <DeleteUser bind:error bind:errorMessage on:logout />
         {:else if state === 'changeLanguage'}
           <ChangeLanguage />
         {/if}

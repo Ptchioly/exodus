@@ -3,7 +3,7 @@ import { deleteItem, getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { authenticateToken } from '../auth/validate';
 import { isFailure } from '../types/guards';
-import { Tables } from '../types/types';
+import { APIError, Tables } from '../types/types';
 import { deleteAccounts } from './settingUtils';
 
 export const deleteUser = Router();
@@ -26,5 +26,5 @@ deleteUser.delete('/deleteUser', authenticateToken, async (req: any, res) => {
       return respond.SuccessResponse();
     }
   }
-  return respond.FailureResponse('Failed to delete user');
+  return respond.FailureResponse(APIError.UNABLE_DELETE_USER); //'Failed to delete user'
 });

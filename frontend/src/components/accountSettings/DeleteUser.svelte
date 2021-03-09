@@ -6,7 +6,7 @@
   import { _ } from 'svelte-i18n';
 
   export let error: boolean;
-  export let message: string;
+  export let errorMessage: number;
 
   const dispatch = createEventDispatcher();
 
@@ -16,7 +16,7 @@
       const response = await deleteUser();
       if (isSuccessResponse(response)) return dispatch('logout');
       error = true;
-      message = $_('settings.delete_usr.error_msg');
+      errorMessage = response.error;
     }
   };
 </script>
