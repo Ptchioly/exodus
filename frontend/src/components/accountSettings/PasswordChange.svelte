@@ -5,7 +5,7 @@
   import { _ } from 'svelte-i18n';
 
   export let error: boolean;
-  export let errorMessage: string;
+  export let errorMessage: number;
 
   let currentPass: string;
   let newPass: string;
@@ -23,7 +23,7 @@
       const response = await updatePassword(current, newPass);
       if (!isSuccessResponse(response)) {
         error = true;
-        errorMessage = response.message;
+        errorMessage = response.error;
       }
     }
   };

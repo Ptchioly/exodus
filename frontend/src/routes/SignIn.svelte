@@ -7,6 +7,7 @@
   import PasswordInput from '../components/inputs/PasswordInput.svelte';
   import PhoneNumberInput from '../components/inputs/PhoneNumberInput.svelte';
   import { isSuccessResponse } from '../types/guards';
+  import { APIError } from '../types/Api';
 
   let phoneNumber: string;
   let countryCode: string = '380';
@@ -18,7 +19,7 @@
     const response = await signIn(summaryPhone, pwd);
     isSuccessResponse(response)
       ? dispatch('login', response.data)
-      : dispatch('error', { message: response.message });
+      : dispatch('error', { message: $_(`api-error.${response.error}`) });
   };
 
   const signInButton = {

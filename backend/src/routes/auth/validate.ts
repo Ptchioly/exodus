@@ -7,7 +7,7 @@ import { getClientInfo, getStatements } from '../monobank/endpoints';
 import { categorize } from '../monobank/paymentsProcessing';
 import { startMonth, statementUpdate } from '../monobank/utils';
 import { isFailedFetchMono, isFailure } from '../types/guards';
-import { MonoAccount, Tables } from '../types/types';
+import { APIError, MonoAccount, Tables } from '../types/types';
 import { isValidPassword, isValidUsername, setHook } from './utils';
 
 export const authenticateToken = (
@@ -17,11 +17,11 @@ export const authenticateToken = (
 ): void => {
   const token = req.cookies.jwt;
   if (!token)
-    return endpointRespond(res).FailureResponse('No token provided.', 401);
+    return endpointRespond(res).FailureResponse(APIError.MISSED_TOKEN); //'No token provided. 401
 
   jwt.verify(token, secrets.SESSION_TOKEN as string, (err: any, user: any) => {
     if (err)
-      return endpointRespond(res).FailureResponse('Verification error.', 403);
+      return endpointRespond(res).FailureResponse(APIError.VERIFICATION_ERROR); //'Verification error. 403
     req.user = user;
     next();
   });
@@ -38,28 +38,27 @@ export const generateAccessToken = (username: string, xtoken: string): string =>
     expiresIn: '1d',
   });
 
-const formVerdict = (message: string, data?: any) => ({ message, data });
+const formVerdict = (message: APIError, data?: any) => ({
+  message,
+  data,
+});
 
 export const validateUserInfo = async ({
   username,
   password,
   xtoken,
-}: any): Promise<{ message: string; data: any }> => {
-  if (!isValidUsername(username))
-    return formVerdict('Phone number is invalid.');
+}: Record<any, string>): Promise<ReturnType<typeof formVerdict>> => {
+  if (!isValidUsername(username)) return formVerdict(APIError.NOT_VALID_PHONE); //'Phone number is invalid.'
 
-  if (!isValidPassword(password))
-    return formVerdict(
-      'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
-    );
+  if (!isValidPassword(password)) return formVerdict(APIError.PWD_NOT_VALID); //'Passwords must have at least 8 characters and contain uppercase letters, lowercase letters and numbers.'
 
   if (xtoken) {
     const validateToken = await getClientInfo(xtoken);
     return isFailedFetchMono(validateToken)
-      ? formVerdict('Invalid X-Token')
-      : formVerdict('OK', validateToken);
+      ? formVerdict(APIError.TOKEN_NOT_VALID) //'Invalid X-Token'
+      : formVerdict(APIError.OK, validateToken);
   }
-  return formVerdict('OK');
+  return formVerdict(APIError.OK);
 };
 
 const validateStatement = (xtoken: string, username: string) => async ({

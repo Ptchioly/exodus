@@ -7,6 +7,7 @@
   import { isSuccessResponse } from '../types/guards';
   import TokenInput from '../components/inputs/TokenInput.svelte';
   import { _ } from 'svelte-i18n';
+  import { APIError } from '../types/Api';
 
   let phoneNumber: string;
   let pwd: string;
@@ -27,7 +28,9 @@
       const resp = await signUp(countryCode + phoneNumber, pwd, token);
       return isSuccessResponse(resp)
         ? dispatch('signUp', resp.data)
-        : dispatch('error', { message: resp.message });
+        : dispatch('error', {
+            message: $_(`api-error.${resp.error}`),
+          });
     }
     return dispatch('error', { message: $_('sign_up.error_msg_pwd_mismatch') });
   };

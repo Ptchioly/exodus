@@ -11,18 +11,20 @@
   let state: 'password' | 'x-token' | 'deleteUser' | 'changeLanguage' =
     'password';
   let error = false;
-  let errorMessage = '';
+  let errorMessage: number;
+
+  $: message = $_(`api-error.${errorMessage}`);
 
   const dispatch = createEventDispatcher();
 </script>
 
 <div id="bg" class="w-full z-0 bg-shade dark:bg-shadeDark">
-  {#if error}
-    <ErrorMessage message={errorMessage} />
+  {#if message && errorMessage}
+    <ErrorMessage {message} />
   {/if}
   <div
     id="content"
-    class="flex xs:flex-col md:flex-row bg-white rounded-lg xs:w-5/6 md:w-4/6 xs:h-1/3 overlay dark:bg-dark dark:text-gray-300 justify-between "
+    class="flex xs:flex-col md:flex-row bg-white rounded-lg xs:w-11/12 md:w-4/6 xs:h-1/3 overlay dark:bg-dark dark:text-gray-300 justify-between "
   >
     <div
       class="sm:flex-col px-5 sm:text-left xs:border-b-1 sm:border-solid sm:border-r-2 border-gray-600 relative"
