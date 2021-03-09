@@ -11,18 +11,20 @@
   const tgBotLink = 'https://t.me/exodus_MonobankBudgetBot';
 </script>
 
-<HeaderContainer>
-  <div slot="left" class="flex transform scale-100">
-    <AlphaLabel label="alpha" />
-  </div>
-  <div
-    slot="right"
-    class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10"
-  >
-    <ThemeSwitcher />
-    <UpdateButton on:update />
-    <InfoButton on:openFAQ />
-    <TelegramLink href={tgBotLink} />
-    <UserProfile on:settings on:logout {username} />
-  </div>
-</HeaderContainer>
+{#if username}
+  <HeaderContainer>
+    <div slot="left" class="flex transform scale-100">
+      <AlphaLabel label="alpha" />
+    </div>
+    <div
+      slot="right"
+      class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10"
+    >
+      <ThemeSwitcher />
+      <UpdateButton on:update />
+      <InfoButton on:openFAQ />
+      <TelegramLink href={tgBotLink} />
+      <UserProfile on:settings on:logout {username} />
+    </div>
+  </HeaderContainer>
+{/if}

@@ -1,13 +1,13 @@
 <script lang="ts">
   import Bars from './Bars.svelte';
-  import type { LabelPosition, StackedBars } from '../types/charts';
+  import type { StackedBars } from '../types/charts';
   import { createEventDispatcher } from 'svelte';
-  import { staticValues } from './configs';
+  import { generateChartData } from './utils';
   export let title: string;
   export let current: number;
   export let previous: number;
   export let limit: number;
-  export let maxValue;
+  export let maxValue: number;
 
   const dispatch = createEventDispatcher();
 
@@ -21,53 +21,6 @@
       inputLimit.focus();
     }, 1);
     handleChange();
-  };
-
-  const generateChartData = (
-    maxValue,
-    limit,
-    previous: number,
-    current: number
-  ): StackedBars => {
-    const currentBar = {
-      value: current,
-      limits: ['current'],
-      background: staticValues.currentBgColor,
-      labelPosition: 'in-left' as LabelPosition,
-      label: staticValues.valueString,
-      detailedLabel: staticValues.valueString,
-    };
-
-    const previousBar = {
-      ...currentBar,
-      value: previous,
-      limits: ['previous'],
-      background: staticValues.previousBgColor,
-    };
-
-    const previousLimit = {
-      name: 'previous',
-      value: limit,
-      color: staticValues.limitColor,
-      visible: 'static' as 'static' | 'hover',
-      overlapStyle: 'stripes' as '' | 'stripes',
-    };
-
-    const currentLimit = {
-      ...previousLimit,
-      name: 'current',
-      draggable: true,
-    };
-
-    return {
-      maxValue,
-      conf: {
-        background: staticValues.mainBgColor,
-        detailedSpace: staticValues.detailedSpace,
-      },
-      bars: [previousBar, currentBar],
-      limits: [previousLimit, currentLimit],
-    };
   };
 
   const props = {
@@ -107,12 +60,6 @@
       setTimeout(() => dispatch('updateMaxValue', { limit }), 100);
     }
   };
-
-  $: {
-    // Force reload for cases where there are no new values for prev, limit, or curr fields
-    // Max: ????
-    maxValue = maxValue;
-  }
 </script>
 
 <div class="wrapper-s">

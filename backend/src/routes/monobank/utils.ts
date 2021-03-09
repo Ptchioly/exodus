@@ -11,10 +11,12 @@ import { KeyData, LimitCategory, Tables, Users } from '../types/types';
 import { getStatements } from './endpoints';
 import { categorize } from './paymentsProcessing';
 
+//Refactor
 export const statementsDate = (month: 'previous' | 'current'): number => {
   return month === 'current' ? startMonth('cur') : startMonth('prev');
 };
 
+//Refactor
 export const startMonth = (variant: 'prev' | 'cur' | 'next'): number => {
   const date = new Date();
   switch (variant) {
@@ -42,6 +44,7 @@ const retreiveCategorizedStatement = async (
   return { data, categorizedData };
 };
 
+//Refactor
 export const syncStatements = async (user: Users): Promise<void> => {
   const { accounts, xtoken, username } = user;
   const start = startMonth('prev');
