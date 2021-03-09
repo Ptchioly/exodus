@@ -11,7 +11,8 @@
   let newPass: string;
   let confirmPass: string;
   let show = false;
-  let label = 'ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 dark:bg-darker dark:border-black';
+  let label =
+    'ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5 dark:bg-darker dark:border-black';
 
   const changePassword = async (
     current: string,
@@ -28,7 +29,7 @@
   };
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col justify-between">
   <div class="flex flex-row">
     <div class="flex flex-col min-w-max-content text-left">
       <div class="">{$_('settings.change_pwd.curr_pwd')}</div>
@@ -125,7 +126,7 @@
   <button
     type="submit"
     on:click={() => changePassword(currentPass, newPass, confirmPass)}
-    class="mt-4 self-start bg-indigo-500 py-1 px-3 rounded-md text-white xs:mb-5"
+    class="mt-4 self-start bg-indigo-500 py-1 px-3 rounded-md text-white"
     data-automation-id="change-password"
     >{$_('settings.change_pwd.change')}</button
   >

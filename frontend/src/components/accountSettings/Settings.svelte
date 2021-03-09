@@ -23,19 +23,21 @@
   {/if}
   <div
     id="content"
-    class="flex xs:flex-col sm:flex-row bg-white rounded-lg sm:min-w-max-content overlay dark:bg-dark dark:text-gray-300"
+    class="flex xs:flex-col md:flex-row bg-white rounded-lg xs:w-5/6 md:w-4/6 xs:h-1/3 overlay dark:bg-dark dark:text-gray-300 justify-between "
   >
     <Navigation bind:state on:close />
-    <div class="ml-10 mt-5">
-      {#if state === 'password'}
-        <PasswordChange bind:error bind:errorMessage />
-      {:else if state === 'x-token'}
-        <XtokenChange bind:error bind:errorMessage />
-      {:else if state === 'deleteUser'}
-        <DeleteUser bind:error bind:errorMessage on:logout />
-      {:else if state === 'changeLanguage'}
-        <ChangeLanguage />
-      {/if}
+    <div class="ml-10 mt-5 md:w-2/3 xs:h-full md:h-5/6">
+      <div class="flex justify-start xs:h-11/12 md:h-full ">
+        {#if state === 'password'}
+          <PasswordChange bind:error bind:errorMessage />
+        {:else if state === 'x-token'}
+          <XtokenChange bind:error bind:errorMessage />
+        {:else if state === 'deleteUser'}
+          <DeleteUser bind:error bind:errorMessage on:logout />
+        {:else if state === 'changeLanguage'}
+          <ChangeLanguage />
+        {/if}
+      </div>
     </div>
   </div>
 </div>
@@ -61,5 +63,13 @@
   }
   .overlay {
     z-index: 4000;
+  }
+  .nav-button {
+    @apply cursor-pointer xs:mt-2 sm:mt-5;
+  }
+  @media (min-width: 768px) {
+    .close {
+      margin-top: 2em;
+    }
   }
 </style>

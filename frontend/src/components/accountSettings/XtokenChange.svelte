@@ -17,7 +17,7 @@
   };
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col justify-between">
   <div class="flex flex-row mt-2 items-center">
     <div>X-Token</div>
     <input
@@ -28,7 +28,7 @@
     />
   </div>
   <button
-    class="mt-4 self-start bg-indigo-500 py-1 px-3 rounded-md text-white"
+    class="self-start bg-indigo-500 py-1 px-3 rounded-md text-white"
     data-automation-id="change-xtoken"
     on:click={() => handleXTokenChange(xToken)}
     >{$_('settings.change_token.btn')}</button
