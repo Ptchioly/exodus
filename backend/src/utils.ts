@@ -25,7 +25,6 @@ export const logging = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log(req.method, req.url);
   next();
 };
 
