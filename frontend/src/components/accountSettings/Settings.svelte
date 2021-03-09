@@ -23,7 +23,7 @@
   {/if}
   <div
     id="content"
-    class="flex xs:flex-col md:flex-row bg-white rounded-lg xs:w-11/12 md:w-4/6 xs:h-1/3 overlay dark:bg-dark dark:text-gray-300 justify-between "
+    class="flex xs:flex-col sm:flex-row bg-white rounded-lg xs:w-11/12 sm:w-4/6 h-2/5 overlay dark:bg-dark dark:text-gray-300 justify-between min-w-max-content  "
   >
     <Navigation bind:state on:close />
     <div class="ml-10 mt-5 md:w-2/3 xs:h-full md:h-5/6">

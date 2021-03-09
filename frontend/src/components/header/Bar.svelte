@@ -1,5 +1,4 @@
 <script lang="ts">
-  import AlphaLabel from './items/AlphaLabel.svelte';
   import TelegramLink from './items/TelegramLink.svelte';
   import UpdateButton from './items/UpdateButton.svelte';
   import UserProfile from './items/UserProfile.svelte';
@@ -13,9 +12,6 @@
 
 {#if username}
   <HeaderContainer>
-    <div slot="left" class="flex transform scale-100">
-      <AlphaLabel label="beta" />
-    </div>
     <div
       slot="right"
       class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10"

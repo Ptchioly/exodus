@@ -39,7 +39,7 @@
     {$_('settings.delete_usr.title')}
   </div>
   <div
-    class="cursor-pointer sm:absolute xs:mt-2 m-auto sm:bottom-5 bg-red-600 py-1 px-3 rounded-md text-white text-center"
+    class="cursor-pointer sm:absolute xs:mt-2 m-auto w-max-content sm:bottom-5 bg-red-600 py-1 px-3 rounded-md text-white text-center"
     on:click={() => dispatch('close')}
     data-automation-id="close-settings"
   >
