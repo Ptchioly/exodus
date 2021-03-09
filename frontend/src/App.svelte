@@ -18,7 +18,7 @@
 
 <TailwindCss />
 <main
-  class="font-main h-full box-border px-10 md:px-20 text-center flex content-center dark:bg-dark overscroll-y-auto overflow-y-scroll"
+  class="font-main h-full box-border px-10 md:px-20 text-center flex content-center dark:bg-dark overscroll-y-auto overflow-y-scroll justify-center"
 >
   {#if storage}
     <MainController {storage} {authorized} />
