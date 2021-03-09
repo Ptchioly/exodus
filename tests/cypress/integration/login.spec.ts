@@ -53,7 +53,7 @@ describe('login', () => {
       .should('eq', 400)
     cy.getBySel('login-error-message')
       .should('be.visible')
-      .and('have.text', 'User does not exist.')
+      .and('have.text', 'User does not exist')
   })
 
   it('should error for an invalid password for existing user', () => {
@@ -63,7 +63,7 @@ describe('login', () => {
       .should('eq', 400)
     cy.getBySel('login-error-message')
       .should('be.visible')
-      .and('have.text', 'Incorrect password.')
+      .and('have.text', 'Password is incorrect')
   })
 
   it('displays home page on successful login', () => {
