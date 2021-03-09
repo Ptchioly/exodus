@@ -51,4 +51,10 @@
   .nav-button {
     @apply cursor-pointer xs:mt-2 sm:mt-5;
   }
+
+  @media (min-width: 768px) {
+    .close {
+      margin-top: 2em;
+    }
+  }
 </style>
