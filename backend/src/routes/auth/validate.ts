@@ -8,7 +8,16 @@ import { categorize } from '../monobank/paymentsProcessing';
 import { startMonth, statementUpdate } from '../monobank/utils';
 import { isFailedFetchMono, isFailure } from '../types/guards';
 import { MonoAccount, Tables } from '../types/types';
-import { isValidPassword, isValidUsername, setHook } from './utils';
+import { setHook } from './utils';
+
+const pwdRegexes = [/[a-z]/, /[A-Z]/, /[0-9]/, /^\S+$/];
+const reTwelweNumbers = /^[0-9]{12}$/;
+
+export const isValidPassword = (password: string): boolean =>
+  password.length >= 8 && pwdRegexes.every((regex) => regex.test(password));
+
+export const isValidUsername = (username: string): boolean =>
+  reTwelweNumbers.test(username);
 
 export const authenticateToken = (
   req: any,

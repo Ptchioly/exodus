@@ -12,14 +12,14 @@
   let state: 'password' | 'x-token' | 'deleteUser' | 'changeLanguage' =
     'password';
   let error = false;
-  let errorMessage = '';
+  let message: string | null;
 
   const dispatch = createEventDispatcher();
 </script>
 
 <div id="bg" class="w-full z-0 bg-shade dark:bg-shadeDark">
-  {#if error}
-    <ErrorMessage message={errorMessage} />
+  {#if message}
+    <ErrorMessage bind:message />
   {/if}
   <div
     id="content"
@@ -29,11 +29,11 @@
     <div class="ml-10 mt-5 md:w-2/3 xs:h-full md:h-5/6">
       <div class="flex justify-start xs:h-11/12 md:h-full ">
         {#if state === 'password'}
-          <PasswordChange bind:error bind:errorMessage />
+          <PasswordChange bind:error bind:message />
         {:else if state === 'x-token'}
-          <XtokenChange bind:error bind:errorMessage />
+          <XtokenChange bind:error bind:message />
         {:else if state === 'deleteUser'}
-          <DeleteUser bind:error bind:errorMessage on:logout />
+          <DeleteUser bind:error bind:message on:logout />
         {:else if state === 'changeLanguage'}
           <ChangeLanguage />
         {/if}
@@ -63,10 +63,5 @@
   }
   .overlay {
     z-index: 4000;
-  }
-  @media (min-width: 768px) {
-    .close {
-      margin-top: 2em;
-    }
   }
 </style>

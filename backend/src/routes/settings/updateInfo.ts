@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
-import { hash, isValidPassword } from '../auth/utils';
-import { authenticateToken } from '../auth/validate';
+import { hash } from '../auth/utils';
+import { authenticateToken, isValidPassword } from '../auth/validate';
 import { getClientInfo } from '../monobank/endpoints';
 import { atLeast, isFailedFetchMono, isFailure } from '../types/guards';
 import { Tables } from '../types/types';

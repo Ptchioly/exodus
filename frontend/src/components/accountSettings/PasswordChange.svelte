@@ -1,11 +1,11 @@
 <script lang="ts">
   import { updatePassword } from '../../endpointApi';
   import { isSuccessResponse } from '../../types/guards';
-  import Input from '../inputs/Input.svelte';
   import { _ } from 'svelte-i18n';
+  import PasswordInput from './PasswordInput.svelte';
 
   export let error: boolean;
-  export let errorMessage: string;
+  export let message: string;
 
   let currentPass: string;
   let newPass: string;
@@ -23,7 +23,7 @@
       const response = await updatePassword(current, newPass);
       if (!isSuccessResponse(response)) {
         error = true;
-        errorMessage = response.message;
+        message = response.message;
       }
     }
   };
@@ -37,90 +37,27 @@
       <div class="mt-4">{$_('settings.change_pwd.conf_pwd')}</div>
     </div>
     <div class="flex flex-col">
-      <div class="relative">
-        {#if show}
-          <Input
-            type="text"
-            bind:value={currentPass}
-            placeholder={$_('settings.change_pwd.curr_pwd_holder')}
-            dataAutomationId="current-password"
-            className={label}
-          />
-        {:else}
-          <Input
-            type="password"
-            bind:value={currentPass}
-            placeholder={$_('settings.change_pwd.curr_pwd_holder')}
-            dataAutomationId="current-password"
-            className={label}
-          />
-        {/if}
-        <div class="eye-icon leading-5">
-          <div
-            class:show
-            on:click={() => (show = !show)}
-            class="px-1 rounded-md"
-          >
-            <img src="images/show-password.svg" alt="show-password" />
-          </div>
-        </div>
-      </div>
-      <div class="relative">
-        {#if show}
-          <Input
-            type="text"
-            bind:value={newPass}
-            placeholder={$_('settings.change_pwd.new_pwd_holder')}
-            dataAutomationId="new-password"
-            className={`${label} mt-3`}
-          />
-        {:else}
-          <Input
-            type="password"
-            bind:value={newPass}
-            placeholder={$_('settings.change_pwd.new_pwd_holder')}
-            dataAutomationId="new-password"
-            className={`${label} mt-3`}
-          />
-        {/if}
-        <div class="eye-icon leading-5 mt-3">
-          <div
-            class:show
-            on:click={() => (show = !show)}
-            class="px-1 rounded-md"
-          >
-            <img src="images/show-password.svg" alt="show-password" />
-          </div>
-        </div>
-      </div>
-      <div class="relative">
-        {#if show}
-          <Input
-            type="text"
-            bind:value={confirmPass}
-            placeholder={$_('settings.change_pwd.conf_pwd_holder')}
-            dataAutomationId="password-check"
-            className={`${label} mt-3`}
-          />
-        {:else}
-          <Input
-            type="password"
-            bind:value={confirmPass}
-            placeholder={$_('settings.change_pwd.conf_pwd_holder')}
-            dataAutomationId="password-check"
-            className={`${label} mt-3`}
-          />
-        {/if}
-        <div class="eye-icon leading-5 mt-3">
-          <div
-            class:show
-            on:click={() => (show = !show)}
-            class="px-1 rounded-md"
-          >
-            <img src="images/show-password.svg" alt="show-password" />
-          </div>
-        </div>
-      </div>
+      <PasswordInput
+        bind:inputValue={currentPass}
+        margin="mt-0"
+        bind:show
+        dataAut="current-password"
+        {label}
+      />
+      <PasswordInput
+        bind:inputValue={newPass}
+        margin="mt-3"
+        bind:show
+        dataAut="new-password"
+        {label}
+      />
+      <PasswordInput
+        bind:inputValue={confirmPass}
+        margin="mt-3"
+        bind:show
+        dataAut="password-check"
+        {label}
+      />
     </div>
   </div>
   <button
@@ -131,17 +68,3 @@
     >{$_('settings.change_pwd.change')}</button
   >
 </div>
-
-<style lang="postcss">
-  div.show {
-    background-color: #ccc;
-  }
-
-  .label {
-    @apply ml-5 border-gray-400 border-2 rounded-md pl-3 mr-5;
-  }
-
-  .eye-icon {
-    @apply absolute inset-y-0 right-4 pr-3 flex items-center text-sm leading-5;
-  }
-</style>
