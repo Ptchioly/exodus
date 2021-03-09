@@ -25,12 +25,12 @@
       : dispatch('error', { message: $_(`api-error.${response.error}`) });
   };
 
-  const signInButton = {
+  $: signInButton = {
     label: $_('sign_in.btn'),
     onclick: dispatchResponse,
     dataAut: 'signin-button',
   };
-  const signUpButton = {
+  $: signUpButton = {
     label: $_('sign_in.link'),
     prefix: $_('sign_in.msg'),
     dataAut: 'link-signup-button',
