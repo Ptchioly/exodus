@@ -2,7 +2,7 @@ name: CI - Run Tests on Beta
 
 on:
   schedule:
-    - cron:  '0 */12 * * *' #run every twelve hours
+    - cron:  '0 10 * * *' #run every day at 10 am
 
 jobs:
   setup-and-run-ui-tests:
@@ -36,8 +36,8 @@ jobs:
           browser: chrome
           headless: true
           working-directory: tests
-          group: 'UI - Chrome - Beta'
-          record: true
+          # group: 'UI - Chrome - Beta'
+          # record: true
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
