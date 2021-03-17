@@ -9,7 +9,6 @@ describe('Logout', () => {
   beforeEach(() => {
     cy.deleteMyUserIfExists()
     cy.registerUserbyAPI()
-    // cy.loginByAPI()
     cy.visit('/')
     cy.manualLogin()
   })
@@ -23,7 +22,7 @@ describe('Logout', () => {
     cy.getCookie('jwt').should('not.exist')
   })
 
-  it.only('logs out when deleting the jwt cookie', () => {
+  it('logs out when deleting the jwt cookie', () => {
     cy.checkHomePageLoaded()
     cy.clearCookie('jwt')
     cy.getCookie('jwt').should('not.exist')

@@ -2,13 +2,13 @@ import { categories } from '../../../mccCategories';
 import { isInRange } from '../../utils';
 import { Category, LimitCategory, MonoStatements } from '../types/types';
 
-const other = 15;
+const p2p = 16;
 
 export const getMccCategory = (mccNumber: number): Category =>
   categories.find(
     ({ mcc }) =>
       mcc.numbers.includes(mccNumber) || isInRange(mcc.ranges, mccNumber)
-  ) || categories[other];
+  ) || categories[p2p];
 
 export const getCategoriesTemplate = (
   categories: Category[]
@@ -26,7 +26,8 @@ const addAmount = ({ id }: Category, amount: number) => (
     ? pay
     : {
         ...pay,
-        moneySpent: pay.moneySpent + Math.abs(Math.floor(amount / 100)),
+        moneySpent:
+          Math.round(pay.moneySpent) + Math.abs(Math.round(amount / 100)),
       };
 
 export const categorize = (payments: MonoStatements): LimitCategory[] =>

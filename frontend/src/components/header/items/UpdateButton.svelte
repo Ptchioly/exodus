@@ -7,7 +7,7 @@
 </script>
 
 <div
-  class="h-8 w-8 flex cursor-pointer shadow-md rounded-2xl mx-2 "
+  class="h-8 w-8 flex cursor-pointer rounded-2xl mx-2 "
   on:click={(e) => {
     isLoading = true;
     dispatch('update', e);
@@ -15,7 +15,7 @@
   }}
 >
   <img
-    src="images/refresh.png"
+    src="images/refresh.svg"
     class="reload"
     class:isLoading
     alt="refresh page"

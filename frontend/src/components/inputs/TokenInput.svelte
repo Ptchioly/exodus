@@ -7,7 +7,7 @@
 
 <div class="w-3/4 flex mt-5 h-10">
   <input
-    class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 px-2"
+    class="text-lg w-full text-gray-700 placeholder-gray-500 border-gray-200 rounded-lg border-2 px-2 dark:bg-dark dark:border-darker focus:dark:border-darker dark:text-gray-300"
     type="text"
     placeholder={placeholder}
     required

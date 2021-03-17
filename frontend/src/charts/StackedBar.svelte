@@ -1,28 +1,14 @@
-<script context="module" lang="ts">
-  let setLimitCallback: () => Promise<void> | null = null;
-
-  export const pushTimedOutLimit = async () => {
-    if (setLimitCallback) {
-      await setLimitCallback();
-      setLimitCallback = null;
-    }
-  };
-</script>
-
 <script lang="ts">
   import Bars from './Bars.svelte';
-  import type { LabelPosition, StackedBars } from '../types/charts';
+  import type { StackedBars } from '../types/charts';
   import { createEventDispatcher } from 'svelte';
-  import { staticValues } from './configs';
-  import { onDestroy } from 'svelte';
-  import { updateLimit } from '../endpointApi';
+  import { generateChartData } from './utils';
   export let title: string;
-  export let id: number;
   export let current: number;
   export let previous: number;
   export let limit: number;
-  export let maxValue;
-  export let account: string;
+  export let maxValue: number;
+
   const dispatch = createEventDispatcher();
 
   let apiRequest: StackedBars;
@@ -37,53 +23,6 @@
     handleChange();
   };
 
-  const generateChartData = (
-    maxValue,
-    limit,
-    previous: number,
-    current: number
-  ): StackedBars => {
-    const currentBar = {
-      value: current,
-      limits: ['current'],
-      background: staticValues.currentBgColor,
-      labelPosition: 'in-left' as LabelPosition,
-      label: staticValues.valueString,
-      detailedLabel: staticValues.valueString,
-    };
-
-    const previousBar = {
-      ...currentBar,
-      value: previous,
-      limits: ['previous'],
-      background: staticValues.previousBgColor,
-    };
-
-    const previousLimit = {
-      name: 'previous',
-      value: limit,
-      color: staticValues.limitColor,
-      visible: 'static' as 'static' | 'hover',
-      overlapStyle: 'stripes' as '' | 'stripes',
-    };
-
-    const currentLimit = {
-      ...previousLimit,
-      name: 'current',
-      draggable: true,
-    };
-
-    return {
-      maxValue,
-      conf: {
-        background: staticValues.mainBgColor,
-        detailedSpace: staticValues.detailedSpace,
-      },
-      bars: [previousBar, currentBar],
-      limits: [previousLimit, currentLimit],
-    };
-  };
-
   const props = {
     activeInput: limit > 0,
   };
@@ -95,32 +34,14 @@
     dispatch('updateMaxValue', { limit });
   };
 
-  let timeoutId: any;
-  let delay = 1000;
-
   const handleChange = () => {
     if (isNaN(+limit) || limit.toString().length === 0) limit = 0;
     if (+limit <= 0) {
       props.activeInput = false;
       limit = 0;
     }
-    if (typeof +limit === 'number' && +limit >= 0) setLimit();
+    if (typeof +limit === 'number' && +limit >= 0) dispatch('limit', { limit });
     dispatch('updateMaxValue', { limit });
-  };
-
-  const setLimit = () => {
-    if (timeoutId) clearInterval(timeoutId);
-    setLimitCallback = async () => {
-      if (account === 'all') return; // deny set limit for all cards (temporary solution)
-      if (timeoutId) clearInterval(timeoutId);
-      await updateLimit(id, +limit, account);
-    };
-    timeoutId = setTimeout(pushTimedOutLimit, delay);
-  };
-
-  // sets event every time after setLimitCallback has been initialized
-  $: window.onbeforeunload = (e) => {
-    pushTimedOutLimit();
   };
 
   const handlePress = (e) => {
@@ -139,13 +60,6 @@
       setTimeout(() => dispatch('updateMaxValue', { limit }), 100);
     }
   };
-
-  $: {
-    // Force reload for cases where there are no new values for prev, limit, or curr fields
-    maxValue = maxValue;
-  }
-
-  onDestroy(pushTimedOutLimit);
 </script>
 
 <div class="wrapper-s">
@@ -154,7 +68,7 @@
       {#if !props.activeInput}
         <button
           data-automation-id="limit-button"
-          class="action action--addLimit"
+          class="action action--addLimit dark:hover:bg-darker"
           on:click={handleInitLimit}
         >
           <img src="/images/add.svg" alt="+" />
@@ -167,13 +81,16 @@
           on:keydown={handlePress}
           on:change={handleChange}
           data-automation-id="limit-input"
-          class="action action--setLimit"
+          class="action action--setLimit dark:bg-darker dark:text-gray-300 bg-barBg"
         />
       {/if}
     </section>
 
     <section class="title">
-      <div data-automation-id="category-title-budgeted" class="title__name">
+      <div
+        data-automation-id="category-title-budgeted"
+        class="title__name dark:text-gray-400"
+      >
         {title}
       </div>
     </section>
@@ -204,7 +121,6 @@
 
   .top {
     width: 30%;
-    padding-right: 1em;
     box-sizing: border-box;
     flex-shrink: 100;
   }
@@ -227,10 +143,9 @@
     align-items: center;
     justify-content: center;
     border: none;
-    background-color: transparent;
-    height: 2em;
-    padding-left: 1.5em;
-    padding-right: 1.5em;
+    height: 1.8em;
+    padding-left: 1em;
+    padding-right: 1em;
     border-radius: 8px;
     cursor: pointer;
   }
@@ -240,7 +155,7 @@
   }
 
   .action:hover {
-    background-color: #e7f4ec;
+    /* background-color: #e7f4ec; */
   }
 
   .action--setLimit {
@@ -248,7 +163,8 @@
     height: 2em;
     padding: none;
     border: none;
-    background-color: #e7f4ec;
+    box-sizing: border-box;
+    /* background-color: #e7f4ec; */
     text-align: center;
     border-radius: 8px;
     font-size: 0.75em;
@@ -267,7 +183,6 @@
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: #333;
   }
   @media (max-width: 50em) {
     .wrapper-s {

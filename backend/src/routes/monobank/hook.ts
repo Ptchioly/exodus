@@ -9,7 +9,7 @@ import {
 import { endpointRespond } from '../../utils';
 import { sendTelegramMessage } from '../telegram/sendMessage';
 import { hasKey, isFailure } from '../types/guards';
-import { StatementItems, Tables } from '../types/types';
+import { APIError, StatementItems, Tables } from '../types/types';
 import { getCategoriesTemplate, getMccCategory } from './paymentsProcessing';
 import { moneySpentToLimit, startMonth } from './utils';
 
@@ -63,7 +63,7 @@ hook.post('/hook', async (req: any, res) => {
   const respond = endpointRespond(res);
 
   if (!req.body) {
-    return respond.FailureResponse('Empty body.');
+    return respond.FailureResponse(APIError.EMPTY_BODY); //'Empty body.'
   }
 
   const { account, statementItem } = (req.body as StatementItems).data;
@@ -86,20 +86,20 @@ hook.post('/hook', async (req: any, res) => {
         'Failed to update user raw statement',
         updateUserRawStatement
       );
-      return respond.SuccessResponse();
+      return respond.FailureResponse(APIError.CANT_UPDATE_STATEMENT); //'Failed to update user raw statement'
     }
 
     const incrementResponse = await incrementStatementSpendings(
       {
         accountId: account,
       },
-      Math.abs(statementItem.amount) / 100,
+      Math.abs(Math.round(statementItem.amount / 100)),
       id
     );
 
     if (isFailure(incrementResponse)) {
       console.log('Failed to increment proccess', incrementResponse);
-      return respond.SuccessResponse();
+      return respond.FailureResponse(APIError.CANT_UPDATE_STATEMENT);
     }
 
     pushNotificationIfLimitReached(account, id, category);

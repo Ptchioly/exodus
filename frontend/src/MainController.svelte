@@ -11,6 +11,7 @@
   import ErrorMessage from './components/ErrorMessage.svelte';
   import { onMount } from 'svelte';
   import { logout } from './endpointApi';
+  import type { NavigationState } from './types/Layout';
 
   export let storage: ClientStorage<UserMeta, 'name'>;
   export let authorized: boolean;
@@ -18,9 +19,8 @@
   let message: string | null;
 
   const handleAuthorization = async ({
-    detail,
+    detail: { name, accounts },
   }: CustomEvent<{ name: string; accounts: Account[] }>) => {
-    const { name, accounts } = detail;
     await storage.putItem({ name, accounts });
     message = null;
     setState('home');
@@ -29,6 +29,10 @@
   const handleError = ({ detail }: CustomEvent<{ message: string }>) => {
     message = detail.message;
   };
+
+  const handleStateChange = ({
+    detail: { state },
+  }: CustomEvent<{ state: NavigationState }>) => setState(state);
 
   const handleLogout = async () => {
     await storage.clear();
@@ -46,19 +50,21 @@
 {/if}
 <Router>
   <Route path="home">
-    <Homepage on:logout={handleLogout} {storage} />
+    {#await storage.getAll() then [userMeta]}
+      <Homepage on:logout={handleLogout} {...userMeta} />
+    {/await}
   </Route>
   <Route path="signIn">
     <SignIn
       on:login={handleAuthorization}
-      on:openSignUp={() => setState('signUp')}
+      on:stateChange={handleStateChange}
       on:error={handleError}
     />
   </Route>
   <Route path="signUp">
     <SignUp
       on:signUp={handleAuthorization}
-      on:openSignIn={() => setState('signIn')}
+      on:stateChange={handleStateChange}
       on:error={handleError}
     />
   </Route>

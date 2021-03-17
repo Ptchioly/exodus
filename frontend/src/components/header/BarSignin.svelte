@@ -1,4 +1,8 @@
 <script lang="ts">
+  import HeaderContainer from './HeaderContainer.svelte';
+  import InfoButton from './items/InfoButton.svelte';
+  import ThemeSwitcher from './items/ThemeSwitcher.svelte';
+
   import { _, locale, dictionary } from 'svelte-i18n';
   import { onDestroy } from 'svelte';
 
@@ -33,12 +37,13 @@
   });
 </script>
 
-<div class="flex flex-col justify-between">
-  <div class="flex flex-row mt-2 items-center">
-    <div>{$_('settings.change_lang.languages')}</div>
+<!-- svelte-ignore a11y-no-onchange -->
+<HeaderContainer>
+  <div slot="left" class="flex transform scale-100">
     <select
-      class="border-gray-400 border-2 ml-5 rounded-md pl-3 mr-5 dark:bg-darker dark:border-black p-1"
+      class="ml-3 border-gray-300 border-2 rounded-md pl-3 mr-5 bg-transparent dark:border-gray-800 p-1 dark:text-gray-200 text-gray-700"
       bind:value={currentLanguage}
+      on:change={saveLanguage}
     >
       {#each languages as language}
         <option value={language}
@@ -47,10 +52,11 @@
       {/each}
     </select>
   </div>
-  <button
-    class="self-start bg-indigo-500 py-1 px-3 rounded-md text-white"
-    data-automation-id="change-xtoken"
-    on:click|preventDefault={saveLanguage}
-    >{$_('settings.change_lang.btn')}</button
+  <div
+    slot="right"
+    class="flex transform md:scale-100 xs:scale-150 md:mr-0 xs:mr-10"
   >
-</div>
+    <ThemeSwitcher />
+    <InfoButton on:openFAQ />
+  </div>
+</HeaderContainer>

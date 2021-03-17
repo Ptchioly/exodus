@@ -1,31 +1,21 @@
 <script lang="ts">
-  import Accounts from '../components/Accounts.svelte';
+  import Accounts, { pushTimedOutLimit } from '../components/Accounts.svelte';
   import CardsPanel from '../components/cards/CardsPanel.svelte';
   import Bar from '../components/header/Bar.svelte';
   import Settings from '../components/accountSettings/Settings.svelte';
-
-  import { onMount } from 'svelte';
-  import { pushTimedOutLimit } from '../charts/StackedBar.svelte';
-  import { getStatement } from '../endpointApi';
-  import type {
-    Account,
-    AccountId,
-    ParsedStatements,
-    Total,
-  } from '../types/Api';
-  import type ClientStorage from '../types/ClientStorage';
-  import type { UserMeta } from '../types/ClientStorage';
-  import { isSuccessResponse } from '../types/guards';
-  import { parseStatements, waitFor } from '../utils';
   import FAQ from '../components/FAQ.svelte';
 
-  export let storage: ClientStorage<UserMeta, 'name'>;
+  import { onMount } from 'svelte';
+  import { getStatement } from '../endpointApi';
+  import type { Account, AccountId, ParsedStatements } from '../types/Api';
+  import { isSuccessResponse } from '../types/guards';
+  import { parseStatements, waitFor } from '../utils';
+
+  export let name: string;
+  export let accounts: Account[];
 
   let fullParsedSatements: Record<AccountId, ParsedStatements>;
 
-  let username: string;
-  let isEmpty: boolean;
-  let accounts: Account[];
   let currentAccountId: string;
   let showSettings: boolean;
   let showFAQ: boolean;
@@ -56,7 +46,6 @@
 
   const init = async () => {
     await pushTimedOutLimit();
-    [{ name: username, accounts }] = await storage.getAll();
     currentAccountId = accounts[0]?.id;
     fetchStatements();
   };
@@ -70,9 +59,9 @@
 {#if showFAQ}
   <FAQ on:closeFAQ={() => (showFAQ = false)} />
 {/if}
-<home class="flex w-full flex-col items-center">
+<home class="flex w-full flex-col items-center dark:bg-dark">
   <Bar
-    {username}
+    username={name}
     on:logout
     on:settings={() => (showSettings = true)}
     on:update={init}
@@ -85,7 +74,7 @@
     {#if fullParsedSatements}
       {#each Object.entries(fullParsedSatements) as [accountId, statement]}
         {#if accountId === currentAccountId}
-          <Accounts {...statement} {accountId} {isEmpty} />
+          <Accounts {...statement} {accountId} />
         {/if}
       {/each}
     {/if}

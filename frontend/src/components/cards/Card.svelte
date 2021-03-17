@@ -28,18 +28,27 @@
   let style = `background: linear-gradient(150deg, ${grad}, ${bg})`;
 </script>
 
-<div class="w-24 mr-2 cursor-pointer" on:click={(e) => dispatch('click', e)}>
+<div
+  class="md:w-24 xs:w-32 mr-2 cursor-pointer"
+  on:click={(e) => dispatch('click', e)}
+>
   <div
-    class="card rounded-md flex items-end p-1 h-12 flex-col justify-between border-gray-600"
+    class="card rounded-md flex items-end md:p-1 xs:p-1 md:h-12 xs:h-16 flex-col justify-between  border-gray-600"
     {style}
     class:isActive={activeCard === index}
   >
-    <div class="pan font-bold" style="color: {text}">
+    <div
+      class="pan md:text-tiny xs:text-sm font-bold md:mt-0"
+      style="color: {text}"
+    >
       {type}
     </div>
-    <div>
+    <div class="md:mb-0 flex flex-col items-end">
       {#each pan as p}
-        <div class="pan self-end items-end ml-4" style="color: {text}">
+        <div
+          class="pan self-end items-end md:text-tiny xs:text-sm ml-4 p-0 "
+          style="color: {text}"
+        >
           {p}
         </div>
       {/each}
@@ -49,7 +58,6 @@
 
 <style>
   .pan {
-    font-size: 0.5em;
     opacity: 0.8;
   }
 
@@ -58,6 +66,6 @@
   }
   .card.isActive {
     border: none;
-    box-shadow: 0 0 2px 2px #a5a5a5;
+    box-shadow: 0 0 2px 2px #6366f1;
   }
 </style>

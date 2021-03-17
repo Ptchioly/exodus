@@ -1,18 +1,24 @@
+<script context="module" lang="ts">
+  const limitHandler = new LimitHandler(2000);
+  export const pushTimedOutLimit = () => limitHandler.force();
+</script>
+
 <script lang="ts">
   import StackedBar from '../charts/StackedBar.svelte';
   import UnbudgetedCategories from './UnbudgetedCategories.svelte';
   import type { ChartData, Total } from '../types/Api';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { _ } from 'svelte-i18n';
   import TotalSpendings from './TotalSpendings.svelte';
+  import LimitHandler from './LimitHandler';
 
   export let accountId: string;
-  export let isEmpty: boolean;
   export let other: ChartData;
   export let budgeted: ChartData[];
   export let unbudgeted: ChartData[];
   export let total: Total;
 
+  let isEmpty: boolean;
   let maxValue = 0;
   let p2pMax = 0;
 
@@ -30,10 +36,25 @@
     budgeted = [...budgeted, detail];
   };
 
+  const handleLimit = (categoryId: number) => ({
+    detail,
+  }: CustomEvent<{ limit: number }>) => {
+    if (accountId !== 'all')
+      limitHandler.push(detail.limit, categoryId, accountId);
+  };
+
   onMount(() => {
     maxValue = maxBarSize(budgeted, maxValue);
     p2pMax = maxBarSize([other], p2pMax);
   });
+
+  onDestroy(() => {
+    limitHandler.force();
+  });
+
+  window.onbeforeunload = () => {
+    limitHandler.force();
+  };
 </script>
 
 <div class="flex flex-col">
@@ -57,33 +78,28 @@
   </h1>
 {/if}
 {#if budgeted}
-  {#each budgeted as { current, previous, limit, id }}
+  {#each budgeted as category}
     <StackedBar
-      {current}
-      {previous}
-      {id}
-      title={$_(`categories.${id}`)}
-      bind:limit
-      account={accountId}
+      {...category}
       {maxValue}
+      title={$_(`categories.${category.id}`)}
       on:updateMaxValue={({ detail }) => {
         maxValue = maxBarSize(budgeted, detail.limit);
       }}
+      on:limit={handleLimit(category.id)}
     />
   {/each}
 {/if}
 {#if other}
   <div class="other-category mb-20">
     <StackedBar
-      current={other.current}
-      previous={other.previous}
+      {...other}
       title={$_(`categories.${other.id}`)}
-      bind:limit={other.limit}
       maxValue={p2pMax}
-      account={accountId}
       on:updateMaxValue={({ detail }) => {
         p2pMax = maxBarSize([other], detail.limit);
       }}
+      on:limit={handleLimit(other.id)}
     />
   </div>
 {/if}

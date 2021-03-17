@@ -159,9 +159,12 @@ export type ChartData = {
   previous: number;
   current: number;
   limit: number;
+  prevLimit?: number;
 };
 
-export type StatementHandler = (statement: LimitCategory) => number;
+export interface StatementHandler {
+  (statement: LimitCategory): Pick<LimitCategory, 'limit' | 'moneySpent'>;
+}
 
 export type MergedStatement = {
   message: string;
@@ -169,7 +172,30 @@ export type MergedStatement = {
   statements?: ChartData[];
 };
 
+export enum APIError {
+  OK = -1,
+  MISSED_REQUIRED_FIELDS = 0,
+  NOT_VALID_PHONE = 1,
+  PWD_NOT_VALID = 2,
+  TOKEN_NOT_VALID = 3,
+  UNABLE_GET_USER = 4,
+  NO_SUCH_USER = 5,
+  PWD_INCORRCT = 6,
+  UNABLE_CREATE_USER = 7,
+  UNABLE_GET_TOKEN = 8,
+  USER_ALREADY_EXISTS = 9,
+  DB_ERROR = 10,
+  TOKEN_ALREADY_REGISTRED = 11,
+  MISSED_TOKEN = 12,
+  VERIFICATION_ERROR = 13,
+  CANT_UPDATE_STATEMENT = 14,
+  EMPTY_BODY = 15,
+  UNABLE_DELETE_USER = 16,
+  UNABLE_UPDATE_USER = 17,
+  AT_LEAST_ONE_FIELD = 18,
+}
+
 export type EndpointRes = {
   SuccessResponse: (data?: Record<string, any>, status?: number) => void;
-  FailureResponse: (message?: string, status?: number) => void;
+  FailureResponse: (error: APIError) => void;
 };

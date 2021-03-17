@@ -1,13 +1,22 @@
 import { AWSError } from 'aws-sdk';
 import { NextFunction, Request, Response } from 'express';
-import { EndpointRes } from './routes/types/types';
+import { APIError, EndpointRes } from './routes/types/types';
+
+// need to complete
+const errorCode: Partial<Record<APIError, number>> = {
+  [APIError.MISSED_TOKEN]: 401,
+  [APIError.TOKEN_NOT_VALID]: 403,
+};
 
 export const endpointRespond = (res: Response): EndpointRes => ({
   SuccessResponse: (data = {}, status = 200): void => {
     res.status(status).json(data).end();
   },
-  FailureResponse: (message = 'Bad request.', status = 400): void => {
-    res.status(status).json({ message }).end();
+  FailureResponse: (error: APIError): void => {
+    res
+      .status(errorCode[error] || 400)
+      .json({ error })
+      .end();
   },
 });
 
@@ -16,7 +25,6 @@ export const logging = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log(req.method, req.url);
   next();
 };
 

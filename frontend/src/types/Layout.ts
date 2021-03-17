@@ -8,3 +8,9 @@ export type HeaderBarItem = {
   event?: BarEvent;
   props?: any;
 };
+
+export type Button = {
+  label: string;
+  onclick: () => any;
+  dataAut: string;
+};

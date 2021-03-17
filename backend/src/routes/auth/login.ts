@@ -3,9 +3,13 @@ import { configs } from '../../config';
 import { getItem } from '../../dynamoAPI';
 import { endpointRespond } from '../../utils';
 import { exist, isFailure } from '../types/guards';
-import { Tables } from '../types/types';
+import { APIError, Tables } from '../types/types';
 import { hash } from './utils';
-import { generateAccessToken, validateUserInfo } from './validate';
+import {
+  generateAccessToken,
+  validateUserInfo,
+  validateWebhook,
+} from './validate';
 
 export const login = Router();
 
@@ -14,28 +18,29 @@ login.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   if (!exist(req.body, username, password))
-    return respond.FailureResponse('Required fields are empty.');
+    return respond.FailureResponse(APIError.MISSED_REQUIRED_FIELDS); //'Required fields are empty.'
 
   const { message } = await validateUserInfo(req.body);
 
-  if (message !== 'OK') return respond.FailureResponse(message);
+  if (message !== APIError.OK) return respond.FailureResponse(message);
 
   const userResponse = await getItem(Tables.USERS, {
     username,
   });
 
   if (isFailure(userResponse))
-    return respond.FailureResponse('Unable to get user. Contact support.');
+    return respond.FailureResponse(APIError.UNABLE_GET_USER); //'Unable to get user. Contact support.'
 
   const user = userResponse.Item;
-  if (!user) return respond.FailureResponse('User does not exist.');
+  if (!user) return respond.FailureResponse(APIError.NO_SUCH_USER); // 'User does not exist.'
   const { xtoken, name } = user;
 
   const encrypt = hash(password, user.key);
 
   if (user.password !== encrypt)
-    return respond.FailureResponse('Incorrect password.');
+    return respond.FailureResponse(APIError.PWD_INCORRCT); //'Incorrect password.'
 
+  validateWebhook(xtoken, name);
   const token = generateAccessToken(username, xtoken);
   res.cookie('jwt', token, { maxAge: configs.MAX_AGE });
 

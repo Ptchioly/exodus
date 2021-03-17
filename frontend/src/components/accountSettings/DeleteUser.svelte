@@ -3,29 +3,29 @@
 
   import { deleteUser } from '../../endpointApi';
   import { isSuccessResponse } from '../../types/guards';
-  import { _ } from "svelte-i18n";
+  import { _ } from 'svelte-i18n';
 
   export let error: boolean;
-  export let errorMessage: string;
+  export let errorMessage: number;
 
   const dispatch = createEventDispatcher();
 
   const handleDeleteUser = async () => {
-    const confirmResponse = confirm($_("settings.delete_usr.confirmation_msg"));
+    const confirmResponse = confirm($_('settings.delete_usr.confirmation_msg'));
     if (confirmResponse) {
       const response = await deleteUser();
       if (isSuccessResponse(response)) return dispatch('logout');
       error = true;
-      errorMessage = $_("settings.delete_usr.error_msg");
+      errorMessage = response.error;
     }
   };
 </script>
 
-<div class="flex flex-row mt-2 items-center">
-  <div>{$_("settings.delete_usr.msg")}</div>
+<div class="flex flex-col mt-2 justify-between">
+  <div>{$_('settings.delete_usr.msg')}</div>
   <button
-    class="ml-5 rounded-md py-1 px-3 box-content bg-red-600 text-white mr-5"
+    class="rounded-md py-1 px-3 box-content bg-red-600 text-white mr-5"
     data-automation-id="delete-user"
-    on:click={handleDeleteUser}>{$_("settings.delete_usr.btn")}</button
+    on:click={handleDeleteUser}>{$_('settings.delete_usr.btn')}</button
   >
 </div>

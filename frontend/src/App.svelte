@@ -1,21 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { isAuthenticated } from './endpointApi';
-  import MainPage from './MainPage.svelte';
+  import MainController from './MainController.svelte';
   import storages from './storage/storages';
   import TailwindCss from './TailwindCss.svelte';
   import type ClientStorage from './types/ClientStorage';
   import type { UserMeta } from './types/ClientStorage';
-
-  import { addMessages, init, getLocaleFromNavigator } from "svelte-i18n";
-  import en from './lang/en.json';
-  import ru from './lang/ru.json';
-  import ua from './lang/ua.json';
-
-  addMessages('en', en);
-  addMessages('ru', ru);
-  addMessages('ua', ua);
-  init({ fallbackLocale: 'en', initialLocale: localStorage.getItem('language') || getLocaleFromNavigator() });
 
   let authorized: boolean | undefined;
   let storage: ClientStorage<UserMeta, 'name'>;
@@ -28,10 +18,10 @@
 
 <TailwindCss />
 <main
-  class="font-main h-screen mx-10 md:mx-20 text-center flex content-center my-10"
+  class="font-main h-full box-border px-10 md:px-20 text-center flex content-center dark:bg-dark overscroll-y-auto overflow-y-scroll justify-center"
 >
   {#if storage}
-    <MainPage {storage} {authorized} />
+    <MainController {storage} {authorized} />
   {/if}
 </main>
 

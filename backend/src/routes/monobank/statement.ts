@@ -66,6 +66,7 @@ statement.get('/statement', authenticateToken, async (req: any, res) => {
         previous: found.previous + a.previous,
         current: found.current + a.current,
         limit: +found.limit + +a.limit,
+        prevLimit: +(found.prevLimit || 0) + +(a.prevLimit || 0),
       };
     });
     if (!mergedChart) return acc;
