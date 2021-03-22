@@ -1,8 +1,11 @@
 name: CI - Run Tests on Beta
 
 on:
-  schedule:
-    - cron:  '0 10 * * *' #run every day at 10 am
+  # schedule:
+  #   - cron:  '0 10 * * *' #run every day at 10 am
+  push:
+    branches:
+      - 'beta'
 
 jobs:
   setup-and-run-ui-tests:
@@ -31,7 +34,8 @@ jobs:
           env: 'username="${{ secrets.TEST_USERNAME }}",password=${{ secrets.TEST_USER_PASSWORD }},xtoken=${{ secrets.TEST_USER_XTOKEN }},apiUrl=http://localhost:8080,CIWait=true'
           start: npm run frontend:start
           wait-on: 'http://localhost:5000, http://localhost:8080/'
-          command-prefix: 'percy exec -- npx'
+          # command-prefix: 'percy exec -- npx'
+          command-prefix: 'percy exec --'
           wait-on-timeout: 120
           browser: chrome
           headless: true
